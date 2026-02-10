@@ -5,13 +5,13 @@ export default function ReportFrontPage({ inspection, site, customer }) {
     <div className="min-h-screen flex flex-col justify-center bg-white print:break-after-page p-4 md:p-8 print:p-0">
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-8">
-        <h1 className="text-5xl font-bold text-gray-800 mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
           {inspection.report_title || 'Garden Inspection Report'}
         </h1>
-        
-        <div className="w-24 h-1 bg-red-600 mb-8"></div>
-        
-        <h2 className="text-3xl text-gray-700 mb-12">{site.name}</h2>
+
+        <div className="w-24 h-1 bg-red-600 mb-6 md:mb-8"></div>
+
+        <h2 className="text-2xl md:text-3xl text-gray-700 mb-8 md:mb-12">{site.name}</h2>
         
         <div className="bg-gray-50 rounded-lg p-8 max-w-2xl w-full space-y-4 text-left">
           {customer && (

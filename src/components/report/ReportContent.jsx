@@ -38,42 +38,20 @@ export default function ReportContent({ inspection, site, customer, points }) {
         @media print {
           @page { 
             size: A4 portrait; 
-            margin: 15mm;
+            margin: 20mm;
           }
           html, body { 
             margin: 0 !important; 
             padding: 0 !important;
             background: white !important;
-            width: 100% !important;
-            height: 100% !important;
           }
           * { 
             -webkit-print-color-adjust: exact !important; 
             print-color-adjust: exact !important;
-            color-adjust: exact !important;
           }
-          .print\\:hidden { 
-            display: none !important; 
-          }
-          .print\\:break-before-page {
-            page-break-before: always !important;
-            break-before: page !important;
-          }
-          .print\\:break-after-page {
-            page-break-after: always !important;
-            break-after: page !important;
-          }
-          .print\\:break-inside-avoid {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-          }
-          img {
-            max-width: 100% !important;
-            page-break-inside: avoid !important;
-          }
-          .max-w-5xl {
-            max-width: 100% !important;
-          }
+          h1 { font-size: 24pt !important; }
+          h2 { font-size: 18pt !important; }
+          p, div { font-size: 11pt !important; }
         }
       `}</style>
       {/* Front Page */}
@@ -83,14 +61,13 @@ export default function ReportContent({ inspection, site, customer, points }) {
       <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
       
       {/* Detailed Report Pages */}
-      <div className="print:break-before-page bg-white">
-        <div className="p-4 md:p-8 print:p-0">
+      <div className="print:break-before-page bg-white p-4 md:p-8 print:p-0">
           {/* Header Section */}
-          <div className="mb-8 pb-6 border-b-2 border-gray-300">
-            <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">
+          <div className="mb-6 pb-4 border-b-2 border-gray-300">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
               {inspection.report_title || 'Detailed Inspection Report'}
             </h1>
-            <h2 className="text-2xl text-gray-700 mb-4">{site.name}</h2>
+            <h2 className="text-xl md:text-2xl text-gray-700 mb-4">{site.name}</h2>
             
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div>
@@ -127,8 +104,8 @@ export default function ReportContent({ inspection, site, customer, points }) {
 
           {/* Map Section */}
           {site.map_image_url && (
-            <div className="mb-10 print:break-before-page">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
+            <div className="mb-8 print:break-before-page">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
                 <img
                   src={site.map_image_url}
@@ -155,10 +132,10 @@ export default function ReportContent({ inspection, site, customer, points }) {
 
           {/* Inspection Points */}
           <div className="print:break-before-page">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Detailed Findings ({points.length} Points)</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
             
             {points.map((point, index) => (
-              <div key={point.id} className="mb-8 pb-8 border-b border-gray-200 last:border-b-0 print:break-inside-avoid">
+              <div key={point.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0 print:break-inside-avoid">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
                     {index + 1}
@@ -184,13 +161,13 @@ export default function ReportContent({ inspection, site, customer, points }) {
                           <Camera className="w-4 h-4" />
                           Documentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'Photo' : 'Photos'})
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {point.photo_details.map((photo, photoIndex) => (
                             <div key={photoIndex} className="print:break-inside-avoid">
                               <img
                                 src={photo.url}
                                 alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                                className="w-full h-48 object-cover rounded-lg border border-gray-300 shadow-sm"
+                                className="w-full h-40 md:h-48 object-cover rounded-lg border border-gray-300"
                               />
                               {photo.comment && (
                                 <p className="mt-2 text-sm text-gray-600 italic bg-gray-50 p-2 rounded">
@@ -214,7 +191,6 @@ export default function ReportContent({ inspection, site, customer, points }) {
               </div>
             ))}
           </div>
-        </div>
       </div>
     </>
   );
