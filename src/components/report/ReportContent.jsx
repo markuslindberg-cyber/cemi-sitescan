@@ -4,8 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, User, MapPin, Camera } from 'lucide-react';
 import ReportFrontPage from './ReportFrontPage';
 import ReportSummaryPage from './ReportSummaryPage';
-import ReportHeader from './ReportHeader';
-import ReportFooter from './ReportFooter';
 
 const severityColors = {
   low: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -55,11 +53,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
       
       {/* Detailed Report Pages */}
       <div className="print:break-before-page bg-white">
-        <div className="hidden print:block">
-          <ReportHeader />
-        </div>
-
-        <div className="p-8 print:pt-16 max-w-5xl mx-auto">
+        <div className="p-8 max-w-5xl mx-auto">
           {/* Header Section */}
           <div className="mb-8 pb-6 border-b-2 border-gray-300">
             <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">
@@ -189,10 +183,6 @@ export default function ReportContent({ inspection, site, customer, points }) {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="hidden print:block">
-          <ReportFooter />
         </div>
       </div>
     </>
