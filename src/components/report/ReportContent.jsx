@@ -55,8 +55,11 @@ export default function ReportContent({ inspection, site, customer, points }) {
           .inspection-point-item {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            page-break-before: auto !important;
+            page-break-before: always !important;
             page-break-after: auto !important;
+          }
+          .inspection-point-item:first-child {
+            page-break-before: auto !important;
           }
         }
       `}</style>
