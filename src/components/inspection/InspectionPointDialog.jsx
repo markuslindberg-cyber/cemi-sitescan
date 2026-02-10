@@ -100,7 +100,12 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         base44.integrations.Core.UploadFile({ file })
       );
       const results = await Promise.all(uploadPromises);
-      const newPhotos = results.map(r => ({ url: r.file_url, comment: '' }));
+      const newPhotos = results.map(r => ({ 
+        url: r.file_url, 
+        comment: '',
+        address: formData.location_address || null,
+        show_address: false
+      }));
       setFormData(prev => ({
         ...prev,
         photo_details: [...prev.photo_details, ...newPhotos]
