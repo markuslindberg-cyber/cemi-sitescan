@@ -269,7 +269,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="uploaded">Upload Map/Drawing</SelectItem>
-                <SelectItem value="google_maps">Use Google Maps</SelectItem>
+                <SelectItem value="google_maps">Use Apple Maps</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -286,7 +286,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
                     .filter(s => s.map_image_url || s.google_maps_center)
                     .map(site => (
                       <SelectItem key={site.id} value={site.id}>
-                        {site.name} ({site.map_type === 'uploaded' ? 'Image' : 'Google Maps'})
+                        {site.name} ({site.map_type === 'uploaded' ? 'Image' : 'Apple Maps'})
                       </SelectItem>
                     ))}
                 </SelectContent>
