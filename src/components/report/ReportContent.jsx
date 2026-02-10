@@ -205,10 +205,19 @@ export default function ReportContent({ inspection, site, customer, points }) {
                                 alt={`Point ${index + 1} photo ${photoIndex + 1}`}
                                 className="w-full h-auto object-contain rounded-lg border border-gray-300"
                               />
-                              {photo.comment && (
-                                <p className="mt-1 text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
-                                  {photo.comment}
-                                </p>
+                              {(photo.comment || photo.show_address) && (
+                                <div className="mt-1 space-y-1">
+                                  {photo.show_address && (
+                                    <p className="text-xs text-blue-700 bg-blue-50 p-1.5 rounded print:text-[9pt]">
+                                      📍 Location: {photo.address || 'Unknown'}
+                                    </p>
+                                  )}
+                                  {photo.comment && (
+                                    <p className="text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
+                                      {photo.comment}
+                                    </p>
+                                  )}
+                                </div>
                               )}
                             </div>
                           ))}
