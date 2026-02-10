@@ -38,6 +38,15 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     enabled: !!formData.customer_id
   });
 
+  const handleCustomerChange = (customerId) => {
+    const selectedCustomer = customers.find(c => c.id === customerId);
+    setFormData(prev => ({
+      ...prev,
+      customer_id: customerId,
+      map_type: selectedCustomer?.map_type || 'uploaded'
+    }));
+  };
+
   useEffect(() => {
     if (site) {
       setFormData({
