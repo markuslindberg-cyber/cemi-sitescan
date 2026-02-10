@@ -206,6 +206,30 @@ export default function Inspection() {
         position={pendingPosition}
         existingPoint={selectedPoint}
       />
+
+      <Sheet open={showNotesSheet} onOpenChange={setShowNotesSheet}>
+        <SheetContent side="bottom" className="h-[80vh]">
+          <SheetHeader>
+            <SheetTitle>Notes & Inspection Points</SheetTitle>
+          </SheetHeader>
+          <div className="mt-4 overflow-y-auto h-[calc(80vh-100px)]">
+            <InspectionSidebar
+              points={points}
+              inspection={inspection}
+              onPointClick={(point) => {
+                handlePointClick(point);
+                setShowNotesSheet(false);
+              }}
+              onNotesUpdate={(notes) => {
+                updateInspectionMutation.mutate({
+                  id: inspectionId,
+                  data: { notes }
+                });
+              }}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
