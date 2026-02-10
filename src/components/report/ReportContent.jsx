@@ -136,13 +136,13 @@ export default function ReportContent({ inspection, site, customer, points }) {
                     />
                     {points.map((point, index) => (
                       <div
-                        key={point.id}
-                        className="absolute transform -translate-x-1/2 -translate-y-full print:hidden"
-                        style={{
-                          left: `${point.x_position}%`,
-                          top: `${point.y_position}%`
-                        }}
-                      >
+                         key={point.id}
+                         className="absolute transform -translate-x-1/2 -translate-y-full"
+                         style={{
+                           left: `${point.x_position}%`,
+                           top: `${point.y_position}%`
+                         }}
+                       >
                         <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
                           <span className="text-white text-sm font-bold">{index + 1}</span>
                         </div>
