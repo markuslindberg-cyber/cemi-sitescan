@@ -36,13 +36,38 @@ export default function ReportContent({ inspection, site, customer, points }) {
     <>
       <style>{`
         @media print {
-          @page { size: A4; margin: 15mm; }
-          body { margin: 0; padding: 0; }
-          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-          .print\\:hidden { display: none !important; }
-        }
-        @media screen {
-          .report-page { background: white; }
+          @page { 
+            size: A4; 
+            margin: 20mm 15mm;
+          }
+          body { 
+            margin: 0; 
+            padding: 0;
+            background: white !important;
+          }
+          * { 
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
+          }
+          .print\\:hidden { 
+            display: none !important; 
+          }
+          .print\\:break-before-page {
+            page-break-before: always;
+            break-before: page;
+          }
+          .print\\:break-after-page {
+            page-break-after: always;
+            break-after: page;
+          }
+          .print\\:break-inside-avoid {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          img {
+            max-width: 100%;
+            page-break-inside: avoid;
+          }
         }
       `}</style>
       {/* Front Page */}
@@ -53,7 +78,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
       
       {/* Detailed Report Pages */}
       <div className="print:break-before-page bg-white">
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-4 md:p-8 print:p-0">
           {/* Header Section */}
           <div className="mb-8 pb-6 border-b-2 border-gray-300">
             <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">

@@ -28,7 +28,7 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
   const total = points.length;
 
   return (
-    <div className="min-h-screen bg-white print:break-after-page p-0 print:p-8">
+    <div className="min-h-screen bg-white print:break-after-page p-4 md:p-8 print:p-0">
       
       <div className="space-y-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Executive Summary</h1>
