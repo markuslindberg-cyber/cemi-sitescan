@@ -78,42 +78,15 @@ export default function Inspection() {
       return;
     }
     
-    toast.loading('Capturing map screenshot...');
-    
     try {
-      // Capture map screenshot
-      let mapScreenshotUrl = null;
-      if (mapRef.current) {
-        const canvas = await html2canvas(mapRef.current, {
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          scale: 2
-        });
-        
-        // Convert canvas to data URL and then to file
-        const dataUrl = canvas.toDataURL('image/png');
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        
-        // Upload to server
-        const { file_url } = await base44.integrations.Core.UploadFile({ file: blob });
-        mapScreenshotUrl = file_url;
-      }
-      
       await updateInspectionMutation.mutateAsync({
         id: inspectionId,
-        data: { 
-          status: 'completed',
-          map_screenshot_url: mapScreenshotUrl
-        }
+        data: { status: 'completed' }
       });
       
-      toast.dismiss();
       toast.success('Inspection completed');
       navigate(createPageUrl(`Report?id=${inspectionId}`));
     } catch (error) {
-      toast.dismiss();
       toast.error('Failed to complete inspection');
       console.error(error);
     }
