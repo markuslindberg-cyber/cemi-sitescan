@@ -115,19 +115,24 @@ export default function Inspection() {
     <div className="h-screen flex flex-col bg-gray-50">
       <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link to={createPageUrl(`Site?id=${site.id}`)}>
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">{site.name}</h1>
-            <p className="text-sm text-gray-600">
-              {new Date(inspection.inspection_date).toLocaleDateString()} • {inspection.inspector_name}
-            </p>
-          </div>
-        </div>
+           <Link to={createPageUrl(`Site?id=${site.id}`)}>
+             <Button variant="ghost" size="sm">
+               <ArrowLeft className="w-4 h-4 mr-2" />
+               Back
+             </Button>
+           </Link>
+           <div>
+             <div className="flex items-center gap-2">
+               <h1 className="text-xl font-bold text-gray-900">{site.name}</h1>
+               <span className="text-xs font-bold px-2 py-1 bg-gray-800 text-white rounded">
+                 {inspection.inspection_number}
+               </span>
+             </div>
+             <p className="text-sm text-gray-600">
+               {new Date(inspection.inspection_date).toLocaleDateString()} • {inspection.inspector_name}
+             </p>
+           </div>
+         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600">{points.length} points marked</span>
           <Button
