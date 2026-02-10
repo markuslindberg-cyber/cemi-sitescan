@@ -52,6 +52,12 @@ export default function ReportContent({ inspection, site, customer, points }) {
           h1 { font-size: 24pt !important; }
           h2 { font-size: 18pt !important; }
           p, div { font-size: 11pt !important; }
+          .inspection-point-item {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-before: auto !important;
+            page-break-after: auto !important;
+          }
         }
       `}</style>
       {/* Front Page */}
@@ -161,7 +167,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
             
             {points.map((point, index) => (
-              <div key={point.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0 print:break-inside-avoid">
+              <div key={point.id} className="inspection-point-item mb-6 pb-6 border-b border-gray-200 last:border-b-0 print:break-inside-avoid">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
                     {index + 1}
