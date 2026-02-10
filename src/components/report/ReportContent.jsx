@@ -112,11 +112,10 @@ export default function ReportContent({ inspection, site, customer, points }) {
           </div>
 
           {/* Map Section */}
-          {(site.map_image_url || (site.map_type === 'google_maps' && site.google_maps_center)) && (
-            <div className="mb-8">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
-              <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
-                {site.map_type === 'google_maps' && site.google_maps_center ? (
+          <div className="mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
+            <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
+              {site.map_type === 'google_maps' && site.google_maps_center ? (
                   <>
                     {/* Map info for print */}
                     <div className="hidden print:block bg-white p-6 rounded-lg border-2 border-gray-300">
@@ -174,10 +173,13 @@ export default function ReportContent({ inspection, site, customer, points }) {
                       </div>
                     ))}
                   </>
-                ) : null}
-              </div>
+                ) : (
+                  <div className="p-6 text-center text-gray-500">
+                    <p>No map configured for this site</p>
+                  </div>
+                )}
             </div>
-          )}
+          </div>
 
           {/* Inspection Points */}
           <div className="print:break-before-page">
