@@ -330,8 +330,17 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                         value={photo.comment}
                         onChange={(e) => updatePhotoComment(index, e.target.value)}
                         rows={2}
-                        className="text-sm"
+                        className="text-sm mb-3"
                       />
+                      {formData.location_address && (
+                        <div className="flex items-center gap-2 p-2 bg-blue-50 rounded text-sm">
+                          <Checkbox
+                            checked={photo.show_address || false}
+                            onCheckedChange={() => togglePhotoAddress(index)}
+                          />
+                          <span className="text-gray-700">Show location ({formData.location_address}) in report</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
