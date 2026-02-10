@@ -103,29 +103,43 @@ export default function ReportContent({ inspection, site, customer, points }) {
           </div>
 
           {/* Map Section */}
-          {site.map_image_url && (
+          {(site.map_image_url || site.map_type === 'google_maps') && (
             <div className="mb-8">
               <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
-                <img
-                  src={site.map_image_url}
-                  alt="Site map"
-                  className="w-full h-auto max-h-[600px] object-contain"
-                />
-                {points.map((point, index) => (
-                  <div
-                    key={point.id}
-                    className="absolute transform -translate-x-1/2 -translate-y-full"
-                    style={{
-                      left: `${point.x_position}%`,
-                      top: `${point.y_position}%`
-                    }}
-                  >
-                    <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
-                      <span className="text-white text-sm font-bold">{index + 1}</span>
-                    </div>
-                  </div>
-                ))}
+                {site.map_type === 'google_maps' && site.google_maps_center ? (
+                  <iframe
+                    src={`https://www.google.com/maps/embed/v1/view?key=&center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&maptype=satellite`}
+                    width="100%"
+                    height="500"
+                    style={{ border: 0 }}
+                    allowFullScreen={false}
+                    loading="lazy"
+                    className="w-full h-[500px]"
+                  />
+                ) : site.map_image_url ? (
+                  <>
+                    <img
+                      src={site.map_image_url}
+                      alt="Site map"
+                      className="w-full h-auto max-h-[600px] object-contain"
+                    />
+                    {points.map((point, index) => (
+                      <div
+                        key={point.id}
+                        className="absolute transform -translate-x-1/2 -translate-y-full"
+                        style={{
+                          left: `${point.x_position}%`,
+                          top: `${point.y_position}%`
+                        }}
+                      >
+                        <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
+                          <span className="text-white text-sm font-bold">{index + 1}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : null}
               </div>
             </div>
           )}
