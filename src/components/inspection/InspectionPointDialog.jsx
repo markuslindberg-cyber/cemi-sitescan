@@ -291,8 +291,15 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
               </Button>
             </div>
             {formData.latitude && formData.longitude && (
-              <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                Lat: {formData.latitude.toFixed(6)}, Long: {formData.longitude.toFixed(6)}
+              <div className="mt-2 space-y-2">
+                <div className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                  Lat: {formData.latitude.toFixed(6)}, Long: {formData.longitude.toFixed(6)}
+                </div>
+                {formData.location_address && (
+                  <div className="text-sm text-gray-600 bg-blue-50 p-2 rounded">
+                    📍 {formData.location_address}
+                  </div>
+                )}
               </div>
             )}
           </div>
