@@ -192,7 +192,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
             <Label htmlFor="customer_id">Customer</Label>
             <Select
               value={formData.customer_id}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, customer_id: value }))}
+              onValueChange={handleCustomerChange}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a customer (optional)" />
