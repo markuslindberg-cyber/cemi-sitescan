@@ -81,8 +81,9 @@ return (
          position: relative;
          display: flex;
          flex-direction: column;
-         min-h-screen;
+         height: 100vh;
          page-break-after: always;
+         page-break-inside: avoid;
        }
      `}</style>
       {/* Front Page */}
