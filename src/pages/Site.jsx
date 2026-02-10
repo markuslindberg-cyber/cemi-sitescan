@@ -227,21 +227,24 @@ export default function Site() {
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <Badge
-                                variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                                className={
-                                  inspection.status === 'completed'
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-yellow-100 text-yellow-800'
-                                }
-                              >
-                                {inspection.status === 'completed' ? 'Completed' : 'In Progress'}
-                              </Badge>
-                              <span className="text-sm text-gray-500 flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                {new Date(inspection.inspection_date).toLocaleDateString()}
-                              </span>
-                            </div>
+                                  <span className="text-lg font-bold text-gray-900">
+                                    {inspection.inspection_number}
+                                  </span>
+                                  <Badge
+                                    variant={inspection.status === 'completed' ? 'default' : 'secondary'}
+                                    className={
+                                      inspection.status === 'completed'
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-yellow-100 text-yellow-800'
+                                    }
+                                  >
+                                    {inspection.status === 'completed' ? 'Completed' : 'In Progress'}
+                                  </Badge>
+                                  <span className="text-sm text-gray-500 flex items-center gap-1">
+                                    <Calendar className="w-4 h-4" />
+                                    {new Date(inspection.inspection_date).toLocaleDateString()}
+                                  </span>
+                                </div>
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <User className="w-4 h-4" />
                               {inspection.inspector_name}
