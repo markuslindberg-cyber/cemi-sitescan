@@ -127,7 +127,19 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     }));
   };
 
-  const getCurrentLocation = () => {
+  const getAddressFromCoordinates = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const data = await response.json();
+      return data.address?.road || data.address?.suburb || data.address?.city || 'Unknown location';
+    } catch (error) {
+      return 'Unknown location';
+    }
+  };
+
+  const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
       toast.error('Geolocation is not supported by your browser');
       return;
@@ -135,11 +147,17 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
 
     setGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
+        const address = await getAddressFromCoordinates(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        
         setFormData(prev => ({
           ...prev,
           latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+          longitude: position.coords.longitude,
+          location_address: address
         }));
         toast.success('Location captured');
         setGettingLocation(false);
