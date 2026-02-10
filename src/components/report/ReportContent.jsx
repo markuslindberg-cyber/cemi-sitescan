@@ -2,6 +2,10 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, MapPin, Camera } from 'lucide-react';
+import ReportFrontPage from './ReportFrontPage';
+import ReportSummaryPage from './ReportSummaryPage';
+import ReportHeader from './ReportHeader';
+import ReportFooter from './ReportFooter';
 
 const severityColors = {
   low: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -31,115 +35,93 @@ export default function ReportContent({ inspection, site, customer, points }) {
   const summary = getSummary();
 
   return (
-    <div className="space-y-6 bg-white print:bg-white">
-      <Card className="print:shadow-none">
-        <CardHeader className="border-b">
-          <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-3xl mb-2">Inspection Report</CardTitle>
-              <h2 className="text-xl text-gray-700">{site.name}</h2>
-            </div>
-            <div className="text-right text-sm text-gray-600">
-              <div className="flex items-center gap-2 justify-end mb-1">
-                <Calendar className="w-4 h-4" />
-                {new Date(inspection.inspection_date).toLocaleDateString()}
+    <>
+      {/* Front Page */}
+      <ReportFrontPage inspection={inspection} site={site} customer={customer} />
+      
+      {/* Summary Page */}
+      <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
+      
+      {/* Detailed Report Pages */}
+      <div className="space-y-6 bg-white print:bg-white p-8 print:break-before-page">
+        <ReportHeader />
+        
+        <Card className="print:shadow-none">
+          <CardHeader className="border-b">
+            <div className="flex items-start justify-between">
+              <div>
+                <CardTitle className="text-3xl mb-2">Detailed Inspection Report</CardTitle>
+                <h2 className="text-xl text-gray-700">{site.name}</h2>
               </div>
-              <div className="flex items-center gap-2 justify-end">
-                <User className="w-4 h-4" />
-                {inspection.inspector_name}
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          {customer && (
-            <div className="mb-4 pb-4 border-b">
-              <p className="text-sm text-gray-500">Customer</p>
-              <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
-              {customer.project_number && (
-                <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
-              )}
-            </div>
-          )}
-          {site.location && (
-            <div className="flex items-center gap-2 text-gray-700 mb-4">
-              <MapPin className="w-4 h-4" />
-              {site.location}
-            </div>
-          )}
-          {site.description && (
-            <p className="text-gray-600 mb-4">{site.description}</p>
-          )}
-          {inspection.notes && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-2">General Notes</h3>
-              <p className="text-gray-700 whitespace-pre-wrap">{inspection.notes}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="print:shadow-none">
-        <CardHeader>
-          <CardTitle>Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600">{summary.low}</div>
-              <div className="text-sm text-gray-600 mt-1">Low Severity</div>
-            </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <div className="text-3xl font-bold text-yellow-600">{summary.medium}</div>
-              <div className="text-sm text-gray-600 mt-1">Medium Severity</div>
-            </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <div className="text-3xl font-bold text-orange-600">{summary.high}</div>
-              <div className="text-sm text-gray-600 mt-1">High Severity</div>
-            </div>
-            <div className="text-center p-4 bg-red-50 rounded-lg">
-              <div className="text-3xl font-bold text-red-600">{summary.critical}</div>
-              <div className="text-sm text-gray-600 mt-1">Critical Severity</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {site.map_image_url && (
-        <Card className="print:shadow-none print:break-inside-avoid">
-          <CardHeader>
-            <CardTitle>Annotated Map</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="relative bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src={site.map_image_url}
-                alt="Site map"
-                className="w-full object-contain"
-              />
-              {points.map((point, index) => (
-                <div
-                  key={point.id}
-                  className="absolute transform -translate-x-1/2 -translate-y-full"
-                  style={{
-                    left: `${point.x_position}%`,
-                    top: `${point.y_position}%`
-                  }}
-                >
-                  <div className={`w-8 h-8 rounded-full ${markerColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg`}>
-                    <span className="text-white text-xs font-bold">{index + 1}</span>
-                  </div>
+              <div className="text-right text-sm text-gray-600">
+                <div className="flex items-center gap-2 justify-end mb-1">
+                  <Calendar className="w-4 h-4" />
+                  {new Date(inspection.inspection_date).toLocaleDateString()}
                 </div>
-              ))}
+                <div className="flex items-center gap-2 justify-end">
+                  <User className="w-4 h-4" />
+                  {inspection.inspector_name}
+                </div>
+              </div>
             </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            {customer && (
+              <div className="mb-4 pb-4 border-b">
+                <p className="text-sm text-gray-500">Customer</p>
+                <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
+                {customer.project_number && (
+                  <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+                )}
+              </div>
+            )}
+            {site.location && (
+              <div className="flex items-center gap-2 text-gray-700 mb-4">
+                <MapPin className="w-4 h-4" />
+                {site.location}
+              </div>
+            )}
+            {site.description && (
+              <p className="text-gray-600 mb-4">{site.description}</p>
+            )}
           </CardContent>
         </Card>
-      )}
 
-      <Card className="print:shadow-none">
-        <CardHeader>
-          <CardTitle>Inspection Points ({points.length})</CardTitle>
-        </CardHeader>
+        {site.map_image_url && (
+          <Card className="print:shadow-none print:break-inside-avoid">
+            <CardHeader>
+              <CardTitle>Annotated Map</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="relative bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  src={site.map_image_url}
+                  alt="Site map"
+                  className="w-full object-contain"
+                />
+                {points.map((point, index) => (
+                  <div
+                    key={point.id}
+                    className="absolute transform -translate-x-1/2 -translate-y-full"
+                    style={{
+                      left: `${point.x_position}%`,
+                      top: `${point.y_position}%`
+                    }}
+                  >
+                    <div className={`w-8 h-8 rounded-full ${markerColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg`}>
+                      <span className="text-white text-xs font-bold">{index + 1}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <Card className="print:shadow-none">
+          <CardHeader>
+            <CardTitle>Inspection Points ({points.length})</CardTitle>
+          </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {points.map((point, index) => (
@@ -197,13 +179,11 @@ export default function ReportContent({ inspection, site, customer, points }) {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <div className="print:block hidden text-center text-sm text-gray-600 pt-6 border-t">
-        <p>Generated on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}</p>
-        <p className="mt-1">Garden Inspection App</p>
+        <ReportFooter />
       </div>
-    </div>
+    </>
   );
 }
