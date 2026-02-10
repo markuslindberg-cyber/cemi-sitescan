@@ -78,16 +78,21 @@ return (
          border-top: 1px solid #e5e7eb;
        }
        .report-page {
-         position: relative;
          display: flex;
          flex-direction: column;
-         justify-content: space-between;
          page-break-after: always;
          page-break-inside: avoid;
        }
        @media screen {
          .report-page {
            min-h-screen;
+         }
+       }
+       @media print {
+         .report-page {
+           height: 297mm;
+           display: flex;
+           flex-direction: column;
          }
        }
      `}</style>
