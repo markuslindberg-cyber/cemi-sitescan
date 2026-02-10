@@ -28,17 +28,17 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
   const total = points.length;
 
   return (
-    <div className="min-h-screen bg-white print:break-after-page p-4 md:p-8 print:p-0">
-      <div className="space-y-4 md:space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Executive Summary</h1>
+    <div className="bg-white print:break-after-page p-4 md:p-8 print:p-0">
+      <div className="space-y-3 print:space-y-2">
+        <h1 className="text-2xl font-bold text-gray-800 mb-3 print:mb-2 print:text-xl">Executive Summary</h1>
         
         {/* Overview Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Inspection Overview</CardTitle>
+        <Card className="print:shadow-none">
+          <CardHeader className="print:p-3 print:pb-2">
+            <CardTitle className="print:text-base">Inspection Overview</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+          <CardContent className="print:p-3 print:pt-0">
+            <div className="grid grid-cols-2 gap-3 print:gap-2">
               <div>
                 <p className="text-sm text-gray-500">Site</p>
                 <p className="text-lg font-semibold">{site.name}</p>
@@ -62,37 +62,37 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {/* Severity Summary */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Severity Distribution</CardTitle>
+        <Card className="print:shadow-none">
+          <CardHeader className="print:p-3 print:pb-2">
+            <CardTitle className="print:text-base">Severity Distribution</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="text-center p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
-                <div className="text-4xl font-bold text-blue-600">{summary.low}</div>
-                <div className="text-sm text-gray-600 mt-2">Low Severity</div>
-                <div className="text-xs text-gray-500 mt-1">
+          <CardContent className="print:p-3 print:pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 print:gap-2">
+              <div className="text-center p-4 print:p-2 bg-blue-50 rounded-lg border-2 border-blue-200">
+                <div className="text-3xl print:text-2xl font-bold text-blue-600">{summary.low}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Low</div>
+                <div className="text-xs print:text-[9px] text-gray-500">
                   {total > 0 ? Math.round((summary.low / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="text-center p-6 bg-yellow-50 rounded-lg border-2 border-yellow-200">
-                <div className="text-4xl font-bold text-yellow-600">{summary.medium}</div>
-                <div className="text-sm text-gray-600 mt-2">Medium Severity</div>
-                <div className="text-xs text-gray-500 mt-1">
+              <div className="text-center p-4 print:p-2 bg-yellow-50 rounded-lg border-2 border-yellow-200">
+                <div className="text-3xl print:text-2xl font-bold text-yellow-600">{summary.medium}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Medium</div>
+                <div className="text-xs print:text-[9px] text-gray-500">
                   {total > 0 ? Math.round((summary.medium / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="text-center p-6 bg-orange-50 rounded-lg border-2 border-orange-200">
-                <div className="text-4xl font-bold text-orange-600">{summary.high}</div>
-                <div className="text-sm text-gray-600 mt-2">High Severity</div>
-                <div className="text-xs text-gray-500 mt-1">
+              <div className="text-center p-4 print:p-2 bg-orange-50 rounded-lg border-2 border-orange-200">
+                <div className="text-3xl print:text-2xl font-bold text-orange-600">{summary.high}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">High</div>
+                <div className="text-xs print:text-[9px] text-gray-500">
                   {total > 0 ? Math.round((summary.high / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="text-center p-6 bg-red-50 rounded-lg border-2 border-red-200">
-                <div className="text-4xl font-bold text-red-600">{summary.critical}</div>
-                <div className="text-sm text-gray-600 mt-2">Critical Severity</div>
-                <div className="text-xs text-gray-500 mt-1">
+              <div className="text-center p-4 print:p-2 bg-red-50 rounded-lg border-2 border-red-200">
+                <div className="text-3xl print:text-2xl font-bold text-red-600">{summary.critical}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Critical</div>
+                <div className="text-xs print:text-[9px] text-gray-500">
                   {total > 0 ? Math.round((summary.critical / total) * 100) : 0}%
                 </div>
               </div>
@@ -101,43 +101,43 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {/* Category Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Issue Categories</CardTitle>
+        <Card className="print:shadow-none">
+          <CardHeader className="print:p-3 print:pb-2">
+            <CardTitle className="print:text-base">Issue Categories</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="text-3xl font-bold text-purple-600">{categories.improvement_suggestions}</div>
-                <div className="text-sm text-gray-600 mt-2">Improvement Suggestions</div>
+          <CardContent className="print:p-3 print:pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 print:gap-2">
+              <div className="p-3 print:p-2 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-2xl print:text-xl font-bold text-purple-600">{categories.improvement_suggestions}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Improvements</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((categories.improvement_suggestions / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                <div className="text-3xl font-bold text-red-600">{categories.issue_damage}</div>
-                <div className="text-sm text-gray-600 mt-2">Issue / Damage</div>
+              <div className="p-3 print:p-2 bg-red-50 rounded-lg border border-red-200">
+                <div className="text-2xl print:text-xl font-bold text-red-600">{categories.issue_damage}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Damage</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((categories.issue_damage / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-3xl font-bold text-green-600">{categories.plant_health}</div>
-                <div className="text-sm text-gray-600 mt-2">Plant Health</div>
+              <div className="p-3 print:p-2 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-2xl print:text-xl font-bold text-green-600">{categories.plant_health}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Plant Health</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((categories.plant_health / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="text-3xl font-bold text-blue-600">{categories.maintenance}</div>
-                <div className="text-sm text-gray-600 mt-2">Maintenance</div>
+              <div className="p-3 print:p-2 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-2xl print:text-xl font-bold text-blue-600">{categories.maintenance}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Maintenance</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((categories.maintenance / total) * 100) : 0}%
                 </div>
               </div>
-              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">{categories.safety_concern}</div>
-                <div className="text-sm text-gray-600 mt-2">Safety Concern</div>
+              <div className="p-3 print:p-2 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl print:text-xl font-bold text-orange-600">{categories.safety_concern}</div>
+                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Safety</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((categories.safety_concern / total) * 100) : 0}%
                 </div>
@@ -147,40 +147,40 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {/* Key Findings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Key Findings</CardTitle>
+        <Card className="print:shadow-none">
+          <CardHeader className="print:p-3 print:pb-2">
+            <CardTitle className="print:text-base">Key Findings</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent className="print:p-3 print:pt-0">
+            <div className="space-y-2 print:space-y-1">
               {summary.critical > 0 && (
-                <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                  <div className="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
-                  <p className="text-gray-700">
+                <div className="flex items-start gap-2 p-2 print:p-1.5 bg-red-50 rounded-lg border border-red-200">
+                  <div className="w-2 h-2 bg-red-600 rounded-full mt-1.5 print:mt-1"></div>
+                  <p className="text-sm print:text-xs text-gray-700">
                     <span className="font-semibold text-red-600">{summary.critical}</span> critical issue{summary.critical > 1 ? 's' : ''} requiring immediate attention
                   </p>
                 </div>
               )}
               {summary.high > 0 && (
-                <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <div className="w-2 h-2 bg-orange-600 rounded-full mt-2"></div>
-                  <p className="text-gray-700">
+                <div className="flex items-start gap-2 p-2 print:p-1.5 bg-orange-50 rounded-lg border border-orange-200">
+                  <div className="w-2 h-2 bg-orange-600 rounded-full mt-1.5 print:mt-1"></div>
+                  <p className="text-sm print:text-xs text-gray-700">
                     <span className="font-semibold text-orange-600">{summary.high}</span> high priority item{summary.high > 1 ? 's' : ''} identified
                   </p>
                 </div>
               )}
               {summary.medium > 0 && (
-                <div className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <div className="w-2 h-2 bg-yellow-600 rounded-full mt-2"></div>
-                  <p className="text-gray-700">
+                <div className="flex items-start gap-2 p-2 print:p-1.5 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="w-2 h-2 bg-yellow-600 rounded-full mt-1.5 print:mt-1"></div>
+                  <p className="text-sm print:text-xs text-gray-700">
                     <span className="font-semibold text-yellow-600">{summary.medium}</span> medium priority observation{summary.medium > 1 ? 's' : ''}
                   </p>
                 </div>
               )}
               {summary.low > 0 && (
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                  <p className="text-gray-700">
+                <div className="flex items-start gap-2 p-2 print:p-1.5 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-1.5 print:mt-1"></div>
+                  <p className="text-sm print:text-xs text-gray-700">
                     <span className="font-semibold text-blue-600">{summary.low}</span> low priority note{summary.low > 1 ? 's' : ''}
                   </p>
                 </div>
@@ -190,12 +190,12 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {inspection.notes && (
-          <Card>
-            <CardHeader>
-              <CardTitle>General Notes</CardTitle>
+          <Card className="print:shadow-none">
+            <CardHeader className="print:p-3 print:pb-2">
+              <CardTitle className="print:text-base">General Notes</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{inspection.notes}</p>
+            <CardContent className="print:p-3 print:pt-0">
+              <p className="text-sm print:text-xs text-gray-700 whitespace-pre-wrap">{inspection.notes}</p>
             </CardContent>
           </Card>
         )}
