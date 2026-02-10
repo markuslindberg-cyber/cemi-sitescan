@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 export default function CreateCustomerDialog({ open, onOpenChange }) {
   const [formData, setFormData] = useState({
     name: '',
+    project_number: '',
     contact_person: '',
     email: '',
     phone: '',
@@ -29,6 +30,7 @@ export default function CreateCustomerDialog({ open, onOpenChange }) {
       onOpenChange(false);
       setFormData({
         name: '',
+        project_number: '',
         contact_person: '',
         email: '',
         phone: '',
@@ -62,6 +64,16 @@ export default function CreateCustomerDialog({ open, onOpenChange }) {
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Company or customer name"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="project_number">Project Number</Label>
+            <Input
+              id="project_number"
+              value={formData.project_number}
+              onChange={(e) => setFormData(prev => ({ ...prev, project_number: e.target.value }))}
+              placeholder="Project reference number"
             />
           </div>
 

@@ -84,6 +84,11 @@ export default function Customer() {
               <CardTitle className="text-2xl">{customer.name}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
+              {customer.project_number && (
+                <div className="text-sm text-gray-500 mb-2">
+                  Project: <span className="font-semibold text-gray-700">{customer.project_number}</span>
+                </div>
+              )}
               {customer.contact_person && (
                 <div className="flex items-center gap-2 text-gray-700">
                   <User className="w-4 h-4" />
