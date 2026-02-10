@@ -91,8 +91,10 @@ export default function Inspection() {
           scale: 2
         });
         
-        // Convert to blob
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        // Convert canvas to data URL and then to file
+        const dataUrl = canvas.toDataURL('image/png');
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
         
         // Upload to server
         const { file_url } = await base44.integrations.Core.UploadFile({ file: blob });
