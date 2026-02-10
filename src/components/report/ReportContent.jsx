@@ -86,13 +86,13 @@ return (
        }
      `}</style>
       {/* Front Page */}
-      <div className="report-page">
+      <div className="report-page justify-between">
          <ReportFrontPage inspection={inspection} site={site} customer={customer} />
          <div className="page-footer">Page 1</div>
       </div>
 
       {/* Summary Page */}
-      <div className="report-page">
+      <div className="report-page justify-between">
          <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
          <div className="page-footer">Page 2</div>
       </div>
