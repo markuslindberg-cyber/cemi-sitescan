@@ -127,6 +127,15 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     }));
   };
 
+  const togglePhotoAddress = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      photo_details: prev.photo_details.map((photo, i) =>
+        i === index ? { ...photo, show_address: !photo.show_address } : photo
+      )
+    }));
+  };
+
   const getAddressFromCoordinates = async (lat, lng) => {
     try {
       const response = await fetch(
