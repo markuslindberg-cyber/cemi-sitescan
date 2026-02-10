@@ -97,191 +97,194 @@ return (
          <div className="page-footer">Page 2</div>
       </div>
 
-      {/* Detailed Report Pages */}
-      <div className="report-page bg-white p-4 md:p-8 print:p-0">
-          {/* Header Section */}
-          <div className="mb-6 pb-4 border-b-2 border-gray-300">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-sm font-bold px-3 py-1 bg-gray-800 text-white rounded">
-                {inspection.inspection_number}
-              </span>
-              <span className="text-sm text-gray-500">Inspection ID</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
-              {inspection.report_title || 'Detailed Inspection Report'}
-            </h1>
-            <h2 className="text-xl md:text-2xl text-gray-700 mb-4">{site.name}</h2>
-            
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div>
-                <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspection Date</p>
-                <p className="text-base font-semibold text-gray-900">
-                  {new Date(inspection.inspection_date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </p>
+      {/* Page 3: Detailed Report Overview */}
+      <div className="report-page bg-white p-4 md:p-8 print:p-0 justify-between">
+          <div>
+            {/* Header Section */}
+            <div className="mb-6 pb-4 border-b-2 border-gray-300">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-sm font-bold px-3 py-1 bg-gray-800 text-white rounded">
+                  {inspection.inspection_number}
+                </span>
+                <span className="text-sm text-gray-500">Inspection ID</span>
               </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspector</p>
-                <p className="text-base font-semibold text-gray-900">{inspection.inspector_name}</p>
-              </div>
-              {customer && (
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+                {inspection.report_title || 'Detailed Inspection Report'}
+              </h1>
+              <h2 className="text-xl md:text-2xl text-gray-700 mb-4">{site.name}</h2>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Customer</p>
-                  <p className="text-base font-semibold text-gray-900">{customer.name}</p>
-                  {customer.project_number && (
-                    <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspection Date</p>
+                  <p className="text-base font-semibold text-gray-900">
+                    {new Date(inspection.inspection_date).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspector</p>
+                  <p className="text-base font-semibold text-gray-900">{inspection.inspector_name}</p>
+                </div>
+                {customer && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Customer</p>
+                    <p className="text-base font-semibold text-gray-900">{customer.name}</p>
+                    {customer.project_number && (
+                      <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+                    )}
+                  </div>
+                )}
+                {site.location && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Location</p>
+                    <p className="text-base text-gray-900">{site.location}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Map Section */}
+            <div className="mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
+              <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
+                {inspection.map_screenshot_url ? (
+                  <img
+                    src={inspection.map_screenshot_url}
+                    alt="Site map with inspection points"
+                    className="w-full h-auto object-contain"
+                  />
+                ) : site.map_image_url ? (
+                    <>
+                      <img
+                        src={site.map_image_url}
+                        alt="Site map"
+                        className="w-full h-auto max-h-[600px] object-contain"
+                      />
+                      {points.map((point, index) => (
+                        <div
+                           key={point.id}
+                           className="absolute transform -translate-x-1/2 -translate-y-full"
+                           style={{
+                             left: `${point.x_position}%`,
+                             top: `${point.y_position}%`
+                           }}
+                         >
+                          <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
+                            <span className="text-white text-sm font-bold">{index + 1}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  ) : site.map_type === 'google_maps' && site.google_maps_center ? (
+                    <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-700 mb-1">Coordinates</p>
+                          <p className="text-base text-gray-900">Lat: {site.google_maps_center.lat.toFixed(6)}, Lng: {site.google_maps_center.lng.toFixed(6)}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-700 mb-1">View in Maps</p>
+                          <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}`} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline break-all">
+                            Apple Maps Link
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 text-center text-gray-500">
+                      <p>No map configured for this site</p>
+                    </div>
                   )}
+              </div>
+
+              <div className="mt-8">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Points Summary:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {points.map((point, index) => (
+                      <div key={point.id} className="text-sm text-gray-600">
+                        <span className="font-medium">Point {index + 1}:</span> Page {index + 4}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="page-footer">Page 3</div>
+      </div>
+
+      {/* Inspection Points - Each on its own page */}
+      {points.map((point, index) => (
+        <div key={point.id} className="report-page bg-white p-4 md:p-8 print:p-0 justify-between">
+          <div className="flex gap-4">
+            <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
+              {index + 1}
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <Badge className={`${severityColors[point.severity || 'medium']} border font-semibold uppercase text-xs px-3 py-1`}>
+                  {point.severity || 'medium'}
+                </Badge>
+                <span className="text-base font-semibold text-gray-800 capitalize">
+                  {point.issue_type?.replace(/_/g, ' ')}
+                </span>
+              </div>
+
+              {point.notes && (
+                <p className="text-base text-gray-700 leading-relaxed mb-4">{point.notes}</p>
+              )}
+
+              {point.photo_details && point.photo_details.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-3">
+                    <Camera className="w-4 h-4" />
+                    Documentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'Photo' : 'Photos'})
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 print:gap-2">
+                    {point.photo_details.map((photo, photoIndex) => (
+                      <div key={photoIndex}>
+                        <img
+                          src={photo.url}
+                          alt={`Point ${index + 1} photo ${photoIndex + 1}`}
+                          className="w-full h-auto object-contain rounded-lg border border-gray-300"
+                        />
+                        {(photo.comment || photo.show_address) && (
+                          <div className="mt-1 space-y-1">
+                            {photo.show_address && (
+                              <p className="text-xs text-blue-700 bg-blue-50 p-1.5 rounded print:text-[9pt]">
+                                📍 Location: {photo.address || 'Unknown'}
+                              </p>
+                            )}
+                            {photo.comment && (
+                              <p className="text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
+                                {photo.comment}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-              {site.location && (
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Location</p>
-                  <p className="text-base text-gray-900">{site.location}</p>
+
+              {point.latitude && point.longitude && (
+                <div className="mt-3 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded inline-block">
+                  <MapPin className="w-3 h-3 inline mr-1" />
+                  GPS: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
                 </div>
               )}
             </div>
           </div>
-
-          {/* Map Section */}
-          <div className="mb-8">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
-            <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
-              {inspection.map_screenshot_url ? (
-                <img
-                  src={inspection.map_screenshot_url}
-                  alt="Site map with inspection points"
-                  className="w-full h-auto object-contain"
-                />
-              ) : site.map_image_url ? (
-                  <>
-                    <img
-                      src={site.map_image_url}
-                      alt="Site map"
-                      className="w-full h-auto max-h-[600px] object-contain"
-                    />
-                    {points.map((point, index) => (
-                      <div
-                         key={point.id}
-                         className="absolute transform -translate-x-1/2 -translate-y-full"
-                         style={{
-                           left: `${point.x_position}%`,
-                           top: `${point.y_position}%`
-                         }}
-                       >
-                        <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
-                          <span className="text-white text-sm font-bold">{index + 1}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : site.map_type === 'google_maps' && site.google_maps_center ? (
-                  <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700 mb-1">Coordinates</p>
-                        <p className="text-base text-gray-900">Lat: {site.google_maps_center.lat.toFixed(6)}, Lng: {site.google_maps_center.lng.toFixed(6)}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700 mb-1">View in Maps</p>
-                        <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}`} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline break-all">
-                          Apple Maps Link
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-6 text-center text-gray-500">
-                    <p>No map configured for this site</p>
-                  </div>
-                )}
-            </div>
-
-            <div className="print:break-before-page mt-8">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-                <p className="text-sm font-semibold text-gray-700 mb-3">Points Summary:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {points.map((point, index) => (
-                    <div key={point.id} className="text-sm text-gray-600">
-                      <span className="font-medium">Point {index + 1}:</span> Page {index + 4}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Inspection Points */}
-            {points.map((point, index) => (
-              <div key={point.id} className="inspection-point-item mb-6 pb-6 border-b border-gray-200 min-h-screen flex flex-col">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
-                    {index + 1}
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Badge className={`${severityColors[point.severity || 'medium']} border font-semibold uppercase text-xs px-3 py-1`}>
-                        {point.severity || 'medium'}
-                      </Badge>
-                      <span className="text-base font-semibold text-gray-800 capitalize">
-                        {point.issue_type?.replace(/_/g, ' ')}
-                      </span>
-                    </div>
-
-                    {point.notes && (
-                      <p className="text-base text-gray-700 leading-relaxed mb-4">{point.notes}</p>
-                    )}
-
-                    {point.photo_details && point.photo_details.length > 0 && (
-                      <div className="mt-4">
-                        <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-3">
-                          <Camera className="w-4 h-4" />
-                          Documentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'Photo' : 'Photos'})
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 print:gap-2">
-                          {point.photo_details.map((photo, photoIndex) => (
-                            <div key={photoIndex}>
-                              <img
-                                src={photo.url}
-                                alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                                className="w-full h-auto object-contain rounded-lg border border-gray-300"
-                              />
-                              {(photo.comment || photo.show_address) && (
-                                <div className="mt-1 space-y-1">
-                                  {photo.show_address && (
-                                    <p className="text-xs text-blue-700 bg-blue-50 p-1.5 rounded print:text-[9pt]">
-                                      📍 Location: {photo.address || 'Unknown'}
-                                    </p>
-                                  )}
-                                  {photo.comment && (
-                                    <p className="text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
-                                      {photo.comment}
-                                    </p>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {point.latitude && point.longitude && (
-                      <div className="mt-3 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded inline-block">
-                        <MapPin className="w-3 h-3 inline mr-1" />
-                        GPS: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="page-footer mt-auto">Page {index + 4}</div>
-                </div>
-                ))}
-                </div>
-                </div>
+          <div className="page-footer">Page {index + 4}</div>
+        </div>
+      ))}
     </>
   );
 }
