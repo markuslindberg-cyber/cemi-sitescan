@@ -38,7 +38,7 @@ return (
        @media print {
          @page { 
            size: A4 portrait; 
-           margin: 20mm 20mm 30mm 20mm;
+           margin: 20mm;
          }
          html, body { 
            margin: 0 !important; 
@@ -62,21 +62,26 @@ return (
            page-break-before: auto !important;
          }
          .page-footer {
-           display: none !important;
-         }
-         @bottom-right {
-           content: attr(data-page);
-           font-size: 9pt;
-           color: #666;
+           border-top: none !important;
+           margin-top: auto !important;
+           padding-top: 1rem !important;
+           text-align: right !important;
+           font-size: 9pt !important;
+           color: #666 !important;
          }
        }
        .page-footer {
-         display: none;
+         text-align: right;
+         font-size: 0.75rem;
+         color: #666;
+         margin-top: 2rem;
+         padding-top: 0.5rem;
        }
        .report-page {
          position: relative;
          display: flex;
          flex-direction: column;
+         page-break-after: always;
        }
      `}</style>
       {/* Front Page */}
