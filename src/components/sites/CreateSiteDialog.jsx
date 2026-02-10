@@ -25,6 +25,8 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
   const [searchAddress, setSearchAddress] = useState('');
   const [searching, setSearching] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [isNewCustomer, setIsNewCustomer] = useState(false);
+  const [newCustomerName, setNewCustomerName] = useState('');
   const queryClient = useQueryClient();
 
   const { data: customers = [] } = useQuery({
@@ -148,13 +150,25 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       toast.error('Please enter a site name');
       return;
     }
-    createMutation.mutate(formData);
+
+    try {
+      let customerId = formData.customer_id;
+
+      if (isNewCustomer && newCustomerName.trim()) {
+        const newCustomer = await base44.entities.Customer.create({ name: newCustomerName.trim() });
+        customerId = newCustomer.id;
+      }
+
+      createMutation.mutate({ ...formData, customer_id: customerId });
+    } catch (error) {
+      toast.error('Failed to create customer');
+    }
   };
 
   return (
@@ -166,22 +180,50 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="customer_id">Customer</Label>
-            <Select
-              value={formData.customer_id}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, customer_id: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a customer (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={null}>No customer</SelectItem>
-                {customers.map(customer => (
-                  <SelectItem key={customer.id} value={customer.id}>
-                    {customer.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2 mb-2">
+              <Button
+                type="button"
+                variant={!isNewCustomer ? "default" : "outline"}
+                size="sm"
+                onClick={() => setIsNewCustomer(false)}
+                className="flex-1"
+              >
+                Select Existing
+              </Button>
+              <Button
+                type="button"
+                variant={isNewCustomer ? "default" : "outline"}
+                size="sm"
+                onClick={() => setIsNewCustomer(true)}
+                className="flex-1"
+              >
+                Create New
+              </Button>
+            </div>
+            {isNewCustomer ? (
+              <Input
+                placeholder="Enter new customer name"
+                value={newCustomerName}
+                onChange={(e) => setNewCustomerName(e.target.value)}
+              />
+            ) : (
+              <Select
+                value={formData.customer_id}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, customer_id: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a customer (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={null}>No customer</SelectItem>
+                  {customers.map(customer => (
+                    <SelectItem key={customer.id} value={customer.id}>
+                      {customer.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div>
