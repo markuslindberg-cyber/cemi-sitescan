@@ -108,15 +108,27 @@ export default function ReportContent({ inspection, site, customer, points }) {
               <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
                 {site.map_type === 'google_maps' && site.google_maps_center ? (
-                  <iframe
-                    src={`https://www.google.com/maps/embed/v1/view?key=&center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&maptype=satellite`}
-                    width="100%"
-                    height="500"
-                    style={{ border: 0 }}
-                    allowFullScreen={false}
-                    loading="lazy"
-                    className="w-full h-[500px]"
-                  />
+                  <>
+                    {/* Static map for print */}
+                    <img
+                      src={`https://maps.googleapis.com/maps/api/staticmap?center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&size=800x500&maptype=satellite&${points.map((point, idx) => {
+                        const colors = { low: 'blue', medium: 'yellow', high: 'orange', critical: 'red' };
+                        return `markers=color:${colors[point.severity || 'medium']}%7Clabel:${idx + 1}%7C${point.latitude},${point.longitude}`;
+                      }).join('&')}`}
+                      alt="Site map with inspection points"
+                      className="w-full h-auto hidden print:block"
+                    />
+                    {/* Interactive map for screen */}
+                    <iframe
+                      src={`https://www.google.com/maps/embed/v1/view?key=&center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&maptype=satellite`}
+                      width="100%"
+                      height="500"
+                      style={{ border: 0 }}
+                      allowFullScreen={false}
+                      loading="lazy"
+                      className="w-full h-[500px] print:hidden"
+                    />
+                  </>
                 ) : site.map_image_url ? (
                   <>
                     <img
