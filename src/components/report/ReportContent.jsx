@@ -73,6 +73,12 @@ export default function ReportContent({ inspection, site, customer, points }) {
       <div className="print:break-before-page bg-white p-4 md:p-8 print:p-0">
           {/* Header Section */}
           <div className="mb-6 pb-4 border-b-2 border-gray-300">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-sm font-bold px-3 py-1 bg-gray-800 text-white rounded">
+                {inspection.inspection_number}
+              </span>
+              <span className="text-sm text-gray-500">Inspection ID</span>
+            </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
               {inspection.report_title || 'Detailed Inspection Report'}
             </h1>
