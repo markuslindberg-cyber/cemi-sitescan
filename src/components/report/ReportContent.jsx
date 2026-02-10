@@ -215,7 +215,7 @@ return (
 
             {/* Inspection Points */}
             {points.map((point, index) => (
-              <div key={point.id} className="inspection-point-item mb-6 pb-6 border-b border-gray-200">
+              <div key={point.id} className="inspection-point-item mb-6 pb-6 border-b border-gray-200 min-h-screen flex flex-col">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
                     {index + 1}
@@ -277,12 +277,11 @@ return (
                     )}
                   </div>
                 </div>
-                <div className="page-footer">Page {index + 4}</div>
-              </div>
-            ))}
-          </div>
-          <div className="page-footer">Page 3</div>
-      </div>
+                <div className="page-footer mt-auto">Page {index + 4}</div>
+                </div>
+                ))}
+                </div>
+                </div>
     </>
   );
 }
