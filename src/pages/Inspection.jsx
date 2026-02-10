@@ -113,40 +113,41 @@ export default function Inspection() {
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="bg-white border-b px-3 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
            <Link to={createPageUrl(`Site?id=${site.id}`)}>
-             <Button variant="ghost" size="sm">
-               <ArrowLeft className="w-4 h-4 mr-2" />
-               Back
+             <Button variant="ghost" size="sm" className="flex-shrink-0">
+               <ArrowLeft className="w-4 h-4" />
              </Button>
            </Link>
-           <div>
-             <div className="flex items-center gap-2">
-               <h1 className="text-xl font-bold text-gray-900">{site.name}</h1>
-               <span className="text-xs font-bold px-2 py-1 bg-gray-800 text-white rounded">
+           <div className="min-w-0 flex-1">
+             <div className="flex items-center gap-2 flex-wrap">
+               <h1 className="text-base sm:text-xl font-bold text-gray-900 truncate">{site.name}</h1>
+               <span className="text-xs font-bold px-2 py-1 bg-gray-800 text-white rounded flex-shrink-0">
                  {inspection.inspection_number}
                </span>
              </div>
-             <p className="text-sm text-gray-600">
+             <p className="text-xs sm:text-sm text-gray-600 truncate">
                {new Date(inspection.inspection_date).toLocaleDateString()} • {inspection.inspector_name}
              </p>
            </div>
          </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600">{points.length} points marked</span>
+        <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+          <span className="text-xs sm:text-sm text-gray-600">{points.length} points</span>
           <Button
             onClick={handleCompleteInspection}
             disabled={updateInspectionMutation.isPending}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm py-1 px-2 sm:px-4"
+            size="sm"
           >
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Complete Inspection
+            <CheckCircle className="w-4 h-4 mr-1" />
+            <span className="hidden sm:inline">Complete</span>
+            <span className="sm:hidden">Done</span>
           </Button>
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
         <div className="flex-1 relative" ref={mapRef}>
           {site.map_type === 'google_maps' && site.google_maps_center ? (
             <GoogleMapInteractive
