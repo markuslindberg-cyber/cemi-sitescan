@@ -83,16 +83,7 @@ export default function Layout({ children, currentPageName }) {
       
       <footer className="bg-white border-t mt-auto print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 10 L80 10 L80 60 L60 80 L20 80 Z" fill="#B91E3C"/>
-                <text x="50" y="62" fontFamily="Arial, sans-serif" fontSize="48" fontWeight="bold" fill="white" textAnchor="middle">C</text>
-              </svg>
-              <span className="text-lg font-bold" style={{ color: '#B91E3C' }}>CEMI</span>
-            </div>
-            <p className="text-sm text-gray-600">© {new Date().getFullYear()} CEMI. Garden Inspection Management System.</p>
-          </div>
+          <p className="text-sm text-gray-600 text-center">© {new Date().getFullYear()} CEMI. Garden Inspection Management System.</p>
         </div>
       </footer>
     </div>
