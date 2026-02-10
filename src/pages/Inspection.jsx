@@ -137,6 +137,14 @@ export default function Inspection() {
         <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
           <span className="text-xs sm:text-sm text-gray-600">{points.length} points</span>
           <Button
+            onClick={() => setShowNotesSheet(true)}
+            variant="outline"
+            size="sm"
+            className="sm:hidden"
+          >
+            <List className="w-4 h-4" />
+          </Button>
+          <Button
             onClick={handleCompleteInspection}
             disabled={updateInspectionMutation.isPending}
             className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm py-1 px-2 sm:px-4"
