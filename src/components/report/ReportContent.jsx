@@ -86,10 +86,16 @@ return (
       }
     `}</style>
       {/* Front Page */}
-      <ReportFrontPage inspection={inspection} site={site} customer={customer} />
-      
+      <div className="report-page print:break-after-page">
+        <ReportFrontPage inspection={inspection} site={site} customer={customer} />
+        <div className="page-footer">Page 1</div>
+      </div>
+
       {/* Summary Page */}
-      <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
+      <div className="report-page print:break-after-page">
+        <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
+        <div className="page-footer">Page 2</div>
+      </div>
       
       {/* Detailed Report Pages */}
       <div className="print:break-before-page bg-white p-4 md:p-8 print:p-0">
