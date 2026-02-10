@@ -181,7 +181,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
                               <img
                                 src={photo.url}
                                 alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                                className="w-full h-40 md:h-48 object-cover rounded-lg border border-gray-300"
+                                className="w-full h-auto object-contain rounded-lg border border-gray-300"
                               />
                               {photo.comment && (
                                 <p className="mt-2 text-sm text-gray-600 italic bg-gray-50 p-2 rounded">
