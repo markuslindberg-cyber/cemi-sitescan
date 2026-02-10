@@ -201,8 +201,6 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
           </Card>
         )}
       </div>
-
-      <ReportFooter />
     </div>
   );
 }
