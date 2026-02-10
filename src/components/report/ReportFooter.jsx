@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ReportFooter() {
   return (
-    <div className="mt-8 pt-6 border-t border-gray-200 print:fixed print:bottom-0 print:left-0 print:right-0 print:bg-white">
+    <div className="mt-8 pt-6 border-t border-gray-200 print:fixed print:bottom-0 print:left-0 print:right-0 print:bg-white print:z-10">
       <div className="flex justify-end">
         <div className="w-full max-w-4xl">
           {/* Cityscape illustration */}

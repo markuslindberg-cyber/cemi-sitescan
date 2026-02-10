@@ -14,11 +14,23 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
     return summary;
   };
 
+  const getCategorySummary = () => {
+    const categories = {
+      improvement_suggestions: points.filter(p => p.issue_type === 'improvement_suggestions').length,
+      issue_damage: points.filter(p => p.issue_type === 'issue_damage').length,
+      plant_health: points.filter(p => p.issue_type === 'plant_health').length,
+      maintenance: points.filter(p => p.issue_type === 'maintenance').length,
+      safety_concern: points.filter(p => p.issue_type === 'safety_concern').length
+    };
+    return categories;
+  };
+
   const summary = getSummary();
+  const categories = getCategorySummary();
   const total = points.length;
 
   return (
-    <div className="min-h-screen bg-white print:break-after-page p-8">
+    <div className="min-h-screen bg-white print:break-after-page p-8 print:pt-24 print:pb-40">
       <ReportHeader />
       
       <div className="space-y-6">
@@ -86,6 +98,52 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
                 <div className="text-sm text-gray-600 mt-2">Critical Severity</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {total > 0 ? Math.round((summary.critical / total) * 100) : 0}%
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Category Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Issue Categories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-3xl font-bold text-purple-600">{categories.improvement_suggestions}</div>
+                <div className="text-sm text-gray-600 mt-2">Improvement Suggestions</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {total > 0 ? Math.round((categories.improvement_suggestions / total) * 100) : 0}%
+                </div>
+              </div>
+              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                <div className="text-3xl font-bold text-red-600">{categories.issue_damage}</div>
+                <div className="text-sm text-gray-600 mt-2">Issue / Damage</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {total > 0 ? Math.round((categories.issue_damage / total) * 100) : 0}%
+                </div>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-3xl font-bold text-green-600">{categories.plant_health}</div>
+                <div className="text-sm text-gray-600 mt-2">Plant Health</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {total > 0 ? Math.round((categories.plant_health / total) * 100) : 0}%
+                </div>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-3xl font-bold text-blue-600">{categories.maintenance}</div>
+                <div className="text-sm text-gray-600 mt-2">Maintenance</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {total > 0 ? Math.round((categories.maintenance / total) * 100) : 0}%
+                </div>
+              </div>
+              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">{categories.safety_concern}</div>
+                <div className="text-sm text-gray-600 mt-2">Safety Concern</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {total > 0 ? Math.round((categories.safety_concern / total) * 100) : 0}%
                 </div>
               </div>
             </div>

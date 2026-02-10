@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function ReportFrontPage({ inspection, site, customer }) {
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-white print:break-after-page">
+    <div className="min-h-screen flex flex-col justify-between bg-white print:break-after-page p-8">
       {/* Header with logos */}
-      <div className="border-b border-gray-300 pb-4 mb-6">
+      <div className="border-b border-gray-300 pb-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-12 h-12 bg-red-600 flex items-center justify-center" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%)' }}>

@@ -43,7 +43,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
       <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
       
       {/* Detailed Report Pages */}
-      <div className="space-y-6 bg-white print:bg-white p-8 print:break-before-page">
+      <div className="space-y-6 bg-white print:bg-white p-8 print:break-before-page print:pt-24 print:pb-40">
         <ReportHeader />
         
         <Card className="print:shadow-none">
