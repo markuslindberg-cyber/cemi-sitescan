@@ -28,8 +28,8 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
   const total = points.length;
 
   return (
-    <div className="bg-white print:break-after-page p-4 md:p-8 print:p-0">
-      <div className="space-y-3 print:space-y-2">
+    <div className="flex flex-col bg-white p-4 md:p-8 print:p-0">
+      <div className="space-y-3 print:space-y-2 flex-1">
         <h1 className="text-2xl font-bold text-gray-800 mb-3 print:mb-2 print:text-xl">Executive Summary</h1>
         
         {/* Overview Card */}
