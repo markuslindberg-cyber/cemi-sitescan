@@ -158,41 +158,42 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
           {formData.map_type === 'uploaded' && (
             <div>
               <Label>Site Map / Drawing</Label>
-            <div className="mt-2">
-              {formData.map_image_url ? (
-                <div className="relative">
-                  <img
-                    src={formData.map_image_url}
-                    alt="Site map"
-                    className="w-full h-48 object-cover rounded-lg border"
-                  />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setFormData(prev => ({ ...prev, map_image_url: '' }))}
-                    className="absolute top-2 right-2"
-                  >
-                    Change
-                  </Button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                  <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-600">
-                    {uploading ? 'Uploading...' : 'Click to upload map or drawing'}
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    disabled={uploading}
-                  />
-                </label>
-              )}
+              <div className="mt-2">
+                {formData.map_image_url ? (
+                  <div className="relative">
+                    <img
+                      src={formData.map_image_url}
+                      alt="Site map"
+                      className="w-full h-48 object-cover rounded-lg border"
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setFormData(prev => ({ ...prev, map_image_url: '' }))}
+                      className="absolute top-2 right-2"
+                    >
+                      Change
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-600">
+                      {uploading ? 'Uploading...' : 'Click to upload map or drawing'}
+                    </span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
-            )}
+          )}
 
           {formData.map_type === 'google_maps' && (
             <div className="space-y-3">
