@@ -31,6 +31,16 @@ export default function Report() {
     enabled: !!inspection?.site_id
   });
 
+  const { data: customer } = useQuery({
+    queryKey: ['customer', site?.customer_id],
+    queryFn: async () => {
+      if (!site?.customer_id) return null;
+      const customers = await base44.entities.Customer.list();
+      return customers.find(c => c.id === site.customer_id);
+    },
+    enabled: !!site?.customer_id
+  });
+
   const { data: points = [] } = useQuery({
     queryKey: ['inspection-points', inspectionId],
     queryFn: () => base44.entities.InspectionPoint.filter({ inspection_id: inspectionId }),
@@ -87,6 +97,7 @@ export default function Report() {
           <ReportContent
             inspection={inspection}
             site={site}
+            customer={customer}
             points={points}
           />
         </div>

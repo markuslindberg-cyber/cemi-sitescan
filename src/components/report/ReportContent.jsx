@@ -17,7 +17,7 @@ const markerColors = {
   critical: 'bg-red-500 border-red-600'
 };
 
-export default function ReportContent({ inspection, site, points }) {
+export default function ReportContent({ inspection, site, customer, points }) {
   const getSummary = () => {
     const summary = {
       low: points.filter(p => p.severity === 'low').length,
@@ -52,6 +52,15 @@ export default function ReportContent({ inspection, site, points }) {
           </div>
         </CardHeader>
         <CardContent className="p-6">
+          {customer && (
+            <div className="mb-4 pb-4 border-b">
+              <p className="text-sm text-gray-500">Customer</p>
+              <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
+              {customer.project_number && (
+                <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+              )}
+            </div>
+          )}
           {site.location && (
             <div className="flex items-center gap-2 text-gray-700 mb-4">
               <MapPin className="w-4 h-4" />

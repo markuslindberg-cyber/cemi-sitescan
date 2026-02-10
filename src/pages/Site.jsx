@@ -23,6 +23,16 @@ export default function Site() {
     enabled: !!siteId
   });
 
+  const { data: customer } = useQuery({
+    queryKey: ['customer', site?.customer_id],
+    queryFn: async () => {
+      if (!site?.customer_id) return null;
+      const customers = await base44.entities.Customer.list();
+      return customers.find(c => c.id === site.customer_id);
+    },
+    enabled: !!site?.customer_id
+  });
+
   const { data: inspections = [], isLoading: inspectionsLoading } = useQuery({
     queryKey: ['inspections', siteId],
     queryFn: () => base44.entities.Inspection.filter({ site_id: siteId }, '-inspection_date'),
@@ -98,6 +108,15 @@ export default function Site() {
             )}
             <CardContent className="p-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-3">{site.name}</h1>
+              {customer && (
+                <div className="mb-3 pb-3 border-b">
+                  <p className="text-sm text-gray-500">Customer</p>
+                  <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
+                  {customer.project_number && (
+                    <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+                  )}
+                </div>
+              )}
               {site.location && (
                 <p className="text-gray-600 flex items-center gap-2 mb-2">
                   <MapPin className="w-4 h-4" />
