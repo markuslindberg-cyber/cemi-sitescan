@@ -19,21 +19,21 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0 L40 0 L40 28 L28 40 L0 40 Z" fill="#C41E3A"/>
-                  <text x="20" y="28" fontFamily="Arial" fontSize="24" fontWeight="bold" fill="white" textAnchor="middle">C</text>
+                <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 10 L80 10 L80 60 L60 80 L20 80 Z" fill="#B91E3C"/>
+                  <text x="50" y="62" fontFamily="Arial, sans-serif" fontSize="48" fontWeight="bold" fill="white" textAnchor="middle">C</text>
                 </svg>
-                <span className="text-xl font-bold text-gray-800">CEMI</span>
+                <span className="text-xl font-bold" style={{ color: '#B91E3C' }}>CEMI</span>
               </div>
               <div className="h-8 w-px bg-gray-300"></div>
               <div className="flex items-center gap-2">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="4" cy="6" r="2" fill="#E57373"/>
-                  <circle cx="12" cy="6" r="2" fill="#E57373"/>
-                  <circle cx="20" cy="6" r="2" fill="#E57373"/>
-                  <circle cx="4" cy="14" r="2" fill="#E57373"/>
-                  <circle cx="12" cy="14" r="2" fill="#E57373"/>
-                  <circle cx="20" cy="14" r="2" fill="#E57373"/>
+                <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="4" cy="4" r="3" fill="#E57373"/>
+                  <circle cx="12" cy="4" r="3" fill="#E57373"/>
+                  <circle cx="20" cy="4" r="3" fill="#E57373"/>
+                  <circle cx="4" cy="12" r="3" fill="#E57373"/>
+                  <circle cx="12" cy="12" r="3" fill="#E57373"/>
+                  <circle cx="20" cy="12" r="3" fill="#E57373"/>
                 </svg>
                 <span className="text-base font-semibold text-gray-700">
                   <span className="font-bold">phm</span> partner
@@ -85,11 +85,11 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 0 L40 0 L40 28 L28 40 L0 40 Z" fill="#C41E3A"/>
-                <text x="20" y="28" fontFamily="Arial" fontSize="24" fontWeight="bold" fill="white" textAnchor="middle">C</text>
+              <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 10 L80 10 L80 60 L60 80 L20 80 Z" fill="#B91E3C"/>
+                <text x="50" y="62" fontFamily="Arial, sans-serif" fontSize="48" fontWeight="bold" fill="white" textAnchor="middle">C</text>
               </svg>
-              <span className="text-lg font-bold text-gray-800">CEMI</span>
+              <span className="text-lg font-bold" style={{ color: '#B91E3C' }}>CEMI</span>
             </div>
             <p className="text-sm text-gray-600">© {new Date().getFullYear()} CEMI. Garden Inspection Management System.</p>
           </div>
