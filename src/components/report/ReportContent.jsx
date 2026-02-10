@@ -164,14 +164,12 @@ export default function ReportContent({ inspection, site, customer, points }) {
                   </div>
                 )}
             </div>
-            </div>
 
             <div className="print:break-before-page mt-8">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
             </div>
 
             {/* Inspection Points */}
-            
             {points.map((point, index) => (
               <div key={point.id} className="inspection-point-item mb-6 pb-6 border-b border-gray-200 last:border-b-0 print:break-inside-avoid">
                 <div className="flex gap-4">
