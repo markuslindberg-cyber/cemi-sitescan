@@ -34,7 +34,7 @@ export default function ReportFrontPage({ inspection, site, customer }) {
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
         <h1 className="text-5xl font-bold text-gray-800 mb-4">
-          Garden Inspection Report
+          {inspection.report_title || 'Garden Inspection Report'}
         </h1>
         
         <div className="w-24 h-1 bg-red-600 mb-8"></div>
