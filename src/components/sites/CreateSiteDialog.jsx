@@ -218,7 +218,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
             ) : (
               <Select
                 value={formData.customer_id}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, customer_id: value }))}
+                onValueChange={handleCustomerChange}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a customer (optional)" />
