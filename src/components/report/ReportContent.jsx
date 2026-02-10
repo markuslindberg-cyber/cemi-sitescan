@@ -277,9 +277,11 @@ return (
                     )}
                   </div>
                 </div>
+                <div className="page-footer">Page {index + 4}</div>
               </div>
             ))}
           </div>
+          <div className="page-footer">Page 3</div>
       </div>
     </>
   );
