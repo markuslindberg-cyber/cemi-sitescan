@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function CreateSiteDialog({ open, onOpenChange }) {
   const [formData, setFormData] = useState({
@@ -29,9 +30,10 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     mutationFn: (data) => base44.entities.Site.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sites'] });
+      queryClient.invalidateQueries({ queryKey: ['all-sites'] });
       toast.success('Site created successfully');
       onOpenChange(false);
-      setFormData({ name: '', location: '', description: '', map_image_url: '' });
+      setFormData({ customer_id: '', name: '', location: '', description: '', map_image_url: '' });
     }
   });
 
