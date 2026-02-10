@@ -104,7 +104,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
 
           {/* Map Section */}
           {site.map_image_url && (
-            <div className="mb-8 print:break-before-page">
+            <div className="mb-8">
               <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
                 <img
