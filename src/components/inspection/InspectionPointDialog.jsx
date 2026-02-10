@@ -54,11 +54,11 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         severity: 'medium',
         notes: '',
         photo_details: [],
-        latitude: null,
-        longitude: null
+        latitude: position?.latitude || null,
+        longitude: position?.longitude || null
       });
     }
-  }, [existingPoint, open]);
+  }, [existingPoint, open, position]);
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.InspectionPoint.create(data),
@@ -160,12 +160,24 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
       });
     } else {
       if (!position) return;
-      createMutation.mutate({
+      
+      const pointData = {
         inspection_id: inspectionId,
-        x_position: position.x,
-        y_position: position.y,
         ...formData
-      });
+      };
+      
+      // Handle coordinates based on map type
+      if (position.latitude !== undefined && position.longitude !== undefined) {
+        // Google Maps mode
+        pointData.x_position = 0;
+        pointData.y_position = 0;
+      } else if (position.x !== undefined && position.y !== undefined) {
+        // Uploaded image mode
+        pointData.x_position = position.x;
+        pointData.y_position = position.y;
+      }
+      
+      createMutation.mutate(pointData);
     }
   };
 

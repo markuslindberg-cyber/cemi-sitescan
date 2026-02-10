@@ -16,7 +16,10 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     name: '',
     location: '',
     description: '',
-    map_image_url: ''
+    map_type: 'uploaded',
+    map_image_url: '',
+    google_maps_center: null,
+    google_maps_zoom: 18
   });
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
@@ -122,7 +125,24 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
           </div>
 
           <div>
-            <Label>Site Map / Drawing</Label>
+            <Label>Map Type</Label>
+            <Select
+              value={formData.map_type}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, map_type: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="uploaded">Upload Map/Drawing</SelectItem>
+                <SelectItem value="google_maps">Use Google Maps</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {formData.map_type === 'uploaded' && (
+            <div>
+              <Label>Site Map / Drawing</Label>
             <div className="mt-2">
               {formData.map_image_url ? (
                 <div className="relative">
@@ -157,7 +177,60 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
                 </label>
               )}
             </div>
-          </div>
+            )}
+
+          {formData.map_type === 'google_maps' && (
+            <div className="space-y-3">
+              <Label>Location (Search on Google Maps and copy coordinates)</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="lat" className="text-xs">Latitude</Label>
+                  <Input
+                    id="lat"
+                    type="number"
+                    step="any"
+                    placeholder="51.505"
+                    value={formData.google_maps_center?.lat || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      google_maps_center: {
+                        ...prev.google_maps_center,
+                        lat: parseFloat(e.target.value) || 0
+                      }
+                    }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lng" className="text-xs">Longitude</Label>
+                  <Input
+                    id="lng"
+                    type="number"
+                    step="any"
+                    placeholder="-0.09"
+                    value={formData.google_maps_center?.lng || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      google_maps_center: {
+                        ...prev.google_maps_center,
+                        lng: parseFloat(e.target.value) || 0
+                      }
+                    }))}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="zoom" className="text-xs">Zoom Level (1-20)</Label>
+                <Input
+                  id="zoom"
+                  type="number"
+                  min="1"
+                  max="20"
+                  value={formData.google_maps_zoom}
+                  onChange={(e) => setFormData(prev => ({ ...prev, google_maps_zoom: parseInt(e.target.value) || 18 }))}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
