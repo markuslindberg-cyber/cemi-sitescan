@@ -119,19 +119,24 @@ export default function ReportContent({ inspection, site, customer, points }) {
                 {site.map_type === 'google_maps' && site.google_maps_center ? (
                   <>
                     {/* Map info for print */}
-                    <div className="hidden print:block bg-gray-100 p-6 rounded-lg">
-                      <p className="text-lg font-semibold mb-2">Location Coordinates:</p>
-                      <p className="text-base">Latitude: {site.google_maps_center.lat}</p>
-                      <p className="text-base">Longitude: {site.google_maps_center.lng}</p>
-                      <p className="text-sm text-gray-600 mt-4">View in Apple Maps:</p>
-                      <p className="text-sm text-blue-600">https://maps.apple.com/?ll={site.google_maps_center.lat},{site.google_maps_center.lng}&z={site.google_maps_zoom || 18}&t=k</p>
+                    <div className="hidden print:block bg-white p-6 rounded-lg border-2 border-gray-300">
+                      <p className="text-xl font-bold mb-4">Site Location</p>
+                      <div className="bg-gray-50 p-4 rounded mb-4">
+                        <p className="text-base font-semibold mb-2">Coordinates:</p>
+                        <p className="text-base">Latitude: {site.google_maps_center.lat}</p>
+                        <p className="text-base">Longitude: {site.google_maps_center.lng}</p>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">View in Apple Maps:</p>
+                      <p className="text-xs text-blue-600 break-all">https://maps.apple.com/?ll={site.google_maps_center.lat},{site.google_maps_center.lng}&z={site.google_maps_zoom || 18}&t=k</p>
                       {points.length > 0 && (
-                        <div className="mt-4">
-                          <p className="text-sm font-semibold mb-2">Inspection Points:</p>
+                        <div className="mt-4 bg-gray-50 p-4 rounded">
+                          <p className="text-base font-semibold mb-2">Inspection Points:</p>
                           {points.map((point, idx) => (
-                            <p key={idx} className="text-xs">
-                              Point {idx + 1}: {point.latitude}, {point.longitude}
-                            </p>
+                            point.latitude && point.longitude && (
+                              <p key={idx} className="text-sm mb-1">
+                                Point {idx + 1}: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
+                              </p>
+                            )
                           ))}
                         </div>
                       )}
@@ -157,7 +162,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
                     {points.map((point, index) => (
                       <div
                         key={point.id}
-                        className="absolute transform -translate-x-1/2 -translate-y-full"
+                        className="absolute transform -translate-x-1/2 -translate-y-full print:hidden"
                         style={{
                           left: `${point.x_position}%`,
                           top: `${point.y_position}%`
@@ -211,7 +216,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
                               <img
                                 src={photo.url}
                                 alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                                className="w-full h-auto max-h-48 print:max-h-32 object-contain rounded-lg border border-gray-300"
+                                className="w-full h-auto object-contain rounded-lg border border-gray-300"
                               />
                               {photo.comment && (
                                 <p className="mt-1 text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
