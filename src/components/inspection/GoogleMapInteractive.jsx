@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { Button } from '@/components/ui/button';
 
 // Fix default marker icons in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -79,13 +80,25 @@ export default function GoogleMapInteractive({ center, zoom = 18, points, onMapC
       <MapContainer
         center={[defaultCenter.lat, defaultCenter.lng]}
         zoom={zoom}
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', zIndex: 0 }}
         ref={mapRef}
+        zoomControl={false}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer checked name="Map View">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Satellite View">
+            <TileLayer
+              attribution='Imagery &copy; <a href="https://www.esri.com/">Esri</a>'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+        
         <MapClickHandler onMapClick={handleMapClick} />
         <MapBoundsUpdater center={defaultCenter} zoom={zoom} />
         
@@ -99,6 +112,7 @@ export default function GoogleMapInteractive({ center, zoom = 18, points, onMapC
                 eventHandlers={{
                   click: () => onPointClick(point)
                 }}
+                zIndexOffset={1000}
               />
             );
           }
