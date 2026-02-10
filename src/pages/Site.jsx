@@ -44,8 +44,13 @@ export default function Site() {
   const createInspectionMutation = useMutation({
     mutationFn: async () => {
       const user = await base44.auth.me();
+      const allInspections = await base44.entities.Inspection.list('-created_date');
+      const nextNumber = allInspections.length + 1;
+      const inspectionNumber = `INS-${String(nextNumber).padStart(4, '0')}`;
+      
       return base44.entities.Inspection.create({
         site_id: siteId,
+        inspection_number: inspectionNumber,
         inspection_date: new Date().toISOString().split('T')[0],
         inspector_name: user.full_name || user.email,
         status: 'in_progress'
