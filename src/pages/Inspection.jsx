@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { toast } from 'sonner';
 import InteractiveMap from '../components/inspection/InteractiveMap';
+import GoogleMapInteractive from '../components/inspection/GoogleMapInteractive';
 import InspectionPointDialog from '../components/inspection/InspectionPointDialog';
 import InspectionSidebar from '../components/inspection/InspectionSidebar';
 
@@ -53,8 +54,12 @@ export default function Inspection() {
     }
   });
 
-  const handleMapClick = (x, y) => {
-    setPendingPosition({ x, y });
+  const handleMapClick = (xOrLat, yOrLng) => {
+    if (site?.map_type === 'google_maps') {
+      setPendingPosition({ latitude: xOrLat, longitude: yOrLng });
+    } else {
+      setPendingPosition({ x: xOrLat, y: yOrLng });
+    }
     setSelectedPoint(null);
     setShowPointDialog(true);
   };
@@ -136,7 +141,15 @@ export default function Inspection() {
 
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 relative">
-          {site.map_image_url ? (
+          {site.map_type === 'google_maps' && site.google_maps_center ? (
+            <GoogleMapInteractive
+              center={site.google_maps_center}
+              zoom={site.google_maps_zoom || 18}
+              points={points}
+              onMapClick={handleMapClick}
+              onPointClick={handlePointClick}
+            />
+          ) : site.map_image_url ? (
             <InteractiveMap
               imageUrl={site.map_image_url}
               points={points}
@@ -147,7 +160,7 @@ export default function Inspection() {
             <div className="h-full flex items-center justify-center bg-gray-100">
               <div className="text-center">
                 <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No map uploaded for this site</p>
+                <p className="text-gray-600">No map configured for this site</p>
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const severityColors = {
   low: 'bg-blue-500 border-blue-600',
@@ -10,7 +11,12 @@ const severityColors = {
 
 export default function InteractiveMap({ imageUrl, points, onMapClick, onPointClick }) {
   const containerRef = useRef(null);
+  const imageRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -27,9 +33,50 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    setZoom(prev => Math.max(1, Math.min(5, prev + delta)));
+  };
+
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(5, prev + 0.25));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(1, prev - 0.25));
+  };
+
+  const handleResetZoom = () => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  const handleMouseDown = (e) => {
+    if (zoom > 1 && e.button === 0) {
+      setIsPanning(true);
+      setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (isPanning) {
+      setPanOffset({
+        x: e.clientX - panStart.x,
+        y: e.clientY - panStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
   const handleClick = (e) => {
-    if (e.target.tagName === 'IMG' || e.target === containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
+    if (isPanning) return;
+    
+    if (e.target.tagName === 'IMG' || e.target === imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
       onMapClick(x, y);
@@ -37,44 +84,94 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full overflow-auto cursor-crosshair bg-gray-100"
-      onClick={handleClick}
-    >
-      <img
-        src={imageUrl}
-        alt="Site map"
-        className="w-full h-full object-contain"
-        draggable={false}
-      />
-      
-      {points.map((point, index) => (
-        <button
-          key={point.id}
-          className={`absolute transform -translate-x-1/2 -translate-y-full hover:scale-110 transition-transform cursor-pointer z-10`}
-          style={{
-            left: `${point.x_position}%`,
-            top: `${point.y_position}%`
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onPointClick(point);
-          }}
+    <div className="relative w-full h-full bg-gray-100">
+      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={handleZoomIn}
+          className="bg-white shadow-md"
         >
-          <div className="relative group">
-            <div className={`w-8 h-8 rounded-full ${severityColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg`}>
-              <span className="text-white text-xs font-bold">{index + 1}</span>
-            </div>
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              {point.issue_type?.replace(/_/g, ' ')} - {point.severity}
-              {point.notes && (
-                <div className="mt-1 max-w-xs truncate">{point.notes}</div>
-              )}
-            </div>
-          </div>
-        </button>
-      ))}
+          <ZoomIn className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={handleZoomOut}
+          className="bg-white shadow-md"
+        >
+          <ZoomOut className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={handleResetZoom}
+          className="bg-white shadow-md"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </Button>
+        <div className="bg-white shadow-md rounded px-2 py-1 text-xs font-medium text-center">
+          {Math.round(zoom * 100)}%
+        </div>
+      </div>
+
+      <div
+        ref={containerRef}
+        className="relative w-full h-full overflow-hidden"
+        style={{ cursor: zoom > 1 ? (isPanning ? 'grabbing' : 'grab') : 'crosshair' }}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <div
+          ref={imageRef}
+          className="relative w-full h-full flex items-center justify-center"
+          style={{
+            transform: `scale(${zoom}) translate(${panOffset.x / zoom}px, ${panOffset.y / zoom}px)`,
+            transformOrigin: 'center',
+            transition: isPanning ? 'none' : 'transform 0.1s ease-out'
+          }}
+          onClick={handleClick}
+        >
+          <img
+            src={imageUrl}
+            alt="Site map"
+            className="max-w-full max-h-full object-contain"
+            draggable={false}
+          />
+          
+          {points.map((point, index) => (
+            <button
+              key={point.id}
+              className="absolute transform -translate-x-1/2 -translate-y-full hover:scale-110 transition-transform cursor-pointer z-10"
+              style={{
+                left: `${point.x_position}%`,
+                top: `${point.y_position}%`
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isPanning) {
+                  onPointClick(point);
+                }
+              }}
+            >
+              <div className="relative group">
+                <div className={`w-8 h-8 rounded-full ${severityColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg`}>
+                  <span className="text-white text-xs font-bold">{index + 1}</span>
+                </div>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  {point.issue_type?.replace(/_/g, ' ')} - {point.severity}
+                  {point.notes && (
+                    <div className="mt-1 max-w-xs truncate">{point.notes}</div>
+                  )}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
