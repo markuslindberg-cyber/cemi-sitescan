@@ -74,13 +74,15 @@ return (
          text-align: right;
          font-size: 0.75rem;
          color: #666;
-         margin-top: 2rem;
+         margin-top: 1rem;
          padding-top: 0.5rem;
+         border-top: 1px solid #e5e7eb;
        }
        .report-page {
          position: relative;
          display: flex;
          flex-direction: column;
+         min-h-screen;
          page-break-after: always;
        }
      `}</style>
