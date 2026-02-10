@@ -121,43 +121,7 @@ export default function ReportContent({ inspection, site, customer, points }) {
                   alt="Site map with inspection points"
                   className="w-full h-auto object-contain"
                 />
-              ) : site.map_type === 'google_maps' && site.google_maps_center ? (
-                  <>
-                    {/* Map info for print */}
-                    <div className="hidden print:block bg-white p-6 rounded-lg border-2 border-gray-300">
-                      <p className="text-xl font-bold mb-4">Site Location</p>
-                      <div className="bg-gray-50 p-4 rounded mb-4">
-                        <p className="text-base font-semibold mb-2">Coordinates:</p>
-                        <p className="text-base">Latitude: {site.google_maps_center.lat}</p>
-                        <p className="text-base">Longitude: {site.google_maps_center.lng}</p>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">View in Apple Maps:</p>
-                      <p className="text-xs text-blue-600 break-all">https://maps.apple.com/?ll={site.google_maps_center.lat},{site.google_maps_center.lng}&z={site.google_maps_zoom || 18}&t=k</p>
-                      {points.length > 0 && (
-                        <div className="mt-4 bg-gray-50 p-4 rounded">
-                          <p className="text-base font-semibold mb-2">Inspection Points:</p>
-                          {points.map((point, idx) => (
-                            point.latitude && point.longitude && (
-                              <p key={idx} className="text-sm mb-1">
-                                Point {idx + 1}: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
-                              </p>
-                            )
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    {/* Interactive Apple Maps for screen */}
-                    <iframe
-                      src={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}&t=k`}
-                      width="100%"
-                      height="500"
-                      style={{ border: 0 }}
-                      allowFullScreen={false}
-                      loading="lazy"
-                      className="w-full h-[500px] print:hidden"
-                    />
-                  </>
-                ) : site.map_image_url ? (
+              ) : site.map_image_url ? (
                   <>
                     <img
                       src={site.map_image_url}
@@ -179,6 +143,31 @@ export default function ReportContent({ inspection, site, customer, points }) {
                       </div>
                     ))}
                   </>
+                ) : site.map_type === 'google_maps' && site.google_maps_center ? (
+                  <div className="bg-white p-6 rounded-lg border-2 border-gray-300">
+                    <p className="text-xl font-bold mb-4">Site Location</p>
+                    <div className="bg-gray-50 p-4 rounded mb-4">
+                      <p className="text-base font-semibold mb-2">Coordinates:</p>
+                      <p className="text-base">Latitude: {site.google_maps_center.lat.toFixed(6)}</p>
+                      <p className="text-base">Longitude: {site.google_maps_center.lng.toFixed(6)}</p>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">View in Apple Maps:</p>
+                    <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}&t=k`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 break-all hover:underline">
+                      https://maps.apple.com/?ll={site.google_maps_center.lat},{site.google_maps_center.lng}&z={site.google_maps_zoom || 18}&t=k
+                    </a>
+                    {points.length > 0 && (
+                      <div className="mt-4 bg-gray-50 p-4 rounded">
+                        <p className="text-base font-semibold mb-2">Inspection Points:</p>
+                        {points.map((point, idx) => (
+                          point.latitude && point.longitude && (
+                            <p key={idx} className="text-sm mb-1">
+                              Point {idx + 1}: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
+                            </p>
+                          )
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <div className="p-6 text-center text-gray-500">
                     <p>No map configured for this site</p>
