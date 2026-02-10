@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ReportHeader() {
   return (
-    <div className="border-b border-gray-300 pb-4 mb-6 print:fixed print:top-0 print:left-0 print:right-0 print:bg-white print:z-10 print:px-8 print:pt-4">
+    <div className="hidden print:block border-b border-gray-300 pb-4 mb-6 print:fixed print:top-0 print:left-0 print:right-0 print:bg-white print:z-10 print:px-8 print:pt-4">
       <div className="flex items-center gap-4">
         {/* CEMI Logo */}
         <div className="flex items-center gap-2">

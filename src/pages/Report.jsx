@@ -86,8 +86,8 @@ export default function Report() {
         </Link>
         <div className="flex items-center gap-3">
           <Button onClick={handlePrint} variant="outline">
-            <Printer className="w-4 h-4 mr-2" />
-            Print Report
+            <Download className="w-4 h-4 mr-2" />
+            Download PDF
           </Button>
         </div>
       </div>
