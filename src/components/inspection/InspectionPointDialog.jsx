@@ -33,7 +33,8 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     notes: '',
     photo_details: [],
     latitude: null,
-    longitude: null
+    longitude: null,
+    location_address: null
   });
   const [uploading, setUploading] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
