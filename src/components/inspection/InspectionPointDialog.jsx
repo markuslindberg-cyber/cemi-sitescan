@@ -311,6 +311,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                   type="file"
                   className="hidden"
                   accept="image/*"
+                  capture="environment"
                   multiple
                   onChange={handleFileUpload}
                   disabled={uploading}
