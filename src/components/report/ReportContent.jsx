@@ -144,16 +144,19 @@ export default function ReportContent({ inspection, site, customer, points }) {
                     ))}
                   </>
                 ) : site.map_type === 'google_maps' && site.google_maps_center ? (
-                  <div className="w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
-                    <iframe
-                      src={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}&t=k&adr=1`}
-                      width="100%"
-                      height="400"
-                      style={{ border: 0 }}
-                      allowFullScreen={true}
-                      loading="lazy"
-                      className="w-full h-[400px]"
-                    />
+                  <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Coordinates</p>
+                        <p className="text-base text-gray-900">Lat: {site.google_maps_center.lat.toFixed(6)}, Lng: {site.google_maps_center.lng.toFixed(6)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">View in Maps</p>
+                        <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}`} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline break-all">
+                          Apple Maps Link
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="p-6 text-center text-gray-500">
