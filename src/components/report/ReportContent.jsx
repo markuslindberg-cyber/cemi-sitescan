@@ -85,13 +85,15 @@ return (
        }
      `}</style>
       {/* Front Page */}
-      <div className="report-page print:break-after-page">
+      <div className="report-page">
          <ReportFrontPage inspection={inspection} site={site} customer={customer} />
+         <div className="page-footer">Page 1</div>
       </div>
 
       {/* Summary Page */}
-      <div className="report-page print:break-after-page">
+      <div className="report-page">
          <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
+         <div className="page-footer">Page 2</div>
       </div>
       
       {/* Detailed Report Pages */}
