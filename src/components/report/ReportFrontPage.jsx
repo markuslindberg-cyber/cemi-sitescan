@@ -5,6 +5,11 @@ export default function ReportFrontPage({ inspection, site, customer }) {
     <div className="min-h-screen flex flex-col justify-center bg-white print:break-after-page p-4 md:p-8 print:p-0">
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-8">
+        <img 
+          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/31c4a5942_Cemivertikal-sandldaskylt.jpg" 
+          alt="CEMI Logo" 
+          className="h-40 md:h-48 object-contain mb-8"
+        />
         <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
           {inspection.report_title || 'Garden Inspection Report'}
         </h1>
