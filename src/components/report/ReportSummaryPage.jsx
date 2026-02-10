@@ -1,7 +1,5 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import ReportHeader from './ReportHeader';
-import ReportFooter from './ReportFooter';
 
 export default function ReportSummaryPage({ inspection, site, customer, points }) {
   const getSummary = () => {
@@ -30,8 +28,7 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
   const total = points.length;
 
   return (
-    <div className="min-h-screen bg-white print:break-after-page p-0 print:p-8 print:pt-24 print:pb-40">
-      <ReportHeader />
+    <div className="min-h-screen bg-white print:break-after-page p-0 print:p-8">
       
       <div className="space-y-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Executive Summary</h1>
