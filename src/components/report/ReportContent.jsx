@@ -118,18 +118,27 @@ export default function ReportContent({ inspection, site, customer, points }) {
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
                 {site.map_type === 'google_maps' && site.google_maps_center ? (
                   <>
-                    {/* Static map for print */}
-                    <img
-                      src={`https://maps.googleapis.com/maps/api/staticmap?center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&size=800x500&maptype=satellite&${points.map((point, idx) => {
-                        const colors = { low: 'blue', medium: 'yellow', high: 'orange', critical: 'red' };
-                        return `markers=color:${colors[point.severity || 'medium']}%7Clabel:${idx + 1}%7C${point.latitude},${point.longitude}`;
-                      }).join('&')}`}
-                      alt="Site map with inspection points"
-                      className="w-full h-auto hidden print:block"
-                    />
-                    {/* Interactive map for screen */}
+                    {/* Map info for print */}
+                    <div className="hidden print:block bg-gray-100 p-6 rounded-lg">
+                      <p className="text-lg font-semibold mb-2">Location Coordinates:</p>
+                      <p className="text-base">Latitude: {site.google_maps_center.lat}</p>
+                      <p className="text-base">Longitude: {site.google_maps_center.lng}</p>
+                      <p className="text-sm text-gray-600 mt-4">View in Apple Maps:</p>
+                      <p className="text-sm text-blue-600">https://maps.apple.com/?ll={site.google_maps_center.lat},{site.google_maps_center.lng}&z={site.google_maps_zoom || 18}&t=k</p>
+                      {points.length > 0 && (
+                        <div className="mt-4">
+                          <p className="text-sm font-semibold mb-2">Inspection Points:</p>
+                          {points.map((point, idx) => (
+                            <p key={idx} className="text-xs">
+                              Point {idx + 1}: {point.latitude}, {point.longitude}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {/* Interactive Apple Maps for screen */}
                     <iframe
-                      src={`https://www.google.com/maps/embed/v1/view?key=&center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 18}&maptype=satellite`}
+                      src={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}&t=k`}
                       width="100%"
                       height="500"
                       style={{ border: 0 }}
