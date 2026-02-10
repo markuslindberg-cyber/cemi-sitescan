@@ -14,7 +14,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex flex-col">
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-white shadow-sm border-b print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
@@ -42,7 +42,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="bg-white border-b shadow-lg">
+        <div className="bg-white border-b shadow-lg print:hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => {
@@ -70,7 +70,7 @@ export default function Layout({ children, currentPageName }) {
       
       <div className="flex-1">{children}</div>
       
-      <footer className="bg-white border-t mt-auto">
+      <footer className="bg-white border-t mt-auto print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <img 
