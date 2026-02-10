@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { Building2, Users } from 'lucide-react';
+import { Building2, Users, FileText } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const navItems = [
-    { name: 'Home', path: 'Home', icon: Building2 },
-    { name: 'Customers', path: 'Customers', icon: Users }
+    { name: 'Sites', path: 'Home', icon: Building2 },
+    { name: 'Customers', path: 'Customers', icon: Users },
+    { name: 'Inspections', path: 'Inspections', icon: FileText }
   ];
 
   return (
