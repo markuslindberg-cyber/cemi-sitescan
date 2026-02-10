@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X, Loader2, Trash2, MapPin } from 'lucide-react';
+import { Upload, X, Loader2, Trash2, MapPin, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const issueTypes = [
   { value: 'improvement_suggestions', label: 'Improvement Suggestions' },
