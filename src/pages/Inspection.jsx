@@ -174,17 +174,19 @@ export default function Inspection() {
           )}
         </div>
 
-        <InspectionSidebar
-          points={points}
-          inspection={inspection}
-          onPointClick={handlePointClick}
-          onNotesUpdate={(notes) => {
-            updateInspectionMutation.mutate({
-              id: inspectionId,
-              data: { notes }
-            });
-          }}
-        />
+        <div className="hidden sm:block sm:w-80 border-l bg-white overflow-y-auto">
+          <InspectionSidebar
+            points={points}
+            inspection={inspection}
+            onPointClick={handlePointClick}
+            onNotesUpdate={(notes) => {
+              updateInspectionMutation.mutate({
+                id: inspectionId,
+                data: { notes }
+              });
+            }}
+          />
+        </div>
       </div>
 
       <InspectionPointDialog
