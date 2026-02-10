@@ -115,7 +115,13 @@ export default function ReportContent({ inspection, site, customer, points }) {
           <div className="mb-8">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
             <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
-              {site.map_type === 'google_maps' && site.google_maps_center ? (
+              {inspection.map_screenshot_url ? (
+                <img
+                  src={inspection.map_screenshot_url}
+                  alt="Site map with inspection points"
+                  className="w-full h-auto object-contain"
+                />
+              ) : site.map_type === 'google_maps' && site.google_maps_center ? (
                   <>
                     {/* Map info for print */}
                     <div className="hidden print:block bg-white p-6 rounded-lg border-2 border-gray-300">

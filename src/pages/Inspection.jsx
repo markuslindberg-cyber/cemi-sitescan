@@ -7,6 +7,7 @@ import { ArrowLeft, Save, CheckCircle, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
 import InteractiveMap from '../components/inspection/InteractiveMap';
 import GoogleMapInteractive from '../components/inspection/GoogleMapInteractive';
 import InspectionPointDialog from '../components/inspection/InspectionPointDialog';
@@ -21,6 +22,7 @@ export default function Inspection() {
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [showPointDialog, setShowPointDialog] = useState(false);
   const [pendingPosition, setPendingPosition] = useState(null);
+  const mapRef = useRef(null);
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
     queryKey: ['inspection', inspectionId],
@@ -76,13 +78,43 @@ export default function Inspection() {
       return;
     }
     
-    await updateInspectionMutation.mutateAsync({
-      id: inspectionId,
-      data: { status: 'completed' }
-    });
+    toast.loading('Capturing map screenshot...');
     
-    toast.success('Inspection completed');
-    navigate(createPageUrl(`Report?id=${inspectionId}`));
+    try {
+      // Capture map screenshot
+      let mapScreenshotUrl = null;
+      if (mapRef.current) {
+        const canvas = await html2canvas(mapRef.current, {
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          scale: 2
+        });
+        
+        // Convert to blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        
+        // Upload to server
+        const { file_url } = await base44.integrations.Core.UploadFile({ file: blob });
+        mapScreenshotUrl = file_url;
+      }
+      
+      await updateInspectionMutation.mutateAsync({
+        id: inspectionId,
+        data: { 
+          status: 'completed',
+          map_screenshot_url: mapScreenshotUrl
+        }
+      });
+      
+      toast.dismiss();
+      toast.success('Inspection completed');
+      navigate(createPageUrl(`Report?id=${inspectionId}`));
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Failed to complete inspection');
+      console.error(error);
+    }
   };
 
   if (inspectionLoading) {
@@ -140,7 +172,7 @@ export default function Inspection() {
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 relative">
+        <div className="flex-1 relative" ref={mapRef}>
           {site.map_type === 'google_maps' && site.google_maps_center ? (
             <GoogleMapInteractive
               center={site.google_maps_center}
