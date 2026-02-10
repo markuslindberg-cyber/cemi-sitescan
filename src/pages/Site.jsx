@@ -3,12 +3,14 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Plus, MapPin, FileText, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Plus, MapPin, FileText, Calendar, User, Pencil } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
+import EditSiteDialog from '../components/sites/EditSiteDialog';
 
 export default function Site() {
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
   const siteId = urlParams.get('id');
   const navigate = useNavigate();
@@ -107,7 +109,17 @@ export default function Site() {
               </div>
             )}
             <CardContent className="p-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-3">{site.name}</h1>
+              <div className="flex items-start justify-between mb-3">
+                <h1 className="text-3xl font-bold text-gray-900">{site.name}</h1>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowEditDialog(true)}
+                >
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </div>
               {customer && (
                 <div className="mb-3 pb-3 border-b">
                   <p className="text-sm text-gray-500">Customer</p>
@@ -247,6 +259,12 @@ export default function Site() {
             )}
           </CardContent>
         </Card>
+
+        <EditSiteDialog
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          site={site}
+        />
       </div>
     </div>
   );
