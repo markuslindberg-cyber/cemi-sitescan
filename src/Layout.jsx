@@ -18,16 +18,27 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <img 
-                src="https://www.cemi.se/wp-content/uploads/2020/05/cemi_logga.svg" 
-                alt="CEMI" 
-                className="h-8"
-              />
-              <img 
-                src="https://www.cemi.se/wp-content/uploads/2020/05/phm_logga.svg" 
-                alt="PHM Partner" 
-                className="h-8"
-              />
+              <div className="flex items-center gap-2">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0 L40 0 L40 28 L28 40 L0 40 Z" fill="#C41E3A"/>
+                  <text x="20" y="28" fontFamily="Arial" fontSize="24" fontWeight="bold" fill="white" textAnchor="middle">C</text>
+                </svg>
+                <span className="text-xl font-bold text-gray-800">CEMI</span>
+              </div>
+              <div className="h-8 w-px bg-gray-300"></div>
+              <div className="flex items-center gap-2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="4" cy="6" r="2" fill="#E57373"/>
+                  <circle cx="12" cy="6" r="2" fill="#E57373"/>
+                  <circle cx="20" cy="6" r="2" fill="#E57373"/>
+                  <circle cx="4" cy="14" r="2" fill="#E57373"/>
+                  <circle cx="12" cy="14" r="2" fill="#E57373"/>
+                  <circle cx="20" cy="14" r="2" fill="#E57373"/>
+                </svg>
+                <span className="text-base font-semibold text-gray-700">
+                  <span className="font-bold">phm</span> partner
+                </span>
+              </div>
             </div>
             
             <button 
@@ -73,11 +84,13 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-white border-t mt-auto print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <img 
-              src="https://www.cemi.se/wp-content/uploads/2020/05/cemi_logga.svg" 
-              alt="CEMI" 
-              className="h-6"
-            />
+            <div className="flex items-center gap-2">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0 L40 0 L40 28 L28 40 L0 40 Z" fill="#C41E3A"/>
+                <text x="20" y="28" fontFamily="Arial" fontSize="24" fontWeight="bold" fill="white" textAnchor="middle">C</text>
+              </svg>
+              <span className="text-lg font-bold text-gray-800">CEMI</span>
+            </div>
             <p className="text-sm text-gray-600">© {new Date().getFullYear()} CEMI. Garden Inspection Management System.</p>
           </div>
         </div>
