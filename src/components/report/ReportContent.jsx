@@ -33,58 +33,52 @@ export default function ReportContent({ inspection, site, customer, points }) {
   const summary = getSummary();
 
 return (
-  <>
-    <style>{`
-      @media print {
-        @page { 
-          size: A4 portrait; 
-          margin: 20mm;
-        }
-        html, body { 
-          margin: 0 !important; 
-          padding: 0 !important;
-          background: white !important;
-        }
-        * { 
-          -webkit-print-color-adjust: exact !important; 
-          print-color-adjust: exact !important;
-        }
-        h1 { font-size: 24pt !important; }
-        h2 { font-size: 18pt !important; }
-        p, div { font-size: 11pt !important; }
-        .inspection-point-item {
-          page-break-inside: avoid !important;
-          break-inside: avoid !important;
-          page-break-before: always !important;
-          page-break-after: auto !important;
-        }
-        .inspection-point-item:first-child {
-          page-break-before: auto !important;
-        }
-        .page-footer {
-          position: fixed;
-          bottom: 20mm;
-          width: calc(100% - 40mm);
-          text-align: right;
-          font-size: 9pt;
-          color: #666;
-        }
-      }
-      .page-footer {
-        text-align: right;
-        font-size: 0.75rem;
-        color: #666;
-        margin-top: auto;
-        padding-top: 1rem;
-        border-top: 1px solid #e5e7eb;
-      }
-      .report-page {
-        position: relative;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-    `}</style>
+   <>
+     <style>{`
+       @media print {
+         @page { 
+           size: A4 portrait; 
+           margin: 20mm 20mm 30mm 20mm;
+         }
+         html, body { 
+           margin: 0 !important; 
+           padding: 0 !important;
+           background: white !important;
+         }
+         * { 
+           -webkit-print-color-adjust: exact !important; 
+           print-color-adjust: exact !important;
+         }
+         h1 { font-size: 24pt !important; }
+         h2 { font-size: 18pt !important; }
+         p, div { font-size: 11pt !important; }
+         .inspection-point-item {
+           page-break-inside: avoid !important;
+           break-inside: avoid !important;
+           page-break-before: always !important;
+           page-break-after: auto !important;
+         }
+         .inspection-point-item:first-child {
+           page-break-before: auto !important;
+         }
+         .page-footer {
+           display: none !important;
+         }
+         @bottom-right {
+           content: attr(data-page);
+           font-size: 9pt;
+           color: #666;
+         }
+       }
+       .page-footer {
+         display: none;
+       }
+       .report-page {
+         position: relative;
+         display: flex;
+         flex-direction: column;
+       }
+     `}</style>
       {/* Front Page */}
       <div className="report-page print:break-after-page">
         <ReportFrontPage inspection={inspection} site={site} customer={customer} />
