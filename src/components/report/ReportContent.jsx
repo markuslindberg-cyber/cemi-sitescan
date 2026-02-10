@@ -37,36 +37,42 @@ export default function ReportContent({ inspection, site, customer, points }) {
       <style>{`
         @media print {
           @page { 
-            size: A4; 
-            margin: 20mm 15mm;
+            size: A4 portrait; 
+            margin: 15mm;
           }
-          body { 
-            margin: 0; 
-            padding: 0;
+          html, body { 
+            margin: 0 !important; 
+            padding: 0 !important;
             background: white !important;
+            width: 100% !important;
+            height: 100% !important;
           }
           * { 
             -webkit-print-color-adjust: exact !important; 
             print-color-adjust: exact !important;
+            color-adjust: exact !important;
           }
           .print\\:hidden { 
             display: none !important; 
           }
           .print\\:break-before-page {
-            page-break-before: always;
-            break-before: page;
+            page-break-before: always !important;
+            break-before: page !important;
           }
           .print\\:break-after-page {
-            page-break-after: always;
-            break-after: page;
+            page-break-after: always !important;
+            break-after: page !important;
           }
           .print\\:break-inside-avoid {
-            page-break-inside: avoid;
-            break-inside: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
           img {
-            max-width: 100%;
-            page-break-inside: avoid;
+            max-width: 100% !important;
+            page-break-inside: avoid !important;
+          }
+          .max-w-5xl {
+            max-width: 100% !important;
           }
         }
       `}</style>

@@ -99,7 +99,7 @@ export default function Report() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 print:bg-white">
       <div className="print:hidden bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <Link to={createPageUrl(`Site?id=${site.id}`)}>
           <Button variant="ghost" size="sm">
@@ -146,7 +146,7 @@ export default function Report() {
         </DialogContent>
       </Dialog>
 
-      <div className="max-w-5xl mx-auto p-4 md:p-8">
+      <div className="max-w-5xl mx-auto p-4 md:p-8 print:p-0 print:max-w-none">
         <div ref={reportRef}>
           <ReportContent
             inspection={inspection}

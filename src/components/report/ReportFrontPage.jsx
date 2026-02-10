@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function ReportFrontPage({ inspection, site, customer }) {
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-white print:break-after-page p-4 md:p-8">
+    <div className="min-h-screen flex flex-col justify-center bg-white print:break-after-page p-4 md:p-8 print:p-0">
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-8">
         <h1 className="text-5xl font-bold text-gray-800 mb-4">
           {inspection.report_title || 'Garden Inspection Report'}
         </h1>
