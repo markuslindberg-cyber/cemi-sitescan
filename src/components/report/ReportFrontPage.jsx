@@ -6,7 +6,7 @@ export default function ReportFrontPage({ inspection, site, customer }) {
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-8">
         <img 
-          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/31c4a5942_Cemivertikal-sandldaskylt.jpg" 
+          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
           alt="CEMI Logo" 
           className="h-40 md:h-48 object-contain mb-8"
         />
