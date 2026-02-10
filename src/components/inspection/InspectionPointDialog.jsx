@@ -57,7 +57,8 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         notes: '',
         photo_details: [],
         latitude: position?.latitude || null,
-        longitude: position?.longitude || null
+        longitude: position?.longitude || null,
+        location_address: null
       });
     }
   }, [existingPoint, open, position]);
