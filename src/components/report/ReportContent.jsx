@@ -81,9 +81,14 @@ return (
          position: relative;
          display: flex;
          flex-direction: column;
-         height: 100vh;
+         justify-content: space-between;
          page-break-after: always;
          page-break-inside: avoid;
+       }
+       @media screen {
+         .report-page {
+           min-h-screen;
+         }
        }
      `}</style>
       {/* Front Page */}
