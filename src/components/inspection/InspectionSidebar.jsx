@@ -81,10 +81,10 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
                           {point.notes}
                         </p>
                       )}
-                      {point.photo_urls && point.photo_urls.length > 0 && (
+                      {point.photo_details && point.photo_details.length > 0 && (
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                           <Camera className="w-3 h-3" />
-                          {point.photo_urls.length} photo{point.photo_urls.length !== 1 ? 's' : ''}
+                          {point.photo_details.length} photo{point.photo_details.length !== 1 ? 's' : ''}
                         </div>
                       )}
                     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 export default function CreateSiteDialog({ open, onOpenChange }) {
   const [formData, setFormData] = useState({
+    customer_id: '',
     name: '',
     location: '',
     description: '',
@@ -18,6 +19,11 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
   });
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
+
+  const { data: customers = [] } = useQuery({
+    queryKey: ['customers'],
+    queryFn: () => base44.entities.Customer.list('-updated_date')
+  });
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Site.create(data),
@@ -61,6 +67,26 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
           <DialogTitle>Create New Site</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="customer_id">Customer</Label>
+            <Select
+              value={formData.customer_id}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, customer_id: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a customer (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>No customer</SelectItem>
+                {customers.map(customer => (
+                  <SelectItem key={customer.id} value={customer.id}>
+                    {customer.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
             <Label htmlFor="name">Site Name *</Label>
             <Input

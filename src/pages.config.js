@@ -51,6 +51,8 @@ import Home from './pages/Home';
 import Site from './pages/Site';
 import Inspection from './pages/Inspection';
 import Report from './pages/Report';
+import Customers from './pages/Customers';
+import Customer from './pages/Customer';
 
 
 export const PAGES = {
@@ -58,6 +60,8 @@ export const PAGES = {
     "Site": Site,
     "Inspection": Inspection,
     "Report": Report,
+    "Customers": Customers,
+    "Customer": Customer,
 }
 
 export const pagesConfig = {

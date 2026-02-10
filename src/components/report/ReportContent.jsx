@@ -153,22 +153,34 @@ export default function ReportContent({ inspection, site, points }) {
                       <p className="text-gray-700 mb-3 whitespace-pre-wrap">{point.notes}</p>
                     )}
 
-                    {point.photo_urls && point.photo_urls.length > 0 && (
+                    {point.photo_details && point.photo_details.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                           <Camera className="w-4 h-4" />
-                          Photos ({point.photo_urls.length})
+                          Photos ({point.photo_details.length})
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {point.photo_urls.map((url, photoIndex) => (
-                            <img
-                              key={photoIndex}
-                              src={url}
-                              alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                              className="w-full h-48 object-cover rounded-lg border"
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {point.photo_details.map((photo, photoIndex) => (
+                            <div key={photoIndex} className="space-y-2">
+                              <img
+                                src={photo.url}
+                                alt={`Point ${index + 1} photo ${photoIndex + 1}`}
+                                className="w-full h-64 object-cover rounded-lg border"
+                              />
+                              {photo.comment && (
+                                <p className="text-sm text-gray-600 italic bg-gray-50 p-2 rounded">
+                                  {photo.comment}
+                                </p>
+                              )}
+                            </div>
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {point.latitude && point.longitude && (
+                      <div className="mt-3 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                        GPS: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
                       </div>
                     )}
                   </div>

@@ -7,18 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X, Loader2, Trash2 } from 'lucide-react';
+import { Upload, X, Loader2, Trash2, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
 const issueTypes = [
-  { value: 'maintenance', label: 'Maintenance' },
-  { value: 'damage', label: 'Damage' },
-  { value: 'pest', label: 'Pest' },
-  { value: 'disease', label: 'Disease' },
-  { value: 'safety', label: 'Safety' },
-  { value: 'irrigation', label: 'Irrigation' },
+  { value: 'improvement_suggestions', label: 'Improvement Suggestions' },
+  { value: 'issue_damage', label: 'Issue/Damage' },
   { value: 'plant_health', label: 'Plant Health' },
-  { value: 'other', label: 'Other' }
+  { value: 'maintenance', label: 'Maintenance' },
+  { value: 'safety_concern', label: 'Safety Concern' }
 ];
 
 const severityLevels = [
@@ -33,9 +30,12 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     issue_type: 'maintenance',
     severity: 'medium',
     notes: '',
-    photo_urls: []
+    photo_details: [],
+    latitude: null,
+    longitude: null
   });
   const [uploading, setUploading] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -44,14 +44,18 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         issue_type: existingPoint.issue_type || 'maintenance',
         severity: existingPoint.severity || 'medium',
         notes: existingPoint.notes || '',
-        photo_urls: existingPoint.photo_urls || []
+        photo_details: existingPoint.photo_details || [],
+        latitude: existingPoint.latitude || null,
+        longitude: existingPoint.longitude || null
       });
     } else {
       setFormData({
         issue_type: 'maintenance',
         severity: 'medium',
         notes: '',
-        photo_urls: []
+        photo_details: [],
+        latitude: null,
+        longitude: null
       });
     }
   }, [existingPoint, open]);
@@ -93,10 +97,10 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         base44.integrations.Core.UploadFile({ file })
       );
       const results = await Promise.all(uploadPromises);
-      const newUrls = results.map(r => r.file_url);
+      const newPhotos = results.map(r => ({ url: r.file_url, comment: '' }));
       setFormData(prev => ({
         ...prev,
-        photo_urls: [...prev.photo_urls, ...newUrls]
+        photo_details: [...prev.photo_details, ...newPhotos]
       }));
       toast.success(`${files.length} photo(s) uploaded`);
     } catch (error) {
@@ -109,8 +113,41 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
   const removePhoto = (index) => {
     setFormData(prev => ({
       ...prev,
-      photo_urls: prev.photo_urls.filter((_, i) => i !== index)
+      photo_details: prev.photo_details.filter((_, i) => i !== index)
     }));
+  };
+
+  const updatePhotoComment = (index, comment) => {
+    setFormData(prev => ({
+      ...prev,
+      photo_details: prev.photo_details.map((photo, i) =>
+        i === index ? { ...photo, comment } : photo
+      )
+    }));
+  };
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData(prev => ({
+          ...prev,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }));
+        toast.success('Location captured');
+        setGettingLocation(false);
+      },
+      (error) => {
+        toast.error('Failed to get location');
+        setGettingLocation(false);
+      }
+    );
   };
 
   const handleSubmit = (e) => {
@@ -200,24 +237,54 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
           </div>
 
           <div>
+            <Label>GPS Coordinates</Label>
+            <div className="flex items-center gap-3 mt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={getCurrentLocation}
+                disabled={gettingLocation}
+                className="flex-1"
+              >
+                <MapPin className="w-4 h-4 mr-2" />
+                {gettingLocation ? 'Getting location...' : 'Capture Current Location'}
+              </Button>
+            </div>
+            {formData.latitude && formData.longitude && (
+              <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                Lat: {formData.latitude.toFixed(6)}, Long: {formData.longitude.toFixed(6)}
+              </div>
+            )}
+          </div>
+
+          <div>
             <Label>Photos</Label>
             <div className="mt-2 space-y-3">
-              {formData.photo_urls.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {formData.photo_urls.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Photo ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border"
+              {formData.photo_details.length > 0 && (
+                <div className="space-y-4">
+                  {formData.photo_details.map((photo, index) => (
+                    <div key={index} className="border rounded-lg p-3">
+                      <div className="relative group mb-2">
+                        <img
+                          src={photo.url}
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <Textarea
+                        placeholder="Add a comment for this photo (optional)..."
+                        value={photo.comment}
+                        onChange={(e) => updatePhotoComment(index, e.target.value)}
+                        rows={2}
+                        className="text-sm"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
                     </div>
                   ))}
                 </div>
