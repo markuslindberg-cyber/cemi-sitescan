@@ -40,6 +40,15 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     enabled: !!formData.customer_id
   });
 
+  const handleCustomerChange = (customerId) => {
+    const selectedCustomer = customers.find(c => c.id === customerId);
+    setFormData(prev => ({
+      ...prev,
+      customer_id: customerId,
+      map_type: selectedCustomer?.map_type || 'uploaded'
+    }));
+  };
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Site.create(data),
     onSuccess: () => {
