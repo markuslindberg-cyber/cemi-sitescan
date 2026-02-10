@@ -55,11 +55,10 @@ return (
          .inspection-point-item {
            page-break-inside: avoid !important;
            break-inside: avoid !important;
-           page-break-before: always !important;
-           page-break-after: auto !important;
-         }
-         .inspection-point-item:first-child {
            page-break-before: auto !important;
+         }
+         .inspection-point-item:nth-of-type(n+2) {
+           page-break-before: always !important;
          }
          .page-footer {
            border-top: none !important;
