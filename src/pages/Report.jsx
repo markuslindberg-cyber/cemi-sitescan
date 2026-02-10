@@ -1,17 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Download, Printer } from 'lucide-react';
+import { ArrowLeft, Download, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import ReportContent from '../components/report/ReportContent';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function Report() {
   const urlParams = new URLSearchParams(window.location.search);
   const inspectionId = urlParams.get('id');
   const reportRef = useRef(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [reportTitle, setReportTitle] = useState('');
+  const queryClient = useQueryClient();
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
     queryKey: ['inspection', inspectionId],
@@ -51,6 +57,23 @@ export default function Report() {
     window.print();
   };
 
+  const updateTitleMutation = useMutation({
+    mutationFn: (title) => base44.entities.Inspection.update(inspectionId, { report_title: title }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspection', inspectionId] });
+      setIsEditingTitle(false);
+    }
+  });
+
+  const handleEditTitle = () => {
+    setReportTitle(inspection?.report_title || '');
+    setIsEditingTitle(true);
+  };
+
+  const handleSaveTitle = () => {
+    updateTitleMutation.mutate(reportTitle);
+  };
+
   if (inspectionLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -85,12 +108,43 @@ export default function Report() {
           </Button>
         </Link>
         <div className="flex items-center gap-3">
+          <Button onClick={handleEditTitle} variant="outline" size="sm">
+            <Edit2 className="w-4 h-4 mr-2" />
+            Edit Title
+          </Button>
           <Button onClick={handlePrint} variant="outline">
             <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>
         </div>
       </div>
+
+      <Dialog open={isEditingTitle} onOpenChange={setIsEditingTitle}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Report Title</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="title">Report Title</Label>
+              <Input
+                id="title"
+                value={reportTitle}
+                onChange={(e) => setReportTitle(e.target.value)}
+                placeholder="Enter report title"
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setIsEditingTitle(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveTitle}>
+                Save
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="max-w-5xl mx-auto p-4 md:p-8">
         <div ref={reportRef}>

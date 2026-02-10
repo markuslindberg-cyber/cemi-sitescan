@@ -50,7 +50,9 @@ export default function ReportContent({ inspection, site, customer, points }) {
           <CardHeader className="border-b">
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-3xl mb-2">Detailed Inspection Report</CardTitle>
+                <CardTitle className="text-3xl mb-2">
+                  {inspection.report_title || 'Detailed Inspection Report'}
+                </CardTitle>
                 <h2 className="text-xl text-gray-700">{site.name}</h2>
               </div>
               <div className="text-right text-sm text-gray-600">
