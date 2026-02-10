@@ -38,27 +38,31 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
             <CardTitle className="print:text-base">Inspection Overview</CardTitle>
           </CardHeader>
           <CardContent className="print:p-3 print:pt-0">
-            <div className="grid grid-cols-2 gap-3 print:gap-2">
-              <div>
-                <p className="text-sm text-gray-500">Site</p>
-                <p className="text-lg font-semibold">{site.name}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Date</p>
-                <p className="text-lg font-semibold">
-                  {new Date(inspection.inspection_date).toLocaleDateString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Inspector</p>
-                <p className="text-lg font-semibold">{inspection.inspector_name}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Inspection Points</p>
-                <p className="text-lg font-semibold">{total}</p>
-              </div>
-            </div>
-          </CardContent>
+             <div className="grid grid-cols-2 gap-3 print:gap-2">
+               <div>
+                 <p className="text-sm text-gray-500">Inspection Number</p>
+                 <p className="text-lg font-semibold font-mono bg-gray-100 px-2 py-1 rounded inline-block">{inspection.inspection_number}</p>
+               </div>
+               <div>
+                 <p className="text-sm text-gray-500">Site</p>
+                 <p className="text-lg font-semibold">{site.name}</p>
+               </div>
+               <div>
+                 <p className="text-sm text-gray-500">Date</p>
+                 <p className="text-lg font-semibold">
+                   {new Date(inspection.inspection_date).toLocaleDateString()}
+                 </p>
+               </div>
+               <div>
+                 <p className="text-sm text-gray-500">Inspector</p>
+                 <p className="text-lg font-semibold">{inspection.inspector_name}</p>
+               </div>
+               <div>
+                 <p className="text-sm text-gray-500">Total Inspection Points</p>
+                 <p className="text-lg font-semibold">{total}</p>
+               </div>
+             </div>
+           </CardContent>
         </Card>
 
         {/* Severity Summary */}
