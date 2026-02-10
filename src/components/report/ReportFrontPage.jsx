@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function ReportFrontPage({ inspection, site, customer }) {
   return (
-    <div className="flex flex-col justify-center bg-white p-4 md:p-8 print:p-0">
+    <div className="flex-1 flex flex-col justify-center bg-white p-4 md:p-8 print:p-0">
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-8">
+      <div className="flex flex-col items-center justify-center text-center px-4 md:px-8">
         <img 
           src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
           alt="CEMI Logo" 
