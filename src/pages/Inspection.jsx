@@ -79,9 +79,39 @@ export default function Inspection() {
     }
     
     try {
+      let mapScreenshotUrl = null;
+      
+      // Capture map screenshot
+      if (mapRef.current) {
+        try {
+          const canvas = await html2canvas(mapRef.current, {
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            scale: 2
+          });
+          
+          // Convert to data URL
+          const dataUrl = canvas.toDataURL('image/png');
+          
+          // Create File object
+          const blob = await (await fetch(dataUrl)).blob();
+          const file = new File([blob], 'map-screenshot.png', { type: 'image/png' });
+          
+          // Upload to server
+          const { file_url } = await base44.integrations.Core.UploadFile({ file });
+          mapScreenshotUrl = file_url;
+        } catch (screenshotError) {
+          console.log('Could not capture screenshot:', screenshotError);
+        }
+      }
+      
       await updateInspectionMutation.mutateAsync({
         id: inspectionId,
-        data: { status: 'completed' }
+        data: { 
+          status: 'completed',
+          map_screenshot_url: mapScreenshotUrl
+        }
       });
       
       toast.success('Inspection completed');
