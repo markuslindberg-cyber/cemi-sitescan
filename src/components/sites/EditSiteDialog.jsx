@@ -22,6 +22,9 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     google_maps_zoom: 18
   });
   const [uploading, setUploading] = useState(false);
+  const [searchAddress, setSearchAddress] = useState('');
+  const [searching, setSearching] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: customers = [] } = useQuery({
@@ -69,6 +72,65 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleSearchAddress = async () => {
+    if (!searchAddress.trim()) {
+      toast.error('Please enter an address');
+      return;
+    }
+
+    setSearching(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}`
+      );
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        setFormData(prev => ({
+          ...prev,
+          google_maps_center: {
+            lat: parseFloat(lat),
+            lng: parseFloat(lon)
+          }
+        }));
+        toast.success('Location found');
+      } else {
+        toast.error('Address not found');
+      }
+    } catch (error) {
+      toast.error('Failed to search address');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData(prev => ({
+          ...prev,
+          google_maps_center: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        }));
+        toast.success('Current location set');
+        setGettingLocation(false);
+      },
+      (error) => {
+        toast.error('Failed to get current location');
+        setGettingLocation(false);
+      }
+    );
   };
 
   const handleSubmit = (e) => {
@@ -197,7 +259,37 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
 
           {formData.map_type === 'google_maps' && (
             <div className="space-y-3">
-              <Label>Location (Search on Google Maps and copy coordinates)</Label>
+              <div>
+                <Label>Search Address</Label>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    placeholder="Enter address to search"
+                    value={searchAddress}
+                    onChange={(e) => setSearchAddress(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleSearchAddress())}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleSearchAddress}
+                    disabled={searching}
+                  >
+                    {searching ? 'Searching...' : 'Search'}
+                  </Button>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleUseCurrentLocation}
+                  disabled={gettingLocation}
+                  className="w-full"
+                >
+                  {gettingLocation ? 'Getting Location...' : 'Use My Current Location'}
+                </Button>
+              </div>
+              <Label className="text-xs text-gray-500">Or enter coordinates manually:</Label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="lat" className="text-xs">Latitude</Label>
