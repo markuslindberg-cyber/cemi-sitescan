@@ -32,6 +32,12 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     queryFn: () => base44.entities.Customer.list('-updated_date')
   });
 
+  const { data: customerSites = [] } = useQuery({
+    queryKey: ['customer-sites', formData.customer_id],
+    queryFn: () => base44.entities.Site.filter({ customer_id: formData.customer_id }),
+    enabled: !!formData.customer_id
+  });
+
   useEffect(() => {
     if (site) {
       setFormData({
@@ -133,6 +139,30 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     );
   };
 
+  const handleCopyMapFromSite = (siteId) => {
+    const selectedSite = customerSites.find(s => s.id === siteId);
+    if (!selectedSite) return;
+
+    if (selectedSite.map_type === 'uploaded' && selectedSite.map_image_url) {
+      setFormData(prev => ({
+        ...prev,
+        map_type: 'uploaded',
+        map_image_url: selectedSite.map_image_url
+      }));
+      toast.success('Map copied from site');
+    } else if (selectedSite.map_type === 'google_maps' && selectedSite.google_maps_center) {
+      setFormData(prev => ({
+        ...prev,
+        map_type: 'google_maps',
+        google_maps_center: selectedSite.google_maps_center,
+        google_maps_zoom: selectedSite.google_maps_zoom || 18
+      }));
+      toast.success('Map location copied from site');
+    } else {
+      toast.error('Selected site has no map');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
@@ -216,6 +246,26 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
               </SelectContent>
             </Select>
           </div>
+
+          {formData.customer_id && customerSites.filter(s => s.id !== site?.id && (s.map_image_url || s.google_maps_center)).length > 0 && (
+            <div>
+              <Label>Or Copy Map from Existing Site</Label>
+              <Select onValueChange={handleCopyMapFromSite}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a site to copy map from" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customerSites
+                    .filter(s => s.id !== site?.id && (s.map_image_url || s.google_maps_center))
+                    .map(s => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name} ({s.map_type === 'uploaded' ? 'Image' : 'Google Maps'})
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {formData.map_type === 'uploaded' && (
             <div>
