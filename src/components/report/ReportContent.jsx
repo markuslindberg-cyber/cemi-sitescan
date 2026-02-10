@@ -205,16 +205,16 @@ export default function ReportContent({ inspection, site, customer, points }) {
                           <Camera className="w-4 h-4" />
                           Documentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'Photo' : 'Photos'})
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3 print:gap-2">
                           {point.photo_details.map((photo, photoIndex) => (
-                            <div key={photoIndex} className="print:break-inside-avoid">
+                            <div key={photoIndex}>
                               <img
                                 src={photo.url}
                                 alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                                className="w-full h-auto object-contain rounded-lg border border-gray-300"
+                                className="w-full h-auto max-h-48 print:max-h-32 object-contain rounded-lg border border-gray-300"
                               />
                               {photo.comment && (
-                                <p className="mt-2 text-sm text-gray-600 italic bg-gray-50 p-2 rounded">
+                                <p className="mt-1 text-xs text-gray-600 italic bg-gray-50 p-1.5 rounded print:text-[9pt]">
                                   {photo.comment}
                                 </p>
                               )}
