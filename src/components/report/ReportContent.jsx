@@ -98,7 +98,7 @@ return (
       </div>
       
       {/* Detailed Report Pages */}
-      <div className="print:break-before-page bg-white p-4 md:p-8 print:p-0">
+      <div className="report-page print:break-before-page bg-white p-4 md:p-8 print:p-0">
           {/* Header Section */}
           <div className="mb-6 pb-4 border-b-2 border-gray-300">
             <div className="flex items-center gap-3 mb-3">
