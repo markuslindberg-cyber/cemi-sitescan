@@ -142,10 +142,14 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
             draggable={false}
           />
           
-          {points.map((point, index) => (
+          {points.map((point, index) => {
+            const markerSize = Math.max(6, 8 * zoom);
+            const fontSize = Math.max(8, 12 * zoom);
+
+            return (
             <button
               key={point.id}
-              className="absolute transform -translate-x-1/2 -translate-y-full hover:scale-110 transition-transform cursor-pointer z-10"
+              className="absolute transform -translate-x-1/2 -translate-y-full hover:scale-125 transition-transform cursor-pointer z-10"
               style={{
                 left: `${point.x_position}%`,
                 top: `${point.y_position}%`
@@ -158,10 +162,18 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
               }}
             >
               <div className="relative group">
-                <div className={`w-8 h-8 rounded-full ${severityColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg`}>
-                  <span className="text-white text-xs font-bold">{index + 1}</span>
+                <div 
+                  className={`rounded-full ${severityColors[point.severity || 'medium']} border-2 flex items-center justify-center shadow-lg transition-all`}
+                  style={{
+                    width: `${markerSize}px`,
+                    height: `${markerSize}px`
+                  }}
+                >
+                  <span className="text-white font-bold" style={{ fontSize: `${fontSize}px` }}>
+                    {index + 1}
+                  </span>
                 </div>
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
                   {point.issue_type?.replace(/_/g, ' ')} - {point.severity}
                   {point.notes && (
                     <div className="mt-1 max-w-xs truncate">{point.notes}</div>
@@ -169,7 +181,8 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
                 </div>
               </div>
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
