@@ -23,6 +23,7 @@ export default function Inspection() {
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [showPointDialog, setShowPointDialog] = useState(false);
   const [pendingPosition, setPendingPosition] = useState(null);
+  const [showNotesSheet, setShowNotesSheet] = useState(false);
   const mapRef = useRef(null);
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
