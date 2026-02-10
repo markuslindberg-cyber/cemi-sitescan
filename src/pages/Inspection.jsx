@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Save, CheckCircle, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createPageUrl } from './utils';
+import { createPageUrl } from '../utils';
 import { toast } from 'sonner';
 import InteractiveMap from '../components/inspection/InteractiveMap';
 import InspectionPointDialog from '../components/inspection/InspectionPointDialog';
