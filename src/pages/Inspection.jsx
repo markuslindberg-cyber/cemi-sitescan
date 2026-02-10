@@ -87,20 +87,30 @@ export default function Inspection() {
           const canvas = await html2canvas(mapRef.current, {
             useCORS: true,
             allowTaint: true,
+            backgroundColor: '#ffffff',
             logging: false,
-            scale: 2
+            scale: 1.5
           });
           
-          // Convert to data URL
-          const dataUrl = canvas.toDataURL('image/png');
-          
-          // Create File object
-          const blob = await (await fetch(dataUrl)).blob();
-          const file = new File([blob], 'map-screenshot.png', { type: 'image/png' });
-          
-          // Upload to server
-          const { file_url } = await base44.integrations.Core.UploadFile({ file });
-          mapScreenshotUrl = file_url;
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              const file = new File([blob], 'map-screenshot.png', { type: 'image/png' });
+              const { file_url } = await base44.integrations.Core.UploadFile({ file });
+              mapScreenshotUrl = file_url;
+              
+              await updateInspectionMutation.mutateAsync({
+                id: inspectionId,
+                data: { 
+                  status: 'completed',
+                  map_screenshot_url: mapScreenshotUrl
+                }
+              });
+              
+              toast.success('Inspection completed');
+              navigate(createPageUrl(`Report?id=${inspectionId}`));
+            }
+          });
+          return;
         } catch (screenshotError) {
           console.log('Could not capture screenshot:', screenshotError);
         }
@@ -108,10 +118,7 @@ export default function Inspection() {
       
       await updateInspectionMutation.mutateAsync({
         id: inspectionId,
-        data: { 
-          status: 'completed',
-          map_screenshot_url: mapScreenshotUrl
-        }
+        data: { status: 'completed' }
       });
       
       toast.success('Inspection completed');
