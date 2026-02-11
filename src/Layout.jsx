@@ -19,27 +19,11 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 10 L80 10 L80 60 L60 80 L20 80 Z" fill="#B91E3C"/>
-                  <text x="50" y="62" fontFamily="Arial, sans-serif" fontSize="48" fontWeight="bold" fill="white" textAnchor="middle">C</text>
-                </svg>
-                <span className="text-xl font-bold" style={{ color: '#B91E3C' }}>CEMI</span>
-              </div>
-              <div className="h-8 w-px bg-gray-300"></div>
-              <div className="flex items-center gap-2">
-                <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="4" cy="4" r="3" fill="#E57373"/>
-                  <circle cx="12" cy="4" r="3" fill="#E57373"/>
-                  <circle cx="20" cy="4" r="3" fill="#E57373"/>
-                  <circle cx="4" cy="12" r="3" fill="#E57373"/>
-                  <circle cx="12" cy="12" r="3" fill="#E57373"/>
-                  <circle cx="20" cy="12" r="3" fill="#E57373"/>
-                </svg>
-                <span className="text-base font-semibold text-gray-700">
-                  <span className="font-bold">phm</span> partner
-                </span>
-              </div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
+                alt="CEMI Logo" 
+                className="h-10 object-contain"
+              />
             </div>
             
             <button 
