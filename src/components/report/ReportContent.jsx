@@ -62,8 +62,8 @@ return (
          }
          .page-header {
            border-bottom: 1px solid #e5e7eb !important;
-           margin-bottom: 0.25rem !important;
-           padding-bottom: 0.125rem !important;
+           margin-bottom: 0.125rem !important;
+           padding-bottom: 0.0625rem !important;
            text-align: right !important;
            font-size: 9pt !important;
            color: #666 !important;
@@ -73,8 +73,8 @@ return (
          text-align: right;
          font-size: 0.75rem;
          color: #666;
-         margin-bottom: 0.25rem;
-         padding-bottom: 0.125rem;
+         margin-bottom: 0.125rem;
+         padding-bottom: 0.0625rem;
          border-bottom: 1px solid #e5e7eb;
        }
 
@@ -214,7 +214,7 @@ return (
 
             {/* Inspection Points - Each on its own page */}
             {points.map((point, index) => (
-            <div key={point.id} className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: 'always' }}>
+            <div key={point.id} className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: index === points.length - 1 ? 'auto' : 'always' }}>
             <div className="page-header">Page {index + 4}</div>
             <div className="flex gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
