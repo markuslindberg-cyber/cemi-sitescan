@@ -3,13 +3,16 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, MapPin, Calendar } from 'lucide-react';
+import { Plus, MapPin, Calendar, QrCode } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: sites = [], isLoading } = useQuery({
@@ -40,13 +43,23 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Garden Inspections</h1>
             <p className="text-gray-600 mt-2">Manage your outdoor sites and inspections</p>
           </div>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Add New Site
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowQRCode(true)}
+              variant="outline"
+              className="border-green-600 text-green-600 hover:bg-green-50"
+            >
+              <QrCode className="w-5 h-5 mr-2" />
+              QR Code
+            </Button>
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Add New Site
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -117,6 +130,25 @@ export default function Home() {
           open={showCreateDialog}
           onOpenChange={setShowCreateDialog}
         />
+
+        <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Scan QR Code</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center gap-4 py-4">
+              <QRCodeSVG 
+                value={window.location.origin} 
+                size={256}
+                level="H"
+                includeMargin={true}
+              />
+              <p className="text-sm text-gray-600 text-center">
+                Scan this code with your phone to access the app
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
