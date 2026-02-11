@@ -60,22 +60,22 @@ return (
          .inspection-point-item:nth-of-type(n+2) {
            page-break-before: always !important;
          }
-         .page-footer {
-           border-top: none !important;
-           margin-top: auto !important;
-           padding-top: 1rem !important;
+         .page-header {
+           border-bottom: 1px solid #e5e7eb !important;
+           margin-bottom: 1rem !important;
+           padding-bottom: 0.5rem !important;
            text-align: right !important;
            font-size: 9pt !important;
            color: #666 !important;
          }
        }
-       .page-footer {
+       .page-header {
          text-align: right;
          font-size: 0.75rem;
          color: #666;
-         margin-top: 1rem;
-         padding-top: 0.5rem;
-         border-top: 1px solid #e5e7eb;
+         margin-bottom: 1rem;
+         padding-bottom: 0.5rem;
+         border-bottom: 1px solid #e5e7eb;
        }
        .report-page {
          display: flex;
@@ -97,19 +97,20 @@ return (
        }
      `}</style>
       {/* Front Page */}
-      <div className="report-page justify-between">
+      <div className="report-page">
+         <div className="page-header">Page 1</div>
          <ReportFrontPage inspection={inspection} site={site} customer={customer} />
-         <div className="page-footer">Page 1</div>
       </div>
 
       {/* Summary Page */}
-      <div className="report-page justify-between">
+      <div className="report-page">
+         <div className="page-header">Page 2</div>
          <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
-         <div className="page-footer">Page 2</div>
       </div>
 
       {/* Page 3: Detailed Report Overview */}
-      <div className="report-page bg-white p-4 md:p-8 print:p-0 justify-between">
+      <div className="report-page bg-white p-4 md:p-8 print:p-0">
+          <div className="page-header">Page 3</div>
           <div>
             {/* Header Section */}
             <div className="mb-6 pb-4 border-b-2 border-gray-300">
@@ -225,14 +226,14 @@ return (
                 </div>
               </div>
             </div>
-          </div>
-          <div className="page-footer">Page 3</div>
-      </div>
+            </div>
+            </div>
 
-      {/* Inspection Points - Each on its own page */}
-      {points.map((point, index) => (
-        <div key={point.id} className="report-page bg-white p-4 md:p-8 print:p-0 justify-between">
-          <div className="flex gap-4">
+            {/* Inspection Points - Each on its own page */}
+            {points.map((point, index) => (
+            <div key={point.id} className="report-page bg-white p-4 md:p-8 print:p-0">
+            <div className="page-header">Page {index + 4}</div>
+            <div className="flex gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
               {index + 1}
             </div>
@@ -291,11 +292,10 @@ return (
                   GPS: {point.latitude.toFixed(6)}, {point.longitude.toFixed(6)}
                 </div>
               )}
-            </div>
-          </div>
-          <div className="page-footer">Page {index + 4}</div>
-        </div>
-      ))}
+              </div>
+              </div>
+              </div>
+              ))}
     </>
   );
 }
