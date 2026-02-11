@@ -77,38 +77,22 @@ return (
          padding-bottom: 0.5rem;
          border-bottom: 1px solid #e5e7eb;
        }
-       .report-page {
-         display: flex;
-         flex-direction: column;
-         page-break-after: always;
-       }
-       @media screen {
-         .report-page {
-           min-h-screen;
-         }
-       }
-       @media print {
-         .report-page {
-           min-height: 0;
-           display: flex;
-           flex-direction: column;
-         }
-       }
+
      `}</style>
       {/* Front Page */}
-      <div className="report-page">
+      <div style={{ pageBreakAfter: 'always' }}>
          <div className="page-header">Page 1</div>
          <ReportFrontPage inspection={inspection} site={site} customer={customer} />
       </div>
 
       {/* Summary Page */}
-      <div className="report-page">
+      <div style={{ pageBreakAfter: 'always' }}>
          <div className="page-header">Page 2</div>
          <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
       </div>
 
       {/* Page 3: Detailed Report Overview */}
-      <div className="report-page bg-white p-4 md:p-8 print:p-0">
+      <div className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: 'always' }}>
           <div className="page-header">Page 3</div>
           <div>
             {/* Header Section */}
@@ -230,7 +214,7 @@ return (
 
             {/* Inspection Points - Each on its own page */}
             {points.map((point, index) => (
-            <div key={point.id} className="report-page bg-white p-4 md:p-8 print:p-0">
+            <div key={point.id} className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: 'always' }}>
             <div className="page-header">Page {index + 4}</div>
             <div className="flex gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
