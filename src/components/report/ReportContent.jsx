@@ -90,7 +90,7 @@ return (
        }
        @media print {
          .report-page {
-           height: 297mm;
+           min-height: 0;
            display: flex;
            flex-direction: column;
          }

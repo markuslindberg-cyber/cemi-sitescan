@@ -151,7 +151,7 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {/* Key Findings */}
-        <Card className="print:shadow-none" style={{ pageBreakAfter: 'always' }}>
+        <Card className="print:shadow-none">
           <CardHeader className="print:p-3 print:pb-2">
             <CardTitle className="print:text-base">Key Findings</CardTitle>
           </CardHeader>
