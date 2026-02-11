@@ -24,7 +24,9 @@ export default function UsersPage() {
   });
 
   const inviteMutation = useMutation({
-    mutationFn: ({ email, role }) => base44.users.inviteUser(email, role),
+    mutationFn: async ({ email, role }) => {
+      return await base44.users.invite(email, role);
+    },
     onSuccess: () => {
       toast.success('User invited successfully');
       setIsInviteOpen(false);
