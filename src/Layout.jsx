@@ -9,7 +9,8 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Sites', path: 'Home', icon: Building2 },
     { name: 'Customers', path: 'Customers', icon: Users },
-    { name: 'Inspections', path: 'Inspections', icon: FileText }
+    { name: 'Inspections', path: 'Inspections', icon: FileText },
+    { name: 'Users', path: 'Users', icon: Users }
   ];
 
   return (

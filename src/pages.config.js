@@ -54,6 +54,7 @@ import Inspection from './pages/Inspection';
 import Inspections from './pages/Inspections';
 import Report from './pages/Report';
 import Site from './pages/Site';
+import Users from './pages/Users';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Inspections": Inspections,
     "Report": Report,
     "Site": Site,
+    "Users": Users,
 }
 
 export const pagesConfig = {
