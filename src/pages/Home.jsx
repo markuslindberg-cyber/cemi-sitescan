@@ -138,13 +138,16 @@ export default function Home() {
             </DialogHeader>
             <div className="flex flex-col items-center gap-4 py-4">
               <QRCodeSVG 
-                value={window.location.origin} 
+                value={window.location.href} 
                 size={256}
                 level="H"
                 includeMargin={true}
               />
               <p className="text-sm text-gray-600 text-center">
                 Scan this code with your phone to access the app
+              </p>
+              <p className="text-xs text-gray-500 text-center break-all px-4">
+                {window.location.href}
               </p>
             </div>
           </DialogContent>
