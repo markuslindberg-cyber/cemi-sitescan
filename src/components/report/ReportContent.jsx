@@ -81,7 +81,6 @@ return (
          display: flex;
          flex-direction: column;
          page-break-after: always;
-         page-break-inside: avoid;
        }
        @media screen {
          .report-page {
