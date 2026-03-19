@@ -17,6 +17,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     name: '',
     location: '',
     description: '',
+    site_manager: '',
     map_type: 'uploaded',
     map_image_url: '',
     google_maps_center: null,
@@ -55,6 +56,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
         name: site.name || '',
         location: site.location || '',
         description: site.description || '',
+        site_manager: site.site_manager || '',
         map_type: site.map_type || 'uploaded',
         map_image_url: site.map_image_url || '',
         google_maps_center: site.google_maps_center || null,
@@ -227,6 +229,14 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
               value={formData.location}
               onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
               placeholder="123 Main St, City"
+            />
+          </div>
+
+          <div>
+            <Label>Platsansvarig</Label>
+            <UserSelect
+              value={formData.site_manager}
+              onValueChange={(v) => setFormData(prev => ({ ...prev, site_manager: v }))}
             />
           </div>
 
