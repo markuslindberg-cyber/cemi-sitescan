@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Building2, MapPin, Calendar, Upload } from 'lucide-react';
+import { Plus, Building2, MapPin, Calendar, Upload, LayoutGrid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
@@ -15,6 +15,7 @@ export default function Customers() {
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
   const [filterManager, setFilterManager] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
 
   const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
@@ -80,7 +81,25 @@ export default function Customers() {
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
           </div>
           <div className="flex gap-2 items-center flex-wrap">
-            <Select value={filterManager} onValueChange={setFilterManager}>
+            <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
+              <Button
+                size="sm"
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                onClick={() => setViewMode('grid')}
+                className="w-10 p-0"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                onClick={() => setViewMode('list')}
+                className="w-10 p-0"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+             <Select value={filterManager} onValueChange={setFilterManager}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filtrera på kundasvarig" />
               </SelectTrigger>
@@ -120,17 +139,17 @@ export default function Customers() {
         </div>
 
         {customersLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-6 bg-gray-200 rounded mb-2" />
-                  <div className="h-4 bg-gray-200 rounded w-2/3" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : customers.length === 0 ? (
+           <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-3'}>
+             {[1, 2, 3].map(i => (
+               <Card key={i} className="animate-pulse">
+                 <CardContent className="p-6">
+                   <div className="h-6 bg-gray-200 rounded mb-2" />
+                   <div className="h-4 bg-gray-200 rounded w-2/3" />
+                 </CardContent>
+               </Card>
+             ))}
+           </div>
+         ) : customers.length === 0 ? (
           <Card className="p-12 text-center">
             <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga kunder ännu</h3>
@@ -140,7 +159,7 @@ export default function Customers() {
               Skapa första kunden
             </Button>
           </Card>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {customers.map(customer => {
               const stats = getCustomerStats(customer.id);
@@ -190,6 +209,35 @@ export default function Customers() {
                             </span>
                           </div>
                         )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {customers.map(customer => {
+              const stats = getCustomerStats(customer.id);
+              return (
+                <Link key={customer.id} to={createPageUrl(`Customer?id=${customer.id}`)}>
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <Building2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900">{customer.name}</h3>
+                            {customer.contact_person && (
+                              <p className="text-xs text-gray-600">{customer.contact_person}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
+                          <span>{stats.sitesCount} platser</span>
+                          <span>{stats.inspectionsCount} inspektioner</span>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
