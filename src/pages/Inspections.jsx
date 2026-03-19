@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, User, MapPin, FileText } from 'lucide-react';
+import { Calendar, User, MapPin, FileText, LayoutGrid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ export default function Inspections() {
   const [filterCustomer, setFilterCustomer] = useState('all');
   const [filterSite, setFilterSite] = useState('all');
   const [filterInspector, setFilterInspector] = useState('all');
+  const [viewMode, setViewMode] = useState('list');
 
   const { data: inspections = [], isLoading } = useQuery({
     queryKey: ['all-inspections'],
@@ -70,8 +71,26 @@ export default function Inspections() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          <Select value={filterCustomer} onValueChange={(v) => { setFilterCustomer(v); setFilterSite('all'); }}>
+         <div className="flex flex-wrap gap-3 mb-6">
+           <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
+             <Button
+               size="sm"
+               variant={viewMode === 'grid' ? 'default' : 'ghost'}
+               onClick={() => setViewMode('grid')}
+               className="w-10 p-0"
+             >
+               <LayoutGrid className="w-4 h-4" />
+             </Button>
+             <Button
+               size="sm"
+               variant={viewMode === 'list' ? 'default' : 'ghost'}
+               onClick={() => setViewMode('list')}
+               className="w-10 p-0"
+             >
+               <List className="w-4 h-4" />
+             </Button>
+           </div>
+           <Select value={filterCustomer} onValueChange={(v) => { setFilterCustomer(v); setFilterSite('all'); }}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filtrera på kund" />
             </SelectTrigger>
@@ -125,8 +144,8 @@ export default function Inspections() {
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga inspektioner hittades</h3>
             <p className="text-gray-600">Prova att ändra filtret</p>
           </Card>
-        ) : (
-          <div className="grid gap-4">
+        ) : viewMode === 'list' ? (
+          <div className="space-y-3">
             {filteredInspections.map(inspection => (
               <Link
                 key={inspection.id}
@@ -179,9 +198,56 @@ export default function Inspections() {
                   </CardContent>
                 </Card>
               </Link>
-            ))}
-          </div>
-        )}
+              ))}
+              </div>
+              ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredInspections.map(inspection => (
+              <Link
+                key={inspection.id}
+                to={createPageUrl(
+                  inspection.status === 'completed'
+                    ? `Report?id=${inspection.id}`
+                    : `Inspection?id=${inspection.id}`
+                )}
+              >
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="mb-3">
+                      <Badge
+                        variant={inspection.status === 'completed' ? 'default' : 'secondary'}
+                        className={
+                          inspection.status === 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }
+                      >
+                        {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
+                      </Badge>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      {getSiteName(inspection.site_id)}
+                    </h3>
+                    {getSiteLocation(inspection.site_id) && (
+                      <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                        <MapPin className="w-4 h-4" />
+                        {getSiteLocation(inspection.site_id)}
+                      </p>
+                    )}
+                    <div className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                      <Calendar className="w-4 h-4" />
+                      {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
+                    </div>
+                    <div className="text-sm text-gray-600 flex items-center gap-1">
+                      <User className="w-4 h-4" />
+                      {inspection.inspector_name}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+              ))}
+              </div>
+              )}
       </div>
     </div>
   );
