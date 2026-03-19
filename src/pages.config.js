@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Landing from './pages/Landing';
 import Customer from './pages/Customer';
 import Customers from './pages/Customers';
 import Home from './pages/Home';
