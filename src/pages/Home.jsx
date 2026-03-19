@@ -14,6 +14,8 @@ export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
+  const [filterManager, setFilterManager] = useState('all');
+  const [filterCustomer, setFilterCustomer] = useState('all');
   const queryClient = useQueryClient();
 
   const { data: allSites = [], isLoading } = useQuery({
@@ -27,7 +29,19 @@ export default function Home() {
   });
 
   const getSortedSites = () => {
-    let sorted = [...allSites];
+    let filtered = [...allSites];
+    
+    // Apply manager filter
+    if (filterManager !== 'all') {
+      filtered = filtered.filter(s => s.site_manager === filterManager);
+    }
+    
+    // Apply customer filter
+    if (filterCustomer !== 'all') {
+      filtered = filtered.filter(s => s.customer_id === filterCustomer);
+    }
+    
+    let sorted = filtered;
     if (sortBy === 'updated') {
       sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
     } else if (sortBy === 'customer') {
@@ -41,6 +55,8 @@ export default function Home() {
     }
     return sorted;
   };
+
+  const uniqueManagers = [...new Set(allSites.filter(s => s.site_manager).map(s => s.site_manager))].sort();
 
   const sites = getSortedSites();
 
@@ -67,7 +83,29 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Trädgårdsinspektioner</h1>
             <p className="text-gray-600 mt-2">Hantera dina platser och inspektioner</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
+            <Select value={filterManager} onValueChange={setFilterManager}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filtrera på områdesansvarig" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Alla områdesansvariga</SelectItem>
+                {uniqueManagers.map(manager => (
+                  <SelectItem key={manager} value={manager}>{manager}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterCustomer} onValueChange={setFilterCustomer}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filtrera på kund" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Alla kunder</SelectItem>
+                {customers.map(customer => (
+                  <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-40">
                 <SelectValue />
