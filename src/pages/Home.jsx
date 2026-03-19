@@ -140,6 +140,11 @@ export default function Home() {
           open={showCreateDialog}
           onOpenChange={setShowCreateDialog}
         />
+        <ImportExcelDialog
+          open={showImportDialog}
+          onOpenChange={setShowImportDialog}
+          type="sites"
+        />
 
         <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
           <DialogContent className="sm:max-w-md">

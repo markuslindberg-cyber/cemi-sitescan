@@ -153,6 +153,11 @@ export default function Customers() {
           open={showCreateDialog}
           onOpenChange={setShowCreateDialog}
         />
+        <ImportExcelDialog
+          open={showImportDialog}
+          onOpenChange={setShowImportDialog}
+          type="customers"
+        />
       </div>
     </div>
   );
