@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { Building2, Users, FileText, Menu, X } from 'lucide-react';
+import { Building2, Users, FileText, Menu, X, Home } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
