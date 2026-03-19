@@ -11,7 +11,7 @@ export default function ReportFrontPage({ inspection, site, customer }) {
           className="h-40 md:h-48 object-contain mb-8"
         />
         <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
-          {inspection.report_title || 'Utemiljö Besiktningsrapport'}
+          {inspection.report_title || 'Tillsynsrapport'}
         </h1>
 
         <div className="w-24 h-1 bg-red-600 mb-6 md:mb-8"></div>
