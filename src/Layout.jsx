@@ -19,11 +19,17 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
-                alt="CEMI Logo" 
-                className="h-10 object-contain"
-              />
+              <Link to={createPageUrl('Landing')}>
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
+                  alt="CEMI Logo" 
+                  className="h-10 object-contain cursor-pointer"
+                />
+              </Link>
+              <Link to={createPageUrl('Landing')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-700 transition-colors">
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">Startsida</span>
+              </Link>
             </div>
             
             <button 
