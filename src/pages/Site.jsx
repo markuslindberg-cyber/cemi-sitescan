@@ -270,9 +270,45 @@ export default function Site() {
                               </p>
                             )}
                           </div>
-                          <Button variant="ghost" size="sm">
-                            {inspection.status === 'completed' ? 'View Report' : 'Continue'}
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm">
+                              {inspection.status === 'completed' ? 'View Report' : 'Continue'}
+                            </Button>
+                            {currentUser?.role === 'admin' && (
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Radera inspektion?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Detta tar bort inspektion {inspection.inspection_number} och alla dess punkter permanent. Åtgärden kan inte ångras.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      className="bg-red-600 hover:bg-red-700"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        deleteInspectionMutation.mutate(inspection.id);
+                                      }}
+                                    >
+                                      Radera
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
