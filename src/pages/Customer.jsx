@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, MapPin, Calendar, User, FileText } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, User, FileText, Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
+import EditCustomerDialog from '../components/customers/EditCustomerDialog';
 
 export default function Customer() {
   const urlParams = new URLSearchParams(window.location.search);
   const customerId = urlParams.get('id');
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const { data: customer, isLoading: customerLoading } = useQuery({
     queryKey: ['customer', customerId],
@@ -39,7 +41,7 @@ export default function Customer() {
 
   const getSiteName = (siteId) => {
     const site = sites.find(s => s.id === siteId);
-    return site ? site.name : 'Unknown Site';
+    return site ? site.name : 'Okänd plats';
   };
 
   if (customerLoading) {
@@ -59,9 +61,9 @@ export default function Customer() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-8">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Customer not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Kunden hittades inte</h2>
           <Link to={createPageUrl('Customers')}>
-            <Button className="mt-4">Back to Customers</Button>
+            <Button className="mt-4">Tillbaka till kunder</Button>
           </Link>
         </div>
       </div>
@@ -74,19 +76,25 @@ export default function Customer() {
         <Link to={createPageUrl('Customers')}>
           <Button variant="ghost" className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Customers
+            Tillbaka till kunder
           </Button>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-2xl">{customer.name}</CardTitle>
+              <div className="flex items-start justify-between">
+                <CardTitle className="text-2xl">{customer.name}</CardTitle>
+                <Button variant="outline" size="sm" onClick={() => setShowEditDialog(true)}>
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Redigera
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-3">
               {customer.project_number && (
                 <div className="text-sm text-gray-500 mb-2">
-                  Project: <span className="font-semibold text-gray-700">{customer.project_number}</span>
+                  Projekt: <span className="font-semibold text-gray-700">{customer.project_number}</span>
                 </div>
               )}
               {customer.contact_person && (
@@ -109,7 +117,7 @@ export default function Customer() {
               )}
               {customer.notes && (
                 <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Notes:</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Anteckningar:</p>
                   <p className="text-gray-600 whitespace-pre-wrap">{customer.notes}</p>
                 </div>
               )}
@@ -118,19 +126,19 @@ export default function Customer() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Statistics</CardTitle>
+              <CardTitle>Statistik</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Total Sites</span>
+                <span className="text-sm text-gray-600">Totalt platser</span>
                 <span className="font-semibold text-lg">{sites.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Total Inspections</span>
+                <span className="text-sm text-gray-600">Totalt inspektioner</span>
                 <span className="font-semibold text-lg">{customerInspections.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Completed</span>
+                <span className="text-sm text-gray-600">Slutförda</span>
                 <span className="font-semibold text-lg">
                   {customerInspections.filter(i => i.status === 'completed').length}
                 </span>
@@ -144,12 +152,12 @@ export default function Customer() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
-                Sites ({sites.length})
+                Platser ({sites.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
               {sites.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">No sites for this customer</p>
+                <p className="text-center text-gray-500 py-8">Inga platser för denna kund</p>
               ) : (
                 <div className="space-y-3">
                   {sites.map(site => (
@@ -173,12 +181,12 @@ export default function Customer() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
-                Recent Inspections
+                Senaste inspektioner
               </CardTitle>
             </CardHeader>
             <CardContent>
               {customerInspections.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">No inspections yet</p>
+                <p className="text-center text-gray-500 py-8">Inga inspektioner ännu</p>
               ) : (
                 <div className="space-y-3">
                   {customerInspections.slice(0, 10).map(inspection => (
@@ -201,11 +209,11 @@ export default function Customer() {
                                   : 'bg-yellow-100 text-yellow-800'
                               }
                             >
-                              {inspection.status === 'completed' ? 'Completed' : 'In Progress'}
+                              {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                             </Badge>
                             <span className="text-sm text-gray-500 flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              {new Date(inspection.inspection_date).toLocaleDateString()}
+                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
                             </span>
                           </div>
                           <h4 className="font-semibold text-gray-900 text-sm">
@@ -223,6 +231,12 @@ export default function Customer() {
             </CardContent>
           </Card>
         </div>
+
+        <EditCustomerDialog
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          customer={customer}
+        />
       </div>
     </div>
   );
