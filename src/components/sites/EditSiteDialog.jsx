@@ -74,7 +74,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
       queryClient.invalidateQueries({ queryKey: ['site', site.id] });
       queryClient.invalidateQueries({ queryKey: ['sites'] });
       queryClient.invalidateQueries({ queryKey: ['all-sites'] });
-      toast.success('Site updated successfully');
+      toast.success('Området har uppdaterats');
       onOpenChange(false);
     }
   });
@@ -87,9 +87,9 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setFormData(prev => ({ ...prev, map_image_url: file_url }));
-      toast.success('Map uploaded successfully');
+      toast.success('Kartan har laddats upp');
     } catch (error) {
-      toast.error('Failed to upload map');
+      toast.error('Kunde inte ladda upp kartan');
     } finally {
       setUploading(false);
     }
@@ -97,7 +97,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
 
   const handleSearchAddress = async () => {
     if (!searchAddress.trim()) {
-      toast.error('Please enter an address');
+      toast.error('Ange en adress');
       return;
     }
 
@@ -117,12 +117,12 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
             lng: parseFloat(lon)
           }
         }));
-        toast.success('Location found');
+        toast.success('Plats hittad');
       } else {
-        toast.error('Address not found');
+        toast.error('Adressen hittades inte');
       }
     } catch (error) {
-      toast.error('Failed to search address');
+      toast.error('Kunde inte söka efter adress');
     } finally {
       setSearching(false);
     }
@@ -130,7 +130,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      toast.error('Geolocation is not supported by your browser');
+      toast.error('Geolokalisering stöds inte av din webbläsare');
       return;
     }
 
@@ -144,11 +144,11 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
             lng: position.coords.longitude
           }
         }));
-        toast.success('Current location set');
+        toast.success('Aktuell plats angiven');
         setGettingLocation(false);
       },
       (error) => {
-        toast.error('Failed to get current location');
+        toast.error('Kunde inte hämta aktuell plats');
         setGettingLocation(false);
       }
     );
@@ -164,7 +164,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
         map_type: 'uploaded',
         map_image_url: selectedSite.map_image_url
       }));
-      toast.success('Map copied from site');
+      toast.success('Kartan kopierad från området');
     } else if (selectedSite.map_type === 'google_maps' && selectedSite.google_maps_center) {
       setFormData(prev => ({
         ...prev,
@@ -172,16 +172,16 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
         google_maps_center: selectedSite.google_maps_center,
         google_maps_zoom: selectedSite.google_maps_zoom || 18
       }));
-      toast.success('Map location copied from site');
+      toast.success('Kartplats kopierad från området');
     } else {
-      toast.error('Selected site has no map');
+      toast.error('Valt område har ingen karta');
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      toast.error('Please enter a site name');
+      toast.error('Ange ett områdesnamn');
       return;
     }
     updateMutation.mutate(formData);
@@ -191,20 +191,20 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Site</DialogTitle>
+          <DialogTitle>Redigera område</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="customer_id">Customer</Label>
+            <Label htmlFor="customer_id">Kund</Label>
             <Select
               value={formData.customer_id}
               onValueChange={handleCustomerChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a customer (optional)" />
+                <SelectValue placeholder="Välj en kund (valfritt)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={null}>No customer</SelectItem>
+                <SelectItem value={null}>Ingen kund</SelectItem>
                 {customers.map(customer => (
                   <SelectItem key={customer.id} value={customer.id}>
                     {customer.name}
@@ -215,33 +215,33 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
           </div>
 
           <div>
-            <Label htmlFor="name">Site Name *</Label>
+            <Label htmlFor="name">Områdesnamn *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Garden A, Park West, etc."
+              placeholder="Område A, Park Väst, osv."
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="project_number">Project Number</Label>
+            <Label htmlFor="project_number">Projektnummer</Label>
             <Input
               id="project_number"
               value={formData.project_number}
               onChange={(e) => setFormData(prev => ({ ...prev, project_number: e.target.value }))}
-              placeholder="P-001, PRJ-2024, etc."
+              placeholder="P-001, PRJ-2024, osv."
             />
           </div>
 
           <div>
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location">Plats</Label>
             <Input
               id="location"
               value={formData.location}
               onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              placeholder="123 Main St, City"
+              placeholder="Storgatan 123, Stad"
             />
           </div>
 
@@ -254,18 +254,18 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Beskrivning</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Additional details about this site"
+              placeholder="Ytterligare detaljer om detta område"
               rows={3}
             />
           </div>
 
           <div>
-            <Label>Map Type</Label>
+            <Label>Karttyp</Label>
             <Select
               value={formData.map_type}
               onValueChange={(value) => setFormData(prev => ({ ...prev, map_type: value }))}
@@ -274,25 +274,25 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="uploaded">Upload Map/Drawing</SelectItem>
-                <SelectItem value="google_maps">Use Apple Maps</SelectItem>
+                <SelectItem value="uploaded">Ladda upp karta/ritning</SelectItem>
+                <SelectItem value="google_maps">Använd kartfunktion</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {formData.customer_id && customerSites.filter(s => s.id !== site?.id && (s.map_image_url || s.google_maps_center)).length > 0 && (
             <div>
-              <Label>Or Copy Map from Existing Site</Label>
+              <Label>Eller kopiera karta från befintligt område</Label>
               <Select onValueChange={handleCopyMapFromSite}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a site to copy map from" />
+                  <SelectValue placeholder="Välj ett område att kopiera kartan från" />
                 </SelectTrigger>
                 <SelectContent>
                   {customerSites
                     .filter(s => s.id !== site?.id && (s.map_image_url || s.google_maps_center))
                     .map(s => (
                       <SelectItem key={s.id} value={s.id}>
-                        {s.name} ({s.map_type === 'uploaded' ? 'Image' : 'Apple Maps'})
+                         {s.name} ({s.map_type === 'uploaded' ? 'Bild' : 'Kartfunktion'})
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -302,31 +302,31 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
 
           {formData.map_type === 'uploaded' && (
             <div>
-              <Label>Site Map / Drawing</Label>
+              <Label>Områdeskarta / Ritning</Label>
               <div className="mt-2">
                 {formData.map_image_url ? (
                   <div className="relative">
                     <img
                       src={formData.map_image_url}
-                      alt="Site map"
+                      alt="Områdeskarta"
                       className="w-full h-48 object-cover rounded-lg border"
                     />
                     <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => setFormData(prev => ({ ...prev, map_image_url: '' }))}
-                      className="absolute top-2 right-2"
+                     type="button"
+                     variant="secondary"
+                     size="sm"
+                     onClick={() => setFormData(prev => ({ ...prev, map_image_url: '' }))}
+                     className="absolute top-2 right-2"
                     >
-                      Change
+                     Ändra
                     </Button>
                   </div>
                 ) : (
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <Upload className="w-8 h-8 text-gray-400 mb-2" />
                     <span className="text-sm text-gray-600">
-                      {uploading ? 'Uploading...' : 'Click to upload map or drawing'}
-                    </span>
+                       {uploading ? 'Laddar upp...' : 'Klicka för att ladda upp karta eller ritning'}
+                     </span>
                     <input
                       type="file"
                       className="hidden"
@@ -343,10 +343,10 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
           {formData.map_type === 'google_maps' && (
             <div className="space-y-3">
               <div>
-                <Label>Search Address</Label>
+                <Label>Sök adress</Label>
                 <div className="flex gap-2 mt-1">
                   <Input
-                    placeholder="Enter address to search"
+                    placeholder="Ange adress att söka"
                     value={searchAddress}
                     onChange={(e) => setSearchAddress(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleSearchAddress())}
@@ -357,7 +357,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
                     onClick={handleSearchAddress}
                     disabled={searching}
                   >
-                    {searching ? 'Searching...' : 'Search'}
+                    {searching ? 'Söker...' : 'Sök'}
                   </Button>
                 </div>
               </div>
@@ -369,13 +369,13 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
                   disabled={gettingLocation}
                   className="w-full"
                 >
-                  {gettingLocation ? 'Getting Location...' : 'Use My Current Location'}
+                  {gettingLocation ? 'Hämtar plats...' : 'Använd min aktuella plats'}
                 </Button>
               </div>
-              <Label className="text-xs text-gray-500">Or enter coordinates manually:</Label>
+              <Label className="text-xs text-gray-500">Eller ange koordinater manuellt:</Label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="lat" className="text-xs">Latitude</Label>
+                  <Label htmlFor="lat" className="text-xs">Latitud</Label>
                   <Input
                     id="lat"
                     type="number"
@@ -392,7 +392,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="lng" className="text-xs">Longitude</Label>
+                   <Label htmlFor="lng" className="text-xs">Longitud</Label>
                   <Input
                     id="lng"
                     type="number"
@@ -410,7 +410,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
                 </div>
               </div>
               <div>
-                <Label htmlFor="zoom" className="text-xs">Zoom Level (1-20)</Label>
+                <Label htmlFor="zoom" className="text-xs">Zoomnivå (1-20)</Label>
                 <Input
                   id="zoom"
                   type="number"
@@ -425,7 +425,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
 
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              Avbryt
             </Button>
             <Button
               type="submit"
@@ -435,10 +435,10 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
               {updateMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Updating...
+                  Sparar...
                 </>
               ) : (
-                'Save Changes'
+                'Spara ändringar'
               )}
             </Button>
           </div>
