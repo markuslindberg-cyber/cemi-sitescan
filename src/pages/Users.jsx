@@ -28,32 +28,32 @@ export default function UsersPage() {
       return await base44.auth.inviteUser(email, role);
     },
     onSuccess: () => {
-      toast.success('User invited successfully');
+      toast.success('Användaren har bjudits in');
       setIsInviteOpen(false);
       setInviteEmail('');
       setInviteRole('user');
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to invite user');
+      toast.error(error.message || 'Kunde inte bjuda in användaren');
     }
   });
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ userId, role }) => base44.entities.User.update(userId, { role }),
     onSuccess: () => {
-      toast.success('User role updated');
+      toast.success('Användarrollen har uppdaterats');
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to update role');
+      toast.error(error.message || 'Kunde inte uppdatera rollen');
     }
   });
 
   const handleInvite = (e) => {
     e.preventDefault();
     if (!inviteEmail) {
-      toast.error('Please enter an email address');
+      toast.error('Ange en e-postadress');
       return;
     }
     inviteMutation.mutate({ email: inviteEmail, role: inviteRole });
@@ -76,43 +76,43 @@ export default function UsersPage() {
             <DialogTrigger asChild>
               <Button className="bg-emerald-600 hover:bg-emerald-700">
                 <UserPlus className="w-4 h-4 mr-2" />
-                Invite User
+                Bjud in användare
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Invite New User</DialogTitle>
+                <DialogTitle>Bjud in ny användare</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleInvite} className="space-y-4">
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">E-postadress</Label>
                   <Input
                     id="email"
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="user@example.com"
+                    placeholder="anvandare@exempel.com"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">Role</Label>
+                  <Label htmlFor="role">Roll</Label>
                   <Select value={inviteRole} onValueChange={setInviteRole}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="user">Användare</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button type="button" variant="outline" onClick={() => setIsInviteOpen(false)}>
-                    Cancel
+                    Avbryt
                   </Button>
                   <Button type="submit" disabled={inviteMutation.isPending}>
-                    {inviteMutation.isPending ? 'Inviting...' : 'Send Invite'}
+                    {inviteMutation.isPending ? 'Skickar...' : 'Skicka inbjudan'}
                   </Button>
                 </div>
               </form>
@@ -122,16 +122,16 @@ export default function UsersPage() {
 
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">Loading users...</p>
+            <p className="text-gray-500">Laddar användare...</p>
           </div>
         ) : users.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
               <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">No users found</p>
+              <p className="text-gray-500 mb-4">Inga användare hittades</p>
               <Button onClick={() => setIsInviteOpen(true)}>
                 <UserPlus className="w-4 h-4 mr-2" />
-                Invite First User
+                Bjud in första användaren
               </Button>
             </CardContent>
           </Card>
@@ -146,13 +146,13 @@ export default function UsersPage() {
                         <User className="w-6 h-6 text-emerald-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{user.full_name || 'No name'}</h3>
+                        <h3 className="font-semibold text-gray-900">{user.full_name || 'Inget namn'}</h3>
                         <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                           <Mail className="w-3 h-3" />
                           {user.email}
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          Joined {new Date(user.created_date).toLocaleDateString()}
+                          Gick med {new Date(user.created_date).toLocaleDateString('sv-SE')}
                         </p>
                       </div>
                     </div>
@@ -172,7 +172,7 @@ export default function UsersPage() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="user">User</SelectItem>
+                          <SelectItem value="user">Användare</SelectItem>
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>

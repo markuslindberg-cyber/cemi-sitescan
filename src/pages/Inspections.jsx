@@ -20,7 +20,7 @@ export default function Inspections() {
 
   const getSiteName = (siteId) => {
     const site = sites.find(s => s.id === siteId);
-    return site ? site.name : 'Unknown Site';
+    return site ? site.name : 'Okänd plats';
   };
 
   const getSiteLocation = (siteId) => {
@@ -50,8 +50,8 @@ export default function Inspections() {
         ) : inspections.length === 0 ? (
           <Card className="p-12 text-center">
             <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No inspections yet</h3>
-            <p className="text-gray-600">Start your first inspection from a site page</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga inspektioner ännu</h3>
+            <p className="text-gray-600">Starta din första inspektion från en platssida</p>
           </Card>
         ) : (
           <div className="grid gap-4">
@@ -77,11 +77,11 @@ export default function Inspections() {
                                 : 'bg-yellow-100 text-yellow-800'
                             }
                           >
-                            {inspection.status === 'completed' ? 'Completed' : 'In Progress'}
+                            {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                           </Badge>
                           <span className="text-sm text-gray-500 flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
-                            {new Date(inspection.inspection_date).toLocaleDateString()}
+                            {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
                           </span>
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
