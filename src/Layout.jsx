@@ -14,7 +14,15 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex flex-col">
+    <div 
+      className="min-h-screen flex flex-col"
+      style={{
+        backgroundImage: 'url(https://media.base44.com/images/public/698b067db5e721251596eb5e/bbb18a68d_0286130d-b419-4706-9d1f-80337e32bb89.jpg)',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center'
+      }}
+    >
       <nav className="bg-white shadow-sm border-b print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
