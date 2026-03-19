@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, User, MapPin, Camera } from 'lucide-react';
 import ReportFrontPage from './ReportFrontPage';
 import ReportSummaryPage from './ReportSummaryPage';
+import MapWithMarkers from './MapWithMarkers';
 
 const severityColors = {
   low: 'bg-blue-100 text-blue-800 border-blue-200',
