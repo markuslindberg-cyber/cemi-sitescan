@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function Inspections() {
   const [filterCustomer, setFilterCustomer] = useState('all');
   const [filterSite, setFilterSite] = useState('all');
+  const [filterInspector, setFilterInspector] = useState('all');
 
   const { data: inspections = [], isLoading } = useQuery({
     queryKey: ['all-inspections'],
@@ -37,10 +38,14 @@ export default function Inspections() {
     ? sites
     : sites.filter(s => s.customer_id === filterCustomer);
 
+  // Get unique inspector names
+  const inspectorNames = [...new Set(inspections.map(ins => ins.inspector_name).filter(Boolean))].sort();
+
   const filteredInspections = inspections.filter(ins => {
     const site = getSite(ins.site_id);
     if (filterSite !== 'all' && ins.site_id !== filterSite) return false;
     if (filterCustomer !== 'all' && site?.customer_id !== filterCustomer) return false;
+    if (filterInspector !== 'all' && ins.inspector_name !== filterInspector) return false;
     return true;
   });
 
@@ -74,6 +79,18 @@ export default function Inspections() {
               <SelectItem value="all">Alla platser</SelectItem>
               {sitesForCustomer.map(s => (
                 <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={filterInspector} onValueChange={setFilterInspector}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filtrera på inspektör" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla inspektörer</SelectItem>
+              {inspectorNames.map(name => (
+                <SelectItem key={name} value={name}>{name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
