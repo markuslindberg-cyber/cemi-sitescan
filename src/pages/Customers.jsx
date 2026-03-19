@@ -15,9 +15,9 @@ export default function Customers() {
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
 
-  const { data: customers = [], isLoading: customersLoading } = useQuery({
+  const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list('-updated_date')
+    queryFn: () => base44.entities.Customer.list()
   });
 
   const { data: sites = [] } = useQuery({
@@ -29,6 +29,24 @@ export default function Customers() {
     queryKey: ['all-inspections'],
     queryFn: () => base44.entities.Inspection.list()
   });
+
+  const getSortedCustomers = () => {
+    let sorted = [...allCustomers];
+    if (sortBy === 'updated') {
+      sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+    } else if (sortBy === 'sites') {
+      sorted.sort((a, b) => {
+        const countA = sites.filter(s => s.customer_id === a.id).length;
+        const countB = sites.filter(s => s.customer_id === b.id).length;
+        return countB - countA;
+      });
+    } else if (sortBy === 'manager') {
+      sorted.sort((a, b) => (a.account_manager || '').localeCompare(b.account_manager || ''));
+    }
+    return sorted;
+  };
+
+  const customers = getSortedCustomers();
 
   const getCustomerStats = (customerId) => {
     const customerSites = sites.filter(s => s.customer_id === customerId);
