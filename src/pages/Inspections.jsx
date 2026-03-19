@@ -13,6 +13,7 @@ export default function Inspections() {
   const [filterCustomer, setFilterCustomer] = useState('all');
   const [filterSite, setFilterSite] = useState('all');
   const [filterInspector, setFilterInspector] = useState('all');
+  const [filterSiteManager, setFilterSiteManager] = useState('all');
   const [viewMode, setViewMode] = useState('list');
 
   const { data: inspections = [], isLoading } = useQuery({
@@ -60,8 +61,15 @@ export default function Inspections() {
     if (filterSite !== 'all' && ins.site_id !== filterSite) return false;
     if (filterCustomer !== 'all' && site?.customer_id !== filterCustomer) return false;
     if (filterInspector !== 'all' && ins.inspector_name !== filterInspector) return false;
+    if (filterSiteManager !== 'all' && site?.site_manager !== filterSiteManager) return false;
     return true;
   });
+
+  const uniqueSiteManagers = [...new Set(sites.filter(s => s.site_manager).map(s => s.site_manager))].sort();
+  const getSiteManagerName = (managerId) => {
+    const user = users.find(u => u.id === managerId);
+    return user ? `${user.first_name} ${user.last_name}`.trim() || user.full_name : managerId;
+  };
 
   return (
     <div className="p-4 md:p-8">
@@ -116,17 +124,29 @@ export default function Inspections() {
           </Select>
 
           <Select value={filterInspector} onValueChange={setFilterInspector}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filtrera på inspektör" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alla inspektörer</SelectItem>
-              {uniqueInspectorNames.map(name => (
-                <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+             <SelectTrigger className="w-48">
+               <SelectValue placeholder="Filtrera på inspektör" />
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">Alla inspektörer</SelectItem>
+               {uniqueInspectorNames.map(name => (
+                 <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
+               ))}
+             </SelectContent>
+           </Select>
+
+           <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
+             <SelectTrigger className="w-48">
+               <SelectValue placeholder="Filtrera på områdesansvarig" />
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">Alla områdesansvariga</SelectItem>
+               {uniqueSiteManagers.map(managerId => (
+                 <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
+               ))}
+             </SelectContent>
+           </Select>
+          </div>
 
         {isLoading ? (
           <div className="grid gap-4">
