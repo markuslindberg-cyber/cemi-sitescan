@@ -45,14 +45,14 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
 
       <div className="p-4 flex-1">
         <h2 className="font-semibold text-gray-900 mb-3">
-          Inspection Points ({points.length})
+          Inspektionspunkter ({points.length})
         </h2>
         
         {points.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <FileText className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-            <p className="text-sm">No points marked yet</p>
-            <p className="text-xs mt-1">Click on the map to add inspection points</p>
+            <p className="text-sm">Inga punkter markerade ännu</p>
+            <p className="text-xs mt-1">Klicka på kartan för att lägga till inspektionspunkter</p>
           </div>
         ) : (
           <div className="space-y-3">

@@ -67,7 +67,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     mutationFn: (data) => base44.entities.InspectionPoint.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspection-points'] });
-      toast.success('Inspection point added');
+      toast.success('Inspektionspunkt tillagd');
       onOpenChange(false);
     }
   });
@@ -76,7 +76,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     mutationFn: ({ id, data }) => base44.entities.InspectionPoint.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspection-points'] });
-      toast.success('Inspection point updated');
+      toast.success('Inspektionspunkt uppdaterad');
       onOpenChange(false);
     }
   });
@@ -85,7 +85,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
     mutationFn: (id) => base44.entities.InspectionPoint.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspection-points'] });
-      toast.success('Inspection point deleted');
+      toast.success('Inspektionspunkt raderad');
       onOpenChange(false);
     }
   });
@@ -110,9 +110,9 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         ...prev,
         photo_details: [...prev.photo_details, ...newPhotos]
       }));
-      toast.success(`${files.length} photo(s) uploaded`);
+      toast.success(`${files.length} foto(n) uppladdade`);
     } catch (error) {
-      toast.error('Failed to upload photos');
+      toast.error('Kunde inte ladda upp foton');
     } finally {
       setUploading(false);
     }
@@ -157,7 +157,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
 
   const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
-      toast.error('Geolocation is not supported by your browser');
+      toast.error('Platsinformation stöds inte av din webbläsare');
       return;
     }
 
@@ -175,11 +175,11 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
           longitude: position.coords.longitude,
           location_address: address
         }));
-        toast.success('Location captured');
+        toast.success('Plats registrerad');
         setGettingLocation(false);
       },
       (error) => {
-        toast.error('Failed to get location');
+      toast.error('Kunde inte hämta platsinformation');
         setGettingLocation(false);
       }
     );
@@ -217,7 +217,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
   };
 
   const handleDelete = () => {
-    if (existingPoint && confirm('Are you sure you want to delete this inspection point?')) {
+    if (existingPoint && confirm('Är du säker på att du vill radera denna inspektionspunkt?')) {
       deleteMutation.mutate(existingPoint.id);
     }
   };
@@ -227,14 +227,14 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {existingPoint ? 'Edit Inspection Point' : 'Add Inspection Point'}
+            {existingPoint ? 'Redigera inspektionspunkt' : 'Lägg till inspektionspunkt'}
           </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="issue_type">Issue Type</Label>
+              <Label htmlFor="issue_type">Ärendetyp</Label>
               <Select
                 value={formData.issue_type}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, issue_type: value }))}
@@ -253,7 +253,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
             </div>
 
             <div>
-              <Label htmlFor="severity">Severity</Label>
+              <Label htmlFor="severity">Allvarlighetsgrad</Label>
               <Select
                 value={formData.severity}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, severity: value }))}
@@ -273,18 +273,18 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
           </div>
 
           <div>
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">Anteckningar</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Describe the issue in detail..."
+              placeholder="Beskriv problemet i detalj..."
               rows={4}
             />
           </div>
 
           <div>
-            <Label>GPS Coordinates</Label>
+            <Label>GPS-koordinater</Label>
             <div className="flex items-center gap-3 mt-2">
               <Button
                 type="button"
@@ -294,7 +294,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                 className="flex-1"
               >
                 <MapPin className="w-4 h-4 mr-2" />
-                {gettingLocation ? 'Getting location...' : 'Capture Current Location'}
+                {gettingLocation ? 'Hämtar plats...' : 'Registrera nuvarande plats'}
               </Button>
             </div>
             {formData.latitude && formData.longitude && (
@@ -312,7 +312,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
           </div>
 
           <div>
-            <Label>Photos</Label>
+            <Label>Foton</Label>
             <div className="mt-2 space-y-3">
               {formData.photo_details.length > 0 && (
                 <div className="space-y-4">
@@ -333,7 +333,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                         </button>
                       </div>
                       <Textarea
-                        placeholder="Add a comment for this photo (optional)..."
+                        placeholder="Lägg till en kommentar för detta foto (valfritt)..."
                         value={photo.comment}
                         onChange={(e) => updatePhotoComment(index, e.target.value)}
                         rows={2}
@@ -345,7 +345,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                             checked={photo.show_address || false}
                             onCheckedChange={() => togglePhotoAddress(index)}
                           />
-                          <span className="text-gray-700">Show location ({formData.location_address}) in report</span>
+                          <span className="text-gray-700">Visa plats ({formData.location_address}) i rapport</span>
                         </div>
                       )}
                     </div>
@@ -356,7 +356,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
               <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                 <Upload className="w-6 h-6 text-gray-400 mb-1" />
                 <span className="text-sm text-gray-600">
-                  {uploading ? 'Uploading...' : 'Click to upload photos'}
+                  {uploading ? 'Laddar upp...' : 'Klicka för att ladda upp foton'}
                 </span>
                 <input
                   type="file"
@@ -380,12 +380,12 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                 disabled={deleteMutation.isPending}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Delete
+                Radera
               </Button>
             )}
             <div className="flex gap-3 ml-auto">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                Avbryt
               </Button>
               <Button
                 type="submit"
@@ -395,12 +395,12 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
                 {(createMutation.isPending || updateMutation.isPending) ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Sparar...
                   </>
                 ) : existingPoint ? (
-                  'Update Point'
+                  'Uppdatera punkt'
                 ) : (
-                  'Add Point'
+                  'Lägg till punkt'
                 )}
               </Button>
             </div>
