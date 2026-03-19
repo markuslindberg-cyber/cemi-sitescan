@@ -18,6 +18,10 @@ export default function UsersPage() {
   const [inviteRole, setInviteRole] = useState('user');
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    base44.auth.me().then(user => setIsAdmin(user?.role === 'admin'));
+  }, []);
+
   const { data: users, isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
