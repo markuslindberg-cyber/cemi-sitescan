@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [sortBy, setSortBy] = useState('updated');
 
   const { data: customers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
