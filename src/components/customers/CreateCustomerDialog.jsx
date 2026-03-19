@@ -68,22 +68,22 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
           </div>
 
           <div>
-            <Label htmlFor="project_number">Project Number</Label>
+            <Label htmlFor="project_number">Projektnummer</Label>
             <Input
               id="project_number"
               value={formData.project_number}
               onChange={(e) => setFormData(prev => ({ ...prev, project_number: e.target.value }))}
-              placeholder="Project reference number"
+              placeholder="Projektreferensnummer"
             />
           </div>
 
           <div>
-            <Label htmlFor="contact_person">Contact Person</Label>
+            <Label htmlFor="contact_person">Kontaktperson</Label>
             <Input
               id="contact_person"
               value={formData.contact_person}
               onChange={(e) => setFormData(prev => ({ ...prev, contact_person: e.target.value }))}
-              placeholder="Name of main contact"
+              placeholder="Namn på huvudkontakt"
             />
           </div>
 
