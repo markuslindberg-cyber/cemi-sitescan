@@ -70,7 +70,17 @@ export default function Customers() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Kunder</h1>
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="updated">Senaste ändrade</SelectItem>
+                <SelectItem value="sites">Efter områden</SelectItem>
+                <SelectItem value="manager">Efter ansvarig</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
