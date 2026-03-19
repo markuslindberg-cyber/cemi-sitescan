@@ -208,5 +208,43 @@ export default function UsersPage() {
         )}
       </div>
     </div>
+
+    <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Skanna QR-kod</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center gap-4 py-4">
+          <QRCodeCanvas
+            id="qr-canvas"
+            value={window.location.origin}
+            size={256}
+            level="H"
+            includeMargin={true}
+          />
+          <p className="text-sm text-gray-600 text-center">
+            Skanna denna kod med din telefon för att öppna appen
+          </p>
+          <p className="text-xs text-gray-500 text-center break-all px-4">
+            {window.location.origin}
+          </p>
+          <Button
+            variant="outline"
+            className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+            onClick={() => {
+              const canvas = document.getElementById('qr-canvas');
+              const url = canvas.toDataURL('image/png');
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'qr-kod.png';
+              a.click();
+            }}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Ladda ner QR-kod
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
