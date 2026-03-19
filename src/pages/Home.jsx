@@ -31,24 +31,24 @@ export default function Home() {
 
   const getSortedSites = () => {
     let filtered = [...allSites];
-    
+
     // Apply manager filter
     if (filterManager !== 'all') {
-      filtered = filtered.filter(s => s.site_manager === filterManager);
+      filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
-    
+
     // Apply customer filter
     if (filterCustomer !== 'all') {
-      filtered = filtered.filter(s => s.customer_id === filterCustomer);
+      filtered = filtered.filter((s) => s.customer_id === filterCustomer);
     }
-    
+
     let sorted = filtered;
     if (sortBy === 'updated') {
       sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
     } else if (sortBy === 'customer') {
       sorted.sort((a, b) => {
-        const customerA = customers.find(c => c.id === a.customer_id)?.name || '';
-        const customerB = customers.find(c => c.id === b.customer_id)?.name || '';
+        const customerA = customers.find((c) => c.id === a.customer_id)?.name || '';
+        const customerB = customers.find((c) => c.id === b.customer_id)?.name || '';
         return customerA.localeCompare(customerB);
       });
     } else if (sortBy === 'manager') {
@@ -57,7 +57,7 @@ export default function Home() {
     return sorted;
   };
 
-  const uniqueManagers = [...new Set(allSites.filter(s => s.site_manager).map(s => s.site_manager))].sort();
+  const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
 
   const sites = getSortedSites();
 
@@ -67,11 +67,11 @@ export default function Home() {
   });
 
   const getInspectionCount = (siteId) => {
-    return inspections.filter(i => i.site_id === siteId).length;
+    return inspections.filter((i) => i.site_id === siteId).length;
   };
 
   const getLastInspectionDate = (siteId) => {
-    const siteInspections = inspections.filter(i => i.site_id === siteId);
+    const siteInspections = inspections.filter((i) => i.site_id === siteId);
     if (siteInspections.length === 0) return null;
     return siteInspections[0].inspection_date;
   };
@@ -90,16 +90,16 @@ export default function Home() {
                 size="sm"
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 onClick={() => setViewMode('grid')}
-                className="w-10 p-0"
-              >
+                className="w-10 p-0">
+                
                 <LayoutGrid className="w-4 h-4" />
               </Button>
               <Button
                 size="sm"
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 onClick={() => setViewMode('list')}
-                className="w-10 p-0"
-              >
+                className="w-10 p-0">
+                
                 <List className="w-4 h-4" />
               </Button>
             </div>
@@ -109,9 +109,9 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alla områdesansvariga</SelectItem>
-                {uniqueManagers.map(manager => (
-                  <SelectItem key={manager} value={manager}>{manager}</SelectItem>
-                ))}
+                {uniqueManagers.map((manager) =>
+                <SelectItem key={manager} value={manager}>{manager}</SelectItem>
+                )}
               </SelectContent>
             </Select>
             <Select value={filterCustomer} onValueChange={setFilterCustomer}>
@@ -120,15 +120,15 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alla kunder</SelectItem>
-                {customers.map(customer => (
-                  <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
-                ))}
+                {customers.map((customer) =>
+                <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+                )}
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
+              
+
+              
               <SelectContent>
                 <SelectItem value="updated">Senaste ändrade</SelectItem>
                 <SelectItem value="customer">Efter kund</SelectItem>
@@ -138,35 +138,35 @@ export default function Home() {
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-50"
-            >
+              className="border-green-600 text-green-600 hover:bg-green-50">
+              
               <Upload className="w-5 h-5 mr-2" />
               Importera Excel
             </Button>
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-green-600 hover:bg-green-700"
-            >
+              className="bg-green-600 hover:bg-green-700">
+              
               <Plus className="w-5 h-5 mr-2" />
               Lägg till plats
             </Button>
           </div>
         </div>
 
-        {isLoading ? (
-           <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-3'}>
-             {[1, 2, 3].map(i => (
-               <Card key={i} className="animate-pulse">
+        {isLoading ?
+        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-3'}>
+             {[1, 2, 3].map((i) =>
+          <Card key={i} className="animate-pulse">
                  <div className={viewMode === 'grid' ? 'h-48 bg-gray-200 rounded-t-lg' : 'h-20 bg-gray-200'} />
                  <CardContent className="p-6">
                    <div className="h-6 bg-gray-200 rounded mb-2" />
                    <div className="h-4 bg-gray-200 rounded w-2/3" />
                  </CardContent>
                </Card>
-             ))}
-           </div>
-         ) : sites.length === 0 ? (
-          <Card className="p-12 text-center">
+          )}
+           </div> :
+        sites.length === 0 ?
+        <Card className="p-12 text-center">
             <MapPin className="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga platser ännu</h3>
             <p className="text-gray-600 mb-6">Skapa din första plats för att börja genomföra inspektioner</p>
@@ -174,91 +174,91 @@ export default function Home() {
               <Plus className="w-5 h-5 mr-2" />
               Skapa första platsen
             </Button>
-          </Card>
-        ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sites.map(site => (
-              <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
+          </Card> :
+        viewMode === 'grid' ?
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sites.map((site) =>
+          <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                  {site.map_image_url ? (
-                    <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
+                  {site.map_image_url ?
+              <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
                       <img
-                        src={site.map_image_url}
-                        alt={site.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center rounded-t-lg">
+                  src={site.map_image_url}
+                  alt={site.name}
+                  className="w-full h-full object-cover" />
+                
+                    </div> :
+
+              <div className="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center rounded-t-lg">
                       <MapPin className="w-16 h-16 text-green-600 opacity-50" />
                     </div>
-                  )}
+              }
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{site.name}</h3>
-                    {site.location && (
-                      <p className="text-sm text-gray-600 mb-3 flex items-center gap-1">
+                    {site.location &&
+                <p className="text-sm text-gray-600 mb-3 flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
                         {site.location}
                       </p>
-                    )}
+                }
                     <div className="flex items-center justify-between text-sm text-gray-500 pt-3 border-t">
                       <span>{getInspectionCount(site.id)} inspektioner</span>
-                      {getLastInspectionDate(site.id) && (
-                        <span className="flex items-center gap-1">
+                      {getLastInspectionDate(site.id) &&
+                  <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
                           {new Date(getLastInspectionDate(site.id)).toLocaleDateString()}
                         </span>
-                      )}
+                  }
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {sites.map(site => (
-              <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
+          )}
+          </div> :
+
+        <div className="space-y-3">
+            {sites.map((site) =>
+          <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900">{site.name}</h3>
-                        {site.location && (
-                          <p className="text-sm text-gray-600 flex items-center gap-1">
+                        {site.location &&
+                    <p className="text-sm text-gray-600 flex items-center gap-1">
                             <MapPin className="w-4 h-4" />
                             {site.location}
                           </p>
-                        )}
+                    }
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-500 flex-shrink-0">
                         <span>{getInspectionCount(site.id)} inspektioner</span>
-                        {getLastInspectionDate(site.id) && (
-                          <span className="flex items-center gap-1">
+                        {getLastInspectionDate(site.id) &&
+                    <span className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
                             {new Date(getLastInspectionDate(site.id)).toLocaleDateString()}
                           </span>
-                        )}
+                    }
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-            ))}
+          )}
           </div>
-        )}
+        }
 
         <CreateSiteDialog
           open={showCreateDialog}
-          onOpenChange={setShowCreateDialog}
-        />
+          onOpenChange={setShowCreateDialog} />
+        
         <ImportExcelDialog
           open={showImportDialog}
           onOpenChange={setShowImportDialog}
-          type="sites"
-        />
+          type="sites" />
+        
 
       </div>
-    </div>
-  );
+    </div>);
+
 }
