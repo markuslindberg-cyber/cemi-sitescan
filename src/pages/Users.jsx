@@ -17,6 +17,8 @@ export default function UsersPage() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteFirstName, setInviteFirstName] = useState('');
+  const [inviteLastName, setInviteLastName] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
   const qrRef = useRef(null);
   const queryClient = useQueryClient();
@@ -43,15 +45,23 @@ export default function UsersPage() {
   );
 
   const inviteMutation = useMutation({
-    mutationFn: async ({ email, role }) => {
+    mutationFn: async ({ email, role, first_name, last_name }) => {
       await base44.auth.inviteUser(email, role);
       const me = await base44.auth.me();
       await base44.entities.Invitation.create({ email, role, invited_by: me.email });
+      // Sätt först och efternamn för den nya användaren
+      await base44.entities.User.filter({ email }).then(users => {
+        if (users.length > 0) {
+          return base44.entities.User.update(users[0].id, { first_name, last_name });
+        }
+      });
     },
     onSuccess: () => {
       toast.success('Användaren har bjudits in');
       setIsInviteOpen(false);
       setInviteEmail('');
+      setInviteFirstName('');
+      setInviteLastName('');
       setInviteRole('user');
       queryClient.invalidateQueries({ queryKey: ['users'] });
       queryClient.invalidateQueries({ queryKey: ['invitations'] });
@@ -85,7 +95,16 @@ export default function UsersPage() {
       toast.error('Ange en e-postadress');
       return;
     }
-    inviteMutation.mutate({ email: inviteEmail, role: inviteRole });
+    if (!inviteFirstName.trim() || !inviteLastName.trim()) {
+      toast.error('Ange förnamn och efternamn');
+      return;
+    }
+    inviteMutation.mutate({ 
+      email: inviteEmail, 
+      role: inviteRole,
+      first_name: inviteFirstName.trim(),
+      last_name: inviteLastName.trim()
+    });
   };
 
   const handleRoleChange = (userId, newRole) => {
@@ -142,6 +161,26 @@ export default function UsersPage() {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="first_name">Förnamn</Label>
+                  <Input
+                    id="first_name"
+                    value={inviteFirstName}
+                    onChange={(e) => setInviteFirstName(e.target.value)}
+                    placeholder="John"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="last_name">Efternamn</Label>
+                  <Input
+                    id="last_name"
+                    value={inviteLastName}
+                    onChange={(e) => setInviteLastName(e.target.value)}
+                    placeholder="Doe"
+                    required
+                  />
+                </div>
+                <div>
                   <Label htmlFor="role">Roll</Label>
                   <Select value={inviteRole} onValueChange={setInviteRole}>
                     <SelectTrigger>
@@ -192,7 +231,7 @@ export default function UsersPage() {
                         <User className="w-6 h-6 text-emerald-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{user.full_name || 'Inget namn'}</h3>
+                        <h3 className="font-semibold text-gray-900">{user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.full_name || 'Inget namn'}</h3>
                         <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                           <Mail className="w-3 h-3" />
                           {user.email}
