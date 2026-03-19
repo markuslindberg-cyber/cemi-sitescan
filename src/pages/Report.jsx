@@ -18,6 +18,7 @@ export default function Report() {
   const reportRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
+  const [isEditingReport, setIsEditingReport] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
