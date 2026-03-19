@@ -172,29 +172,14 @@ export default function Customers() {
                         <p className="text-sm text-gray-600 mb-3">{customer.phone}</p>
                       )}
 
-                      <div className="pt-3 border-t space-y-2">
+                      <div className="pt-3 border-t">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 flex items-center gap-1">
                             <MapPin className="w-4 h-4" />
                             Platser
                           </span>
                           <span className="font-semibold">{stats.sitesCount}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">Inspektioner</span>
-                          <span className="font-semibold">{stats.inspectionsCount}</span>
-                          </div>
-                          {stats.lastInspection && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600 flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
-                              Senaste
-                            </span>
-                            <span className="text-gray-700">
-                              {new Date(stats.lastInspection).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -222,7 +207,6 @@ export default function Customers() {
                         </div>
                         <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
                           <span>{stats.sitesCount} platser</span>
-                          <span>{stats.inspectionsCount} inspektioner</span>
                         </div>
                       </div>
                     </CardContent>
