@@ -15,6 +15,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
   const [formData, setFormData] = useState({
     customer_id: '',
     name: '',
+    project_number: '',
     location: '',
     description: '',
     site_manager: '',
@@ -55,6 +56,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
       setFormData({
         customer_id: site.customer_id || '',
         name: site.name || '',
+        project_number: site.project_number || '',
         location: site.location || '',
         description: site.description || '',
         site_manager: site.site_manager || '',
@@ -220,6 +222,16 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Garden A, Park West, etc."
               required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="project_number">Project Number</Label>
+            <Input
+              id="project_number"
+              value={formData.project_number}
+              onChange={(e) => setFormData(prev => ({ ...prev, project_number: e.target.value }))}
+              placeholder="P-001, PRJ-2024, etc."
             />
           </div>
 
