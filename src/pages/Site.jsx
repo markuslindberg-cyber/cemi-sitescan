@@ -108,8 +108,8 @@ export default function Site() {
       <div className="max-w-6xl mx-auto">
         <Link to={createPageUrl('Home')}>
           <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Sites
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Tillbaka till platser
           </Button>
         </Link>
 
@@ -137,15 +137,15 @@ export default function Site() {
                   onClick={() => setShowEditDialog(true)}
                 >
                   <Pencil className="w-4 h-4 mr-2" />
-                  Edit
+                  Redigera
                 </Button>
               </div>
               {customer && (
                 <div className="mb-3 pb-3 border-b">
-                  <p className="text-sm text-gray-500">Customer</p>
+                  <p className="text-sm text-gray-500">Kund</p>
                   <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
                   {customer.project_number && (
-                    <p className="text-sm text-gray-600">Project: {customer.project_number}</p>
+                    <p className="text-sm text-gray-600">Projekt: {customer.project_number}</p>
                   )}
                 </div>
               )}
@@ -163,7 +163,7 @@ export default function Site() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Snabbåtgärder</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button
@@ -172,23 +172,23 @@ export default function Site() {
                 className="w-full bg-green-600 hover:bg-green-700"
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Start New Inspection
+                Starta ny inspektion
               </Button>
               <div className="pt-4 border-t">
-                <div className="text-sm text-gray-600 mb-2">Statistics</div>
+                <div className="text-sm text-gray-600 mb-2">Statistik</div>
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Total Inspections</span>
+                    <span className="text-sm text-gray-600">Totalt inspektioner</span>
                     <span className="font-semibold">{inspections.length}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Completed</span>
+                    <span className="text-sm text-gray-600">Slutförda</span>
                     <span className="font-semibold">
                       {inspections.filter(i => i.status === 'completed').length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">In Progress</span>
+                    <span className="text-sm text-gray-600">Pågående</span>
                     <span className="font-semibold">
                       {inspections.filter(i => i.status === 'in_progress').length}
                     </span>
@@ -202,8 +202,8 @@ export default function Site() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Inspection History
+            <FileText className="w-5 h-5" />
+            Inspektionshistorik
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -216,14 +216,14 @@ export default function Site() {
             ) : inspections.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No inspections yet</h3>
-                <p className="text-gray-600 mb-6">Start your first inspection to track findings</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Inga inspektioner ännu</h3>
+                <p className="text-gray-600 mb-6">Starta din första inspektion för att dokumentera fynd</p>
                 <Button
                   onClick={() => createInspectionMutation.mutate()}
                   className="bg-green-600 hover:bg-green-700"
                 >
                   <Plus className="w-5 h-5 mr-2" />
-                  Start First Inspection
+                  Starta första inspektion
                 </Button>
               </div>
             ) : (
@@ -253,11 +253,11 @@ export default function Site() {
                                         : 'bg-yellow-100 text-yellow-800'
                                     }
                                   >
-                                    {inspection.status === 'completed' ? 'Completed' : 'In Progress'}
+                                    {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                                   </Badge>
                                   <span className="text-sm text-gray-500 flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    {new Date(inspection.inspection_date).toLocaleDateString()}
+                                    {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
                                   </span>
                                 </div>
                             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -272,7 +272,7 @@ export default function Site() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Button variant="ghost" size="sm">
-                              {inspection.status === 'completed' ? 'View Report' : 'Continue'}
+                              {inspection.status === 'completed' ? 'Visa rapport' : 'Fortsätt'}
                             </Button>
                             {currentUser?.role === 'admin' && (
                               <AlertDialog>

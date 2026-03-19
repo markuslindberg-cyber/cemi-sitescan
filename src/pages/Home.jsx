@@ -57,7 +57,7 @@ export default function Home() {
               className="bg-green-600 hover:bg-green-700"
             >
               <Plus className="w-5 h-5 mr-2" />
-              Add New Site
+              Lägg till plats
             </Button>
           </div>
         </div>
@@ -77,11 +77,11 @@ export default function Home() {
         ) : sites.length === 0 ? (
           <Card className="p-12 text-center">
             <MapPin className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No sites yet</h3>
-            <p className="text-gray-600 mb-6">Create your first site to start conducting inspections</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga platser ännu</h3>
+            <p className="text-gray-600 mb-6">Skapa din första plats för att börja genomföra inspektioner</p>
             <Button onClick={() => setShowCreateDialog(true)} className="bg-green-600 hover:bg-green-700">
               <Plus className="w-5 h-5 mr-2" />
-              Create First Site
+              Skapa första platsen
             </Button>
           </Card>
         ) : (
@@ -111,7 +111,7 @@ export default function Home() {
                       </p>
                     )}
                     <div className="flex items-center justify-between text-sm text-gray-500 pt-3 border-t">
-                      <span>{getInspectionCount(site.id)} inspections</span>
+                      <span>{getInspectionCount(site.id)} inspektioner</span>
                       {getLastInspectionDate(site.id) && (
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
@@ -134,7 +134,7 @@ export default function Home() {
         <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Scan QR Code</DialogTitle>
+              <DialogTitle>Skanna QR-kod</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col items-center gap-4 py-4">
               <QRCodeSVG 
@@ -144,7 +144,7 @@ export default function Home() {
                 includeMargin={true}
               />
               <p className="text-sm text-gray-600 text-center">
-                Scan this code with your phone to access the app
+                Skanna denna kod med din telefon för att öppna appen
               </p>
               <p className="text-xs text-gray-500 text-center break-all px-4">
                 {window.location.href}
