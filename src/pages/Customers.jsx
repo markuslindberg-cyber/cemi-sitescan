@@ -32,6 +32,16 @@ export default function Customers() {
     queryFn: () => base44.entities.Inspection.list()
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: () => base44.entities.User.list()
+  });
+
+  const getManagerName = (managerId) => {
+    const user = users.find(u => u.id === managerId);
+    return user ? user.full_name : managerId;
+  };
+
   const getSortedCustomers = () => {
     let filtered = [...allCustomers];
     // Apply manager filter
@@ -49,12 +59,12 @@ export default function Customers() {
         return countB - countA;
       });
     } else if (sortBy === 'manager') {
-      sorted.sort((a, b) => (a.account_manager || '').localeCompare(b.account_manager || ''));
+      sorted.sort((a, b) => getManagerName(a.account_manager || '').localeCompare(getManagerName(b.account_manager || '')));
     }
     return sorted;
   };
 
-  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort();
+  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
 
   const customers = getSortedCustomers();
 
@@ -100,16 +110,16 @@ export default function Customers() {
               </Button>
             </div>
              <Select value={filterManager} onValueChange={setFilterManager}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filtrera på kundasvarig" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alla kundasvariga</SelectItem>
-                {uniqueManagers.map(manager => (
-                  <SelectItem key={manager} value={manager}>{manager}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+               <SelectTrigger className="w-48">
+                 <SelectValue placeholder="Filtrera på kundasvarig" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="all">Alla kundasvariga</SelectItem>
+                 {uniqueManagers.map(manager => (
+                   <SelectItem key={manager} value={manager}>{getManagerName(manager)}</SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-40">
                 <SelectValue />
