@@ -149,14 +149,50 @@ export default function Site() {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-3">
                 <h1 className="text-3xl font-bold text-gray-900">{site.name}</h1>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowEditDialog(true)}
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Redigera
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowEditDialog(true)}
+                  >
+                    <Pencil className="w-4 h-4 mr-2" />
+                    Redigera
+                  </Button>
+                  {currentUser?.role === 'admin' && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 border-red-200 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Radera
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Radera platsen?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Detta raderar {site.name} och alla dess inspektioner permanent. Åtgärden kan inte ångras.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              deleteSiteMutation.mutate();
+                            }}
+                          >
+                            Radera
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
               </div>
               {customer && (
                 <div className="mb-3 pb-3 border-b">
