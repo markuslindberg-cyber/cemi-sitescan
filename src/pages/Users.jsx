@@ -31,9 +31,22 @@ export default function UsersPage() {
     initialData: []
   });
 
+  const { data: invitations } = useQuery({
+    queryKey: ['invitations'],
+    queryFn: () => base44.entities.Invitation.list(),
+    initialData: []
+  });
+
+  // Pending = invited but not yet a registered user
+  const pendingInvitations = invitations.filter(
+    inv => !users.some(u => u.email?.toLowerCase() === inv.email?.toLowerCase())
+  );
+
   const inviteMutation = useMutation({
     mutationFn: async ({ email, role }) => {
-      return await base44.auth.inviteUser(email, role);
+      await base44.auth.inviteUser(email, role);
+      const me = await base44.auth.me();
+      await base44.entities.Invitation.create({ email, role, invited_by: me.email });
     },
     onSuccess: () => {
       toast.success('Användaren har bjudits in');
@@ -41,9 +54,17 @@ export default function UsersPage() {
       setInviteEmail('');
       setInviteRole('user');
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['invitations'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Kunde inte bjuda in användaren');
+    }
+  });
+
+  const deleteInvitationMutation = useMutation({
+    mutationFn: (id) => base44.entities.Invitation.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invitations'] });
     }
   });
 
