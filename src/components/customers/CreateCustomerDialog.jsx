@@ -53,17 +53,17 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add New Customer</DialogTitle>
+          <DialogTitle>Lägg till kund</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Customer Name *</Label>
+            <Label htmlFor="name">Kundnamn *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Company or customer name"
+              placeholder="Företag eller kundnamn"
             />
           </div>
 
