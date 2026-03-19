@@ -42,6 +42,20 @@ export default function Site() {
     enabled: !!siteId
   });
 
+  const [currentUser, setCurrentUser] = React.useState(null);
+  React.useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
+
+  const deleteInspectionMutation = useMutation({
+    mutationFn: async (inspectionId) => {
+      const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspectionId });
+      await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
+      return base44.entities.Inspection.delete(inspectionId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inspections', siteId] });
+    }
+  });
+
   const createInspectionMutation = useMutation({
     mutationFn: async () => {
       const user = await base44.auth.me();
