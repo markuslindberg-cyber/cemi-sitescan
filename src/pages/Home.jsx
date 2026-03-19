@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, MapPin, Calendar, QrCode } from 'lucide-react';
+import { Plus, MapPin, Calendar, QrCode, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
