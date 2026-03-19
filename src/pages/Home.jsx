@@ -9,7 +9,8 @@ import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
+import { Download } from 'lucide-react';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
