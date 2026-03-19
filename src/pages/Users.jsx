@@ -18,6 +18,7 @@ export default function UsersPage() {
   const [showQRCode, setShowQRCode] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
+  const qrRef = useRef(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
