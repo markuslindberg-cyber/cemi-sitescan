@@ -14,6 +14,7 @@ export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
+  const [filterManager, setFilterManager] = useState('all');
 
   const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
@@ -31,7 +32,13 @@ export default function Customers() {
   });
 
   const getSortedCustomers = () => {
-    let sorted = [...allCustomers];
+    let filtered = [...allCustomers];
+    // Apply manager filter
+    if (filterManager !== 'all') {
+      filtered = filtered.filter(c => c.account_manager === filterManager);
+    }
+    
+    let sorted = filtered;
     if (sortBy === 'updated') {
       sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
     } else if (sortBy === 'sites') {
@@ -45,6 +52,8 @@ export default function Customers() {
     }
     return sorted;
   };
+
+  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort();
 
   const customers = getSortedCustomers();
 
@@ -70,7 +79,18 @@ export default function Customers() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Kunder</h1>
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
+            <Select value={filterManager} onValueChange={setFilterManager}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filtrera på kundasvarig" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Alla kundasvariga</SelectItem>
+                {uniqueManagers.map(manager => (
+                  <SelectItem key={manager} value={manager}>{manager}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-40">
                 <SelectValue />
