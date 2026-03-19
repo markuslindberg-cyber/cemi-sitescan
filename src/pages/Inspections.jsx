@@ -90,15 +90,15 @@ export default function Inspections() {
               </Card>
             ))}
           </div>
-        ) : inspections.length === 0 ? (
+        ) : filteredInspections.length === 0 ? (
           <Card className="p-12 text-center">
             <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga inspektioner ännu</h3>
-            <p className="text-gray-600">Starta din första inspektion från en platssida</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga inspektioner hittades</h3>
+            <p className="text-gray-600">Prova att ändra filtret</p>
           </Card>
         ) : (
           <div className="grid gap-4">
-            {inspections.map(inspection => (
+            {filteredInspections.map(inspection => (
               <Link
                 key={inspection.id}
                 to={createPageUrl(
