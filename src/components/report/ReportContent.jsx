@@ -101,18 +101,18 @@ return (
                 <span className="text-sm font-bold px-3 py-1 bg-gray-800 text-white rounded">
                   {inspection.inspection_number}
                 </span>
-                <span className="text-sm text-gray-500">Inspection ID</span>
+                <span className="text-sm text-gray-500">Besiktnings-ID</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
-                {inspection.report_title || 'Detailed Inspection Report'}
+                {inspection.report_title || 'Detaljerad besiktningsrapport'}
               </h1>
               <h2 className="text-lg md:text-xl text-gray-700 mb-4">{site.name}</h2>
 
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspection Date</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Besiktningsdatum</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {new Date(inspection.inspection_date).toLocaleDateString('en-US', { 
+                    {new Date(inspection.inspection_date).toLocaleDateString('sv-SE', { 
                       year: 'numeric', 
                       month: 'long', 
                       day: 'numeric' 
@@ -120,21 +120,21 @@ return (
                   </p>
                   </div>
                   <div>
-                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Inspector</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Besiktningsman</p>
                   <p className="text-sm font-semibold text-gray-900">{inspection.inspector_name}</p>
                 </div>
                 {customer && (
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Customer</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Kund</p>
                     <p className="text-sm font-semibold text-gray-900">{customer.name}</p>
                     {customer.project_number && (
-                      <p className="text-xs text-gray-600">Project: {customer.project_number}</p>
+                      <p className="text-xs text-gray-600">Projekt: {customer.project_number}</p>
                     )}
                   </div>
                   )}
                   {site.location && (
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Location</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Plats</p>
                     <p className="text-sm text-gray-900">{site.location}</p>
                   </div>
                   )}
@@ -143,7 +143,7 @@ return (
 
             {/* Map Section */}
             <div className="mb-8">
-              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Site Map Overview</h2>
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Platsöversikt</h2>
               <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
                 {inspection.map_screenshot_url ? (
                   <img
@@ -177,32 +177,32 @@ return (
                     <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
                       <div className="space-y-3">
                         <div>
-                          <p className="text-xs font-semibold text-gray-700 mb-1">Coordinates</p>
-                          <p className="text-sm text-gray-900">Lat: {site.google_maps_center.lat.toFixed(6)}, Lng: {site.google_maps_center.lng.toFixed(6)}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold text-gray-700 mb-1">View in Maps</p>
-                          <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline break-all">
-                            Apple Maps Link
+                          <p className="text-xs font-semibold text-gray-700 mb-1">Koordinater</p>
+                              <p className="text-sm text-gray-900">Lat: {site.google_maps_center.lat.toFixed(6)}, Lng: {site.google_maps_center.lng.toFixed(6)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-gray-700 mb-1">Visa i kartor</p>
+                              <a href={`https://maps.apple.com/?ll=${site.google_maps_center.lat},${site.google_maps_center.lng}&z=${site.google_maps_zoom || 18}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline break-all">
+                                Apple Maps-länk
                           </a>
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="p-6 text-center text-gray-500">
-                      <p>No map configured for this site</p>
+                      <p>Ingen karta konfigurerad för denna plats</p>
                     </div>
                   )}
               </div>
 
               <div className="mt-8">
-                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Detailed Findings ({points.length} Points)</h2>
+                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Detaljerade fynd ({points.length} punkter)</h2>
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-3">Points Summary:</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Punktöversikt:</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {points.map((point, index) => (
                       <div key={point.id} className="text-sm text-gray-600">
-                        <span className="font-medium">Point {index + 1}:</span> Page {index + 4}
+                        <span className="font-medium">Punkt {index + 1}:</span> Sida {index + 4}
                       </div>
                     ))}
                   </div>
@@ -239,7 +239,7 @@ return (
                 <div className="mt-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-3">
                     <Camera className="w-4 h-4" />
-                    Documentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'Photo' : 'Photos'})
+                    Dokumentation ({point.photo_details.length} {point.photo_details.length === 1 ? 'foto' : 'foton'})
                   </div>
                   <div className="grid grid-cols-2 gap-3 print:gap-2">
                     {point.photo_details.map((photo, photoIndex) => (
@@ -253,7 +253,7 @@ return (
                           <div className="mt-1 space-y-1">
                             {photo.show_address && (
                               <p className="text-xs text-blue-700 bg-blue-50 p-1.5 rounded print:text-[9pt]">
-                                📍 Location: {photo.address || 'Unknown'}
+                                📍 Plats: {photo.address || 'Okänd'}
                               </p>
                             )}
                             {photo.comment && (
