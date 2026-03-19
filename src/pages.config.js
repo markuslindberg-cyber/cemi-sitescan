@@ -60,6 +60,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Landing": Landing,
     "Customer": Customer,
     "Customers": Customers,
     "Home": Home,
