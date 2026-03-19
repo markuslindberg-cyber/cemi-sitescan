@@ -13,18 +13,6 @@ import { toast } from 'sonner';
 
 export default function UsersPage() {
   const [isAdmin, setIsAdmin] = useState(null);
-
-  useEffect(() => {
-    base44.auth.me().then(user => setIsAdmin(user?.role === 'admin'));
-  }, []);
-
-  if (isAdmin === null) return null;
-  if (!isAdmin) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
-    </div>
-  );
-
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
