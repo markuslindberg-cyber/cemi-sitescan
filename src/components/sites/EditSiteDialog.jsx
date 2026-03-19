@@ -45,6 +45,7 @@ export default function EditSiteDialog({ open, onOpenChange, site }) {
     setFormData(prev => ({
       ...prev,
       customer_id: customerId,
+      site_manager: selectedCustomer?.account_manager || '',
       map_type: selectedCustomer?.map_type || 'uploaded'
     }));
   };
