@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,8 +6,12 @@ import { Calendar, User, MapPin, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Inspections() {
+  const [filterCustomer, setFilterCustomer] = useState('all');
+  const [filterSite, setFilterSite] = useState('all');
+
   const { data: inspections = [], isLoading } = useQuery({
     queryKey: ['all-inspections'],
     queryFn: () => base44.entities.Inspection.list('-inspection_date')
@@ -18,22 +22,61 @@ export default function Inspections() {
     queryFn: () => base44.entities.Site.list()
   });
 
-  const getSiteName = (siteId) => {
-    const site = sites.find(s => s.id === siteId);
-    return site ? site.name : 'Okänd plats';
-  };
+  const { data: customers = [] } = useQuery({
+    queryKey: ['all-customers'],
+    queryFn: () => base44.entities.Customer.list()
+  });
 
-  const getSiteLocation = (siteId) => {
-    const site = sites.find(s => s.id === siteId);
-    return site?.location || '';
-  };
+  const getSite = (siteId) => sites.find(s => s.id === siteId);
+  const getSiteName = (siteId) => getSite(siteId)?.name || 'Okänd plats';
+  const getSiteLocation = (siteId) => getSite(siteId)?.location || '';
+  const getCustomerName = (customerId) => customers.find(c => c.id === customerId)?.name || '';
+
+  // Sites filtered by selected customer
+  const sitesForCustomer = filterCustomer === 'all'
+    ? sites
+    : sites.filter(s => s.customer_id === filterCustomer);
+
+  const filteredInspections = inspections.filter(ins => {
+    const site = getSite(ins.site_id);
+    if (filterSite !== 'all' && ins.site_id !== filterSite) return false;
+    if (filterCustomer !== 'all' && site?.customer_id !== filterCustomer) return false;
+    return true;
+  });
 
   return (
     <div className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Alla inspektioner</h1>
           <p className="text-gray-600 mt-2">Visa alla inspektionsrapporter för alla platser</p>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-wrap gap-3 mb-6">
+          <Select value={filterCustomer} onValueChange={(v) => { setFilterCustomer(v); setFilterSite('all'); }}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filtrera på kund" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla kunder</SelectItem>
+              {customers.map(c => (
+                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={filterSite} onValueChange={setFilterSite}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filtrera på plats" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla platser</SelectItem>
+              {sitesForCustomer.map(s => (
+                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {isLoading ? (
