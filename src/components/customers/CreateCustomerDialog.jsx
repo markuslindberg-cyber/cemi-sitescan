@@ -26,7 +26,7 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
     mutationFn: (data) => base44.entities.Customer.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
-      toast.success('Customer created successfully');
+      toast.success('Kunden har skapats');
       onOpenChange(false);
       setFormData({
         name: '',

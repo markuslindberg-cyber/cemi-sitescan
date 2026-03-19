@@ -35,7 +35,7 @@ export default function Customer() {
     enabled: sites.length > 0
   });
 
-  const customerInspections = allInspections.filter(i => 
+  const customerInspections = allInspections.filter(i =>
     sites.some(s => s.id === i.site_id)
   );
 
@@ -83,7 +83,7 @@ export default function Customer() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between gap-4">
                 <CardTitle className="text-2xl">{customer.name}</CardTitle>
                 <Button variant="outline" size="sm" onClick={() => setShowEditDialog(true)}>
                   <Pencil className="w-4 h-4 mr-2" />
@@ -103,12 +103,8 @@ export default function Customer() {
                   {customer.contact_person}
                 </div>
               )}
-              {customer.email && (
-                <p className="text-gray-600">{customer.email}</p>
-              )}
-              {customer.phone && (
-                <p className="text-gray-600">{customer.phone}</p>
-              )}
+              {customer.email && <p className="text-gray-600">{customer.email}</p>}
+              {customer.phone && <p className="text-gray-600">{customer.phone}</p>}
               {customer.address && (
                 <p className="text-gray-600 flex items-start gap-2">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -219,9 +215,7 @@ export default function Customer() {
                           <h4 className="font-semibold text-gray-900 text-sm">
                             {getSiteName(inspection.site_id)}
                           </h4>
-                          <p className="text-xs text-gray-600 mt-1">
-                            {inspection.inspector_name}
-                          </p>
+                          <p className="text-xs text-gray-600 mt-1">{inspection.inspector_name}</p>
                         </CardContent>
                       </Card>
                     </Link>

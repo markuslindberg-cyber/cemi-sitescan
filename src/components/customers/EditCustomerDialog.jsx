@@ -61,7 +61,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
         <DialogHeader>
           <DialogTitle>Redigera kund</DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">Kundnamn *</Label>
@@ -72,7 +72,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               placeholder="Företag eller kundnamn"
             />
           </div>
-
           <div>
             <Label htmlFor="project_number">Projektnummer</Label>
             <Input
@@ -82,7 +81,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               placeholder="Projektreferensnummer"
             />
           </div>
-
           <div>
             <Label htmlFor="contact_person">Kontaktperson</Label>
             <Input
@@ -92,7 +90,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               placeholder="Namn på huvudkontakt"
             />
           </div>
-
           <div>
             <Label htmlFor="email">E-post</Label>
             <Input
@@ -103,7 +100,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               placeholder="kontakt@exempel.com"
             />
           </div>
-
           <div>
             <Label htmlFor="phone">Telefon</Label>
             <Input
@@ -113,7 +109,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               placeholder="+46 123 456 789"
             />
           </div>
-
           <div>
             <Label htmlFor="address">Adress</Label>
             <Textarea
@@ -124,7 +119,6 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               rows={2}
             />
           </div>
-
           <div>
             <Label htmlFor="notes">Anteckningar</Label>
             <Textarea
