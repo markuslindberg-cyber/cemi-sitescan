@@ -107,7 +107,7 @@ export default function Home() {
               <SelectContent>
                  <SelectItem value="all">Alla områdesansvariga</SelectItem>
                  {uniqueManagers.map((manager) =>
-                 <SelectItem key={manager} value={manager}>{manager}</SelectItem>
+                 <SelectItem key={manager} value={manager}>{getUserName(manager)}</SelectItem>
                  )}
                </SelectContent>
               </Select>
