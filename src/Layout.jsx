@@ -7,7 +7,7 @@ export default function Layout({ children, currentPageName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navItems = [
-    { name: 'Platser', path: 'Home', icon: Building2 },
+    { name: 'Områden', path: 'Home', icon: Building2 },
     { name: 'Kunder', path: 'Customers', icon: Users },
     { name: 'Inspektioner', path: 'Inspections', icon: FileText },
     { name: 'Användare', path: 'Users', icon: Users }
