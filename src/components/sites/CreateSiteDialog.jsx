@@ -15,6 +15,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
   const [formData, setFormData] = useState({
     customer_id: '',
     name: '',
+    project_number: '',
     location: '',
     description: '',
     site_manager: '',
@@ -246,6 +247,16 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Garden A, Park West, etc."
               required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="project_number">Project Number</Label>
+            <Input
+              id="project_number"
+              value={formData.project_number}
+              onChange={(e) => setFormData(prev => ({ ...prev, project_number: e.target.value }))}
+              placeholder="P-001, PRJ-2024, etc."
             />
           </div>
 
