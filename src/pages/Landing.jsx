@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Building2, Users, FileText, ClipboardList, UserCog } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const navItems = [
   {
