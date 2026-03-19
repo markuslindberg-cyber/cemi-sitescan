@@ -14,6 +14,7 @@ import { QRCodeSVG } from 'qrcode.react';
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: sites = [], isLoading } = useQuery({

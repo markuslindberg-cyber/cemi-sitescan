@@ -11,6 +11,7 @@ import ImportExcelDialog from '../components/import/ImportExcelDialog';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   const { data: customers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
