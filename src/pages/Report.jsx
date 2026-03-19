@@ -148,6 +148,13 @@ export default function Report() {
         </DialogContent>
       </Dialog>
 
+      <EditReportDialog
+        open={isEditingReport}
+        onOpenChange={setIsEditingReport}
+        inspection={inspection}
+        points={points}
+      />
+
       <div className="max-w-5xl mx-auto p-4 md:p-8 print:p-0 print:max-w-none">
         <div ref={reportRef}>
           <ReportContent
