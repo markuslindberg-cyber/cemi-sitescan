@@ -7,10 +7,10 @@ export default function Layout({ children, currentPageName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navItems = [
-    { name: 'Sites', path: 'Home', icon: Building2 },
-    { name: 'Customers', path: 'Customers', icon: Users },
-    { name: 'Inspections', path: 'Inspections', icon: FileText },
-    { name: 'Users', path: 'Users', icon: Users }
+    { name: 'Platser', path: 'Home', icon: Building2 },
+    { name: 'Kunder', path: 'Customers', icon: Users },
+    { name: 'Inspektioner', path: 'Inspections', icon: FileText },
+    { name: 'Användare', path: 'Users', icon: Users }
   ];
 
   return (
@@ -68,7 +68,7 @@ export default function Layout({ children, currentPageName }) {
       
       <footer className="bg-white border-t mt-auto print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-sm text-gray-600 text-center">© {new Date().getFullYear()} CEMI. Garden Inspection Management System.</p>
+          <p className="text-sm text-gray-600 text-center">© {new Date().getFullYear()} CEMI. Trädgårdsinspektionssystem.</p>
         </div>
       </footer>
     </div>
