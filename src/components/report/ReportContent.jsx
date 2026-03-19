@@ -81,19 +81,19 @@ return (
      `}</style>
       {/* Front Page */}
       <div style={{ pageBreakAfter: 'always' }}>
-         <div className="page-header">Page 1</div>
+         <div className="page-header">Sida 1</div>
          <ReportFrontPage inspection={inspection} site={site} customer={customer} />
       </div>
 
       {/* Summary Page */}
       <div style={{ pageBreakAfter: 'always' }}>
-         <div className="page-header">Page 2</div>
+         <div className="page-header">Sida 2</div>
          <ReportSummaryPage inspection={inspection} site={site} customer={customer} points={points} />
       </div>
 
       {/* Page 3: Detailed Report Overview */}
       <div className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: 'always' }}>
-          <div className="page-header">Page 3</div>
+          <div className="page-header">Sida 3</div>
           <div>
             {/* Header Section */}
             <div className="mb-6 pb-4 border-b-2 border-gray-300">
@@ -215,7 +215,7 @@ return (
             {/* Inspection Points - Each on its own page */}
             {points.map((point, index) => (
             <div key={point.id} className="bg-white p-4 md:p-8 print:p-0" style={{ pageBreakAfter: index === points.length - 1 ? 'auto' : 'always' }}>
-            <div className="page-header">Page {index + 4}</div>
+            <div className="page-header">Sida {index + 4}</div>
             <div className="flex gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
               {index + 1}
