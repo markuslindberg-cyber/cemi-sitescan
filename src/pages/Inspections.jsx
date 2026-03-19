@@ -136,9 +136,9 @@ export default function Inspections() {
            </Select>
 
            <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
-             
-
-            
+             <SelectTrigger className="w-48">
+               <SelectValue placeholder="Filtrera på områdesansvarig" />
+             </SelectTrigger>
              <SelectContent>
                <SelectItem value="all">Alla områdesansvariga</SelectItem>
                {uniqueSiteManagers.map((managerId) =>
