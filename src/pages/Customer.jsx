@@ -35,9 +35,19 @@ export default function Customer() {
     enabled: sites.length > 0
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: () => base44.entities.User.list()
+  });
+
   const customerInspections = allInspections.filter(i =>
     sites.some(s => s.id === i.site_id)
   );
+
+  const getManagerName = (managerId) => {
+    const user = users.find(u => u.id === managerId);
+    return user ? user.full_name : managerId;
+  };
 
   const getSiteName = (siteId) => {
     const site = sites.find(s => s.id === siteId);
@@ -110,6 +120,13 @@ export default function Customer() {
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   {customer.address}
                 </p>
+              )}
+              {customer.account_manager && (
+                <div className="flex items-center gap-2 text-gray-700 mt-4">
+                  <User className="w-4 h-4" />
+                  <span className="text-sm text-gray-600">Kundasvarig: </span>
+                  <span className="font-semibold">{getManagerName(customer.account_manager)}</span>
+                </div>
               )}
               {customer.notes && (
                 <div className="mt-4 pt-4 border-t">
