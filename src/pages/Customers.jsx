@@ -50,13 +50,23 @@ export default function Customers() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Kunder</h1>
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
           </div>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Lägg till kund
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowImportDialog(true)}
+              variant="outline"
+              className="border-green-600 text-green-600 hover:bg-green-50"
+            >
+              <Upload className="w-5 h-5 mr-2" />
+              Importera Excel
+            </Button>
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Lägg till kund
+            </Button>
+          </div>
         </div>
 
         {customersLoading ? (
