@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function CreateCustomerDialog({ open, onOpenChange }) {
+export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
   const [formData, setFormData] = useState({
     name: '',
     project_number: '',
