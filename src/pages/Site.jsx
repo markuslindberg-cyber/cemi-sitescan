@@ -3,11 +3,12 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Plus, MapPin, FileText, Calendar, User, Pencil } from 'lucide-react';
+import { ArrowLeft, Plus, MapPin, FileText, Calendar, User, Pencil, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
 import EditSiteDialog from '../components/sites/EditSiteDialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function Site() {
   const [showEditDialog, setShowEditDialog] = useState(false);
