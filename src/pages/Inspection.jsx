@@ -76,7 +76,7 @@ export default function Inspection() {
 
   const handleCompleteInspection = async () => {
     if (points.length === 0) {
-      toast.error('Please add at least one inspection point before completing');
+      toast.error('Lägg till minst en inspektionspunkt innan du slutför');
       return;
     }
     
@@ -85,7 +85,7 @@ export default function Inspection() {
       data: { status: 'completed' }
     });
     
-    toast.success('Inspection completed');
+    toast.success('Inspektionen slutförd');
     navigate(createPageUrl(`Report?id=${inspectionId}`));
   };
 
@@ -94,7 +94,7 @@ export default function Inspection() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading inspection...</p>
+          <p className="text-gray-600">Laddar inspektion...</p>
         </div>
       </div>
     );
@@ -104,9 +104,9 @@ export default function Inspection() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Inspection not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Inspektionen hittades inte</h2>
           <Link to={createPageUrl('Home')}>
-            <Button>Back to Home</Button>
+            <Button>Tillbaka till startsidan</Button>
           </Link>
         </div>
       </div>
@@ -130,12 +130,12 @@ export default function Inspection() {
                </span>
              </div>
              <p className="text-xs sm:text-sm text-gray-600 truncate">
-               {new Date(inspection.inspection_date).toLocaleDateString()} • {inspection.inspector_name}
+               {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')} • {inspection.inspector_name}
              </p>
            </div>
          </div>
         <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
-          <span className="text-xs sm:text-sm text-gray-600">{points.length} points</span>
+          <span className="text-xs sm:text-sm text-gray-600">{points.length} punkter</span>
           <Button
             onClick={() => setShowNotesSheet(true)}
             variant="outline"
@@ -151,8 +151,8 @@ export default function Inspection() {
             size="sm"
           >
             <CheckCircle className="w-4 h-4 mr-1" />
-            <span className="hidden sm:inline">Complete</span>
-            <span className="sm:hidden">Done</span>
+            <span className="hidden sm:inline">Slutför</span>
+            <span className="sm:hidden">Klar</span>
           </Button>
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function Inspection() {
             <div className="h-full flex items-center justify-center bg-gray-100">
               <div className="text-center">
                 <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No map configured for this site</p>
+                <p className="text-gray-600">Ingen karta konfigurerad för denna plats</p>
               </div>
             </div>
           )}
@@ -210,7 +210,7 @@ export default function Inspection() {
       <Sheet open={showNotesSheet} onOpenChange={setShowNotesSheet}>
         <SheetContent side="bottom" className="h-[80vh]">
           <SheetHeader>
-            <SheetTitle>Notes & Inspection Points</SheetTitle>
+            <SheetTitle>Anteckningar & inspektionspunkter</SheetTitle>
           </SheetHeader>
           <div className="mt-4 overflow-y-auto h-[calc(80vh-100px)]">
             <InspectionSidebar

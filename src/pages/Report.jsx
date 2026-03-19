@@ -79,7 +79,7 @@ export default function Report() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading report...</p>
+          <p className="text-gray-600">Laddar rapport...</p>
         </div>
       </div>
     );
@@ -89,9 +89,9 @@ export default function Report() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Report not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Rapporten hittades inte</h2>
           <Link to={createPageUrl('Home')}>
-            <Button>Back to Home</Button>
+            <Button>Tillbaka till startsidan</Button>
           </Link>
         </div>
       </div>
@@ -104,17 +104,17 @@ export default function Report() {
         <Link to={createPageUrl(`Site?id=${site.id}`)}>
           <Button variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Site
+            Tillbaka till platsen
           </Button>
         </Link>
         <div className="flex items-center gap-3">
           <Button onClick={handleEditTitle} variant="outline" size="sm">
             <Edit2 className="w-4 h-4 mr-2" />
-            Edit Title
+            Redigera titel
           </Button>
           <Button onClick={handlePrint} variant="outline">
             <Download className="w-4 h-4 mr-2" />
-            Download PDF
+            Ladda ner PDF
           </Button>
         </div>
       </div>
@@ -122,24 +122,24 @@ export default function Report() {
       <Dialog open={isEditingTitle} onOpenChange={setIsEditingTitle}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Report Title</DialogTitle>
+            <DialogTitle>Redigera rapporttitel</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <Label htmlFor="title">Report Title</Label>
+              <Label htmlFor="title">Rapporttitel</Label>
               <Input
                 id="title"
                 value={reportTitle}
                 onChange={(e) => setReportTitle(e.target.value)}
-                placeholder="Enter report title"
+                placeholder="Ange rapporttitel"
               />
             </div>
             <div className="flex justify-end gap-3">
               <Button variant="outline" onClick={() => setIsEditingTitle(false)}>
-                Cancel
+                Avbryt
               </Button>
               <Button onClick={handleSaveTitle}>
-                Save
+                Spara
               </Button>
             </div>
           </div>
