@@ -75,7 +75,7 @@ export default function Landing() {
 
         {/* Nav buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {navItems.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = item.icon;
             return (
               <Link key={item.path} to={createPageUrl(item.path)}>
