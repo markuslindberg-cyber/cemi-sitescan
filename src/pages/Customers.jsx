@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
-  const [sortBy, setSortBy] = useState('updated');
   const [filterManager, setFilterManager] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
 
@@ -48,20 +47,7 @@ export default function Customers() {
     if (filterManager !== 'all') {
       filtered = filtered.filter(c => c.account_manager === filterManager);
     }
-    
-    let sorted = filtered;
-    if (sortBy === 'updated') {
-      sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
-    } else if (sortBy === 'sites') {
-      sorted.sort((a, b) => {
-        const countA = sites.filter(s => s.customer_id === a.id).length;
-        const countB = sites.filter(s => s.customer_id === b.id).length;
-        return countB - countA;
-      });
-    } else if (sortBy === 'manager') {
-      sorted.sort((a, b) => getManagerName(a.account_manager || '').localeCompare(getManagerName(b.account_manager || '')));
-    }
-    return sorted;
+    return filtered;
   };
 
   const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
@@ -120,16 +106,6 @@ export default function Customers() {
                  ))}
                </SelectContent>
              </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="updated">Senaste ändrade</SelectItem>
-                <SelectItem value="sites">Efter områden</SelectItem>
-                <SelectItem value="manager">Efter ansvarig</SelectItem>
-              </SelectContent>
-            </Select>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
