@@ -35,24 +35,9 @@ export default function Home() {
       filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
 
-    // Apply customer filter
-    if (filterCustomer !== 'all') {
-      filtered = filtered.filter((s) => s.customer_id === filterCustomer);
-    }
-
-    let sorted = filtered;
-    if (sortBy === 'updated') {
-      sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
-    } else if (sortBy === 'customer') {
-      sorted.sort((a, b) => {
-        const customerA = customers.find((c) => c.id === a.customer_id)?.name || '';
-        const customerB = customers.find((c) => c.id === b.customer_id)?.name || '';
-        return customerA.localeCompare(customerB);
-      });
-    } else if (sortBy === 'manager') {
-      sorted.sort((a, b) => (a.site_manager || '').localeCompare(b.site_manager || ''));
-    }
-    return sorted;
+    // Sort by updated date
+    filtered.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+    return filtered;
   };
 
   const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
