@@ -11,7 +11,6 @@ import ImportExcelDialog from '../components/import/ImportExcelDialog';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showQRCode, setShowQRCode] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const queryClient = useQueryClient();
 

@@ -15,6 +15,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 export default function UsersPage() {
   const [isAdmin, setIsAdmin] = useState(null);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
   const queryClient = useQueryClient();
