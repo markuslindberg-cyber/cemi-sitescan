@@ -7,6 +7,7 @@ import { Plus, Building2, MapPin, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
+import ImportExcelDialog from '../components/import/ImportExcelDialog';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
