@@ -43,7 +43,7 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      toast.error('Customer name is required');
+      toast.error('Kundnamn krävs');
       return;
     }
     createMutation.mutate(formData);
@@ -132,7 +132,7 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
 
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              Avbryt
             </Button>
             <Button
               type="submit"
@@ -142,10 +142,10 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
               {createMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
+                  Skapar...
                 </>
               ) : (
-                'Create Customer'
+                'Skapa kund'
               )}
             </Button>
           </div>
