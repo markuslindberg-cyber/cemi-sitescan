@@ -69,7 +69,7 @@ export default function Landing() {
             alt="CEMI Logo"
             className="h-20 object-contain mb-4"
           />
-          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Trädgårdsinspektionssystem</h1>
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Cemi platsbesiktning</h1>
           <p className="text-gray-500 mt-1 text-sm">Välj ett område för att komma igång</p>
         </div>
 
