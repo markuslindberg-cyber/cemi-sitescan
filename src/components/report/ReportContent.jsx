@@ -145,35 +145,15 @@ return (
             {/* Map Section */}
             <div className="mb-8">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Platsöversikt</h2>
-              <div className="relative w-full bg-gray-50 border border-gray-300 rounded-lg overflow-hidden min-h-[300px]">
+              <div className="relative w-full">
                 {inspection.map_screenshot_url ? (
                   <img
                     src={inspection.map_screenshot_url}
                     alt="Site map with inspection points"
-                    className="w-full h-auto object-contain"
+                    className="w-full h-auto object-contain border border-gray-300 rounded-lg"
                   />
                 ) : site.map_image_url ? (
-                    <>
-                      <img
-                        src={site.map_image_url}
-                        alt="Site map"
-                        className="w-full h-auto max-h-[600px] object-contain"
-                      />
-                      {points.map((point, index) => (
-                        <div
-                           key={point.id}
-                           className="absolute transform -translate-x-1/2 -translate-y-full"
-                           style={{
-                             left: `${point.x_position}%`,
-                             top: `${point.y_position}%`
-                           }}
-                         >
-                          <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${markerColors[point.severity || 'medium']}`}>
-                            <span className="text-white text-sm font-bold">{index + 1}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </>
+                    <MapWithMarkers imageUrl={site.map_image_url} points={points} />
                   ) : site.map_type === 'google_maps' && site.google_maps_center ? (
                     <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
                       <div className="space-y-3">
