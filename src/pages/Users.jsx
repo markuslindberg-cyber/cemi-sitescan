@@ -286,6 +286,13 @@ export default function UsersPage() {
                         <Shield className="w-3 h-3 mr-1" />
                         {user.role}
                       </Badge>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditUser(user)}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
                       <Select 
                         value={user.role} 
                         onValueChange={(newRole) => handleRoleChange(user.id, newRole)}
