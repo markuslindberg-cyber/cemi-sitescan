@@ -45,6 +45,16 @@ export default function Site() {
   const [currentUser, setCurrentUser] = React.useState(null);
   React.useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
 
+  const { data: users = [] } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: () => base44.entities.User.list()
+  });
+
+  const getManagerName = (managerId) => {
+    const user = users.find(u => u.id === managerId);
+    return user ? user.full_name : managerId;
+  };
+
   const deleteInspectionMutation = useMutation({
     mutationFn: async (inspectionId) => {
       const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspectionId });
@@ -208,6 +218,13 @@ export default function Site() {
                   <MapPin className="w-4 h-4" />
                   {site.location}
                 </p>
+              )}
+              {site.site_manager && (
+                <div className="mt-4 pt-4 border-t flex items-center gap-2 text-gray-700">
+                  <User className="w-4 h-4" />
+                  <span className="text-sm text-gray-600">Områdesansvarig: </span>
+                  <span className="font-semibold">{getManagerName(site.site_manager)}</span>
+                </div>
               )}
               {site.description && (
                 <p className="text-gray-700 mt-4">{site.description}</p>
