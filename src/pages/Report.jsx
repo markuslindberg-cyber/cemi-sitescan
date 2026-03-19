@@ -7,6 +7,7 @@ import { ArrowLeft, Download, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import ReportContent from '../components/report/ReportContent';
+import EditReportDialog from '../components/report/EditReportDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
