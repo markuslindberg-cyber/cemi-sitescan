@@ -88,7 +88,7 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
           </div>
 
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-post</Label>
             <Input
               id="email"
               type="email"
@@ -99,7 +99,7 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
           </div>
 
           <div>
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Telefon</Label>
             <Input
               id="phone"
               value={formData.phone}
@@ -109,23 +109,23 @@ export default function CreateCustomerDialog({ open, onOpenChange, customer }) {
           </div>
 
           <div>
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Adress</Label>
             <Textarea
               id="address"
               value={formData.address}
               onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              placeholder="Street address, city, postal code"
+              placeholder="Gatuadress, stad, postnummer"
               rows={2}
             />
           </div>
 
           <div>
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">Anteckningar</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Additional information..."
+              placeholder="Ytterligare information..."
               rows={3}
             />
           </div>
