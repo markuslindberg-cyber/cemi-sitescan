@@ -6,6 +6,7 @@ import { Calendar, User, MapPin, FileText, LayoutGrid, List } from 'lucide-react
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Inspections() {
