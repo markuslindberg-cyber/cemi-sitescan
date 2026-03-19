@@ -17,6 +17,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     name: '',
     location: '',
     description: '',
+    site_manager: '',
     map_type: 'uploaded',
     map_image_url: '',
     google_maps_center: null,
@@ -254,6 +255,14 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
               value={formData.location}
               onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
               placeholder="123 Main St, City"
+            />
+          </div>
+
+          <div>
+            <Label>Platsansvarig</Label>
+            <UserSelect
+              value={formData.site_manager}
+              onValueChange={(v) => setFormData(prev => ({ ...prev, site_manager: v }))}
             />
           </div>
 
