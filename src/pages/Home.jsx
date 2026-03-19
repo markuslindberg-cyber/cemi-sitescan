@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [sortBy, setSortBy] = useState('updated');
   const queryClient = useQueryClient();
 
   const { data: sites = [], isLoading } = useQuery({
