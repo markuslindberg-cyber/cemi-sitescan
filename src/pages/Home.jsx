@@ -13,9 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
-  const [sortBy, setSortBy] = useState('updated');
   const [filterManager, setFilterManager] = useState('all');
-  const [filterCustomer, setFilterCustomer] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
 
@@ -108,33 +106,12 @@ export default function Home() {
                 <SelectValue placeholder="Filtrera på områdesansvarig" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Alla områdesansvariga</SelectItem>
-                {uniqueManagers.map((manager) =>
-                <SelectItem key={manager} value={manager}>{manager}</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-            <Select value={filterCustomer} onValueChange={setFilterCustomer}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filtrera på kund" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alla kunder</SelectItem>
-                {customers.map((customer) =>
-                <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
-              
-
-              
-              <SelectContent>
-                <SelectItem value="updated">Senaste ändrade</SelectItem>
-                <SelectItem value="customer">Efter kund</SelectItem>
-                <SelectItem value="manager">Efter ansvarig</SelectItem>
-              </SelectContent>
-            </Select>
+                 <SelectItem value="all">Alla områdesansvariga</SelectItem>
+                 {uniqueManagers.map((manager) =>
+                 <SelectItem key={manager} value={manager}>{manager}</SelectItem>
+                 )}
+               </SelectContent>
+              </Select>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
