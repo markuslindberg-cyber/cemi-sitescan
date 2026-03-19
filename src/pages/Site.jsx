@@ -56,6 +56,24 @@ export default function Site() {
     }
   });
 
+  const deleteSiteMutation = useMutation({
+    mutationFn: async () => {
+      // Delete all inspections and their points for this site
+      const siteInspections = await base44.entities.Inspection.filter({ site_id: siteId });
+      for (const inspection of siteInspections) {
+        const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspection.id });
+        await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
+        await base44.entities.Inspection.delete(inspection.id);
+      }
+      // Delete the site
+      return base44.entities.Site.delete(siteId);
+    },
+    onSuccess: () => {
+      navigate(createPageUrl('Home'));
+      queryClient.invalidateQueries({ queryKey: ['sites'] });
+    }
+  });
+
   const createInspectionMutation = useMutation({
     mutationFn: async () => {
       const user = await base44.auth.me();
