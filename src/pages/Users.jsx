@@ -234,7 +234,8 @@ export default function UsersPage() {
             variant="outline"
             className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
             onClick={() => {
-              const canvas = document.getElementById('qr-canvas');
+              const canvas = qrRef.current;
+              if (!canvas) return;
               const url = canvas.toDataURL('image/png');
               const a = document.createElement('a');
               a.href = url;
