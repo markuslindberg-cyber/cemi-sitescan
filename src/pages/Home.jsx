@@ -3,14 +3,11 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, MapPin, Calendar, QrCode, Upload } from 'lucide-react';
+import { Plus, MapPin, Calendar, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
-import { Download } from 'lucide-react';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
