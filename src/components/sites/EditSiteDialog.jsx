@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Upload, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import UserSelect from '@/components/shared/UserSelect';
 
 export default function EditSiteDialog({ open, onOpenChange, site }) {
   const [formData, setFormData] = useState({

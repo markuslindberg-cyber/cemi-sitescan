@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import UserSelect from '@/components/shared/UserSelect';
 
 export default function EditCustomerDialog({ open, onOpenChange, customer }) {
   const [formData, setFormData] = useState({
