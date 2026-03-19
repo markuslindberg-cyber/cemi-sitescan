@@ -32,8 +32,8 @@ export default function Inspections() {
     <div className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">All Inspections</h1>
-          <p className="text-gray-600 mt-2">View all inspection reports across all sites</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Alla inspektioner</h1>
+          <p className="text-gray-600 mt-2">Visa alla inspektionsrapporter för alla platser</p>
         </div>
 
         {isLoading ? (

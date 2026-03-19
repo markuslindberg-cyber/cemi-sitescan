@@ -68,8 +68,8 @@ export default function UsersPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-            <p className="text-gray-600 mt-1">Manage users and their roles</p>
+            <h1 className="text-3xl font-bold text-gray-900">Användarhantering</h1>
+            <p className="text-gray-600 mt-1">Hantera användare och deras roller</p>
           </div>
 
           <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>

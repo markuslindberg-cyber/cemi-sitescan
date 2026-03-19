@@ -25,11 +25,11 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
   return (
     <div className="w-80 bg-white border-l overflow-y-auto flex flex-col">
       <div className="p-4 border-b">
-        <h2 className="font-semibold text-gray-900 mb-4">Inspection Notes</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">Inspektionsanteckningar</h2>
         <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Add general notes about this inspection..."
+          placeholder="Lägg till allmänna anteckningar om inspektionen..."
           rows={4}
           className="mb-2"
         />
@@ -39,7 +39,7 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
           disabled={saving || notes === (inspection?.notes || '')}
           className="w-full"
         >
-          {saving ? 'Saving...' : 'Save Notes'}
+          {saving ? 'Sparar...' : 'Spara anteckningar'}
         </Button>
       </div>
 

@@ -40,8 +40,8 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Garden Inspections</h1>
-            <p className="text-gray-600 mt-2">Manage your outdoor sites and inspections</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Trädgårdsinspektioner</h1>
+            <p className="text-gray-600 mt-2">Hantera dina platser och inspektioner</p>
           </div>
           <div className="flex gap-2">
             <Button

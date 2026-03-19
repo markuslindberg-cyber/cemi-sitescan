@@ -94,9 +94,9 @@ export default function Site() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-8">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Site not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Platsen hittades inte</h2>
           <Link to={createPageUrl('Home')}>
-            <Button className="mt-4">Back to Home</Button>
+            <Button className="mt-4">Tillbaka till startsidan</Button>
           </Link>
         </div>
       </div>

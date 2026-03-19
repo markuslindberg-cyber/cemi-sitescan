@@ -12,18 +12,18 @@ import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const issueTypes = [
-  { value: 'improvement_suggestions', label: 'Improvement Suggestions' },
-  { value: 'issue_damage', label: 'Issue/Damage' },
-  { value: 'plant_health', label: 'Plant Health' },
-  { value: 'maintenance', label: 'Maintenance' },
-  { value: 'safety_concern', label: 'Safety Concern' }
+  { value: 'improvement_suggestions', label: 'Förbättringsförslag' },
+  { value: 'issue_damage', label: 'Problem/Skada' },
+  { value: 'plant_health', label: 'Växthälsa' },
+  { value: 'maintenance', label: 'Underhåll' },
+  { value: 'safety_concern', label: 'Säkerhetsproblem' }
 ];
 
 const severityLevels = [
-  { value: 'low', label: 'Low', color: 'text-blue-600' },
-  { value: 'medium', label: 'Medium', color: 'text-yellow-600' },
-  { value: 'high', label: 'High', color: 'text-orange-600' },
-  { value: 'critical', label: 'Critical', color: 'text-red-600' }
+  { value: 'low', label: 'Låg', color: 'text-blue-600' },
+  { value: 'medium', label: 'Medel', color: 'text-yellow-600' },
+  { value: 'high', label: 'Hög', color: 'text-orange-600' },
+  { value: 'critical', label: 'Kritisk', color: 'text-red-600' }
 ];
 
 export default function InspectionPointDialog({ open, onOpenChange, inspectionId, position, existingPoint }) {
