@@ -18,6 +18,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
     email: '',
     phone: '',
     address: '',
+    account_manager: '',
     notes: ''
   });
 
@@ -30,6 +31,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
         email: customer.email || '',
         phone: customer.phone || '',
         address: customer.address || '',
+        account_manager: customer.account_manager || '',
         notes: customer.notes || ''
       });
     }
@@ -118,6 +120,13 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
               placeholder="Gatuadress, stad, postnummer"
               rows={2}
+            />
+          </div>
+          <div>
+            <Label>Kundansvarig</Label>
+            <UserSelect
+              value={formData.account_manager}
+              onValueChange={(v) => setFormData(prev => ({ ...prev, account_manager: v }))}
             />
           </div>
           <div>
