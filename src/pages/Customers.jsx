@@ -53,7 +53,7 @@ export default function Customers() {
             className="bg-green-600 hover:bg-green-700"
           >
             <Plus className="w-5 h-5 mr-2" />
-            Add New Customer
+            Lägg till kund
           </Button>
         </div>
 
@@ -71,11 +71,11 @@ export default function Customers() {
         ) : customers.length === 0 ? (
           <Card className="p-12 text-center">
             <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No customers yet</h3>
-            <p className="text-gray-600 mb-6">Create your first customer to start managing their sites and inspections</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga kunder ännu</h3>
+            <p className="text-gray-600 mb-6">Skapa din första kund för att börja hantera platser och inspektioner</p>
             <Button onClick={() => setShowCreateDialog(true)} className="bg-green-600 hover:bg-green-700">
               <Plus className="w-5 h-5 mr-2" />
-              Create First Customer
+              Skapa första kunden
             </Button>
           </Card>
         ) : (
@@ -109,19 +109,19 @@ export default function Customers() {
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 flex items-center gap-1">
                             <MapPin className="w-4 h-4" />
-                            Sites
+                            Platser
                           </span>
                           <span className="font-semibold">{stats.sitesCount}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">Inspections</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">Inspektioner</span>
                           <span className="font-semibold">{stats.inspectionsCount}</span>
-                        </div>
-                        {stats.lastInspection && (
+                          </div>
+                          {stats.lastInspection && (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              Last
+                              Senaste
                             </span>
                             <span className="text-gray-700">
                               {new Date(stats.lastInspection).toLocaleDateString()}
