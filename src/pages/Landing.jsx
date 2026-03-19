@@ -48,6 +48,16 @@ const navItems = [
 ];
 
 export default function Landing() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      if (user?.role === 'admin') setIsAdmin(true);
+    });
+  }, []);
+
+  const visibleItems = navItems.filter(item => item.path !== 'Users' || isAdmin);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-2xl mx-auto">
