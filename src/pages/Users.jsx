@@ -68,6 +68,13 @@ export default function UsersPage() {
     updateRoleMutation.mutate({ userId, role: newRole });
   };
 
+  if (isAdmin === null) return null;
+  if (!isAdmin) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
