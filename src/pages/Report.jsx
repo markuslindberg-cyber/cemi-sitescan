@@ -110,9 +110,9 @@ export default function Report() {
           </Button>
         </Link>
         <div className="flex items-center gap-3">
-          <Button onClick={handleEditTitle} variant="outline" size="sm">
+          <Button onClick={() => setIsEditingReport(true)} variant="outline" size="sm">
             <Edit2 className="w-4 h-4 mr-2" />
-            Redigera titel
+            Redigera rapport
           </Button>
           <Button onClick={handlePrint} variant="outline">
             <Download className="w-4 h-4 mr-2" />
