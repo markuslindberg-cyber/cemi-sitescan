@@ -16,11 +16,16 @@ export default function UserSelect({ value, onValueChange, placeholder = 'Välj 
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="__none__">Ingen</SelectItem>
-        {users.map(user => (
-          <SelectItem key={user.id} value={user.id}>
-            {user.full_name || user.email}
-          </SelectItem>
-        ))}
+        {users.map(user => {
+          const displayName = user.first_name && user.last_name 
+            ? `${user.first_name} ${user.last_name}`
+            : user.full_name || user.email;
+          return (
+            <SelectItem key={user.id} value={user.id}>
+              {displayName}
+            </SelectItem>
+          );
+        })}
       </SelectContent>
     </Select>
   );
