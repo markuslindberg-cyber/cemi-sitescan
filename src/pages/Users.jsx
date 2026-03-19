@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2 } from 'lucide-react';
+import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2, Edit2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { QRCodeCanvas } from 'qrcode.react';
 
@@ -16,6 +16,10 @@ export default function UsersPage() {
   const [isAdmin, setIsAdmin] = useState(null);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editFirstName, setEditFirstName] = useState('');
+  const [editLastName, setEditLastName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteFirstName, setInviteFirstName] = useState('');
   const [inviteLastName, setInviteLastName] = useState('');
@@ -89,6 +93,20 @@ export default function UsersPage() {
     }
   });
 
+  const updateUserMutation = useMutation({
+    mutationFn: ({ userId, first_name, last_name }) => 
+      base44.entities.User.update(userId, { first_name, last_name }),
+    onSuccess: () => {
+      toast.success('Användaren har uppdaterats');
+      setIsEditOpen(false);
+      setEditingUser(null);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Kunde inte uppdatera användaren');
+    }
+  });
+
   const handleInvite = (e) => {
     e.preventDefault();
     if (!inviteEmail) {
@@ -109,6 +127,26 @@ export default function UsersPage() {
 
   const handleRoleChange = (userId, newRole) => {
     updateRoleMutation.mutate({ userId, role: newRole });
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setEditFirstName(user.first_name || '');
+    setEditLastName(user.last_name || '');
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!editFirstName.trim() || !editLastName.trim()) {
+      toast.error('Ange förnamn och efternamn');
+      return;
+    }
+    updateUserMutation.mutate({
+      userId: editingUser.id,
+      first_name: editFirstName.trim(),
+      last_name: editLastName.trim()
+    });
   };
 
   if (isAdmin === null) return null;
@@ -311,6 +349,42 @@ export default function UsersPage() {
       )}
       </div>
     </div>
+
+    <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Redigera användare</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSaveEdit} className="space-y-4">
+          <div>
+            <Label htmlFor="edit_first_name">Förnamn</Label>
+            <Input
+              id="edit_first_name"
+              value={editFirstName}
+              onChange={(e) => setEditFirstName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit_last_name">Efternamn</Label>
+            <Input
+              id="edit_last_name"
+              value={editLastName}
+              onChange={(e) => setEditLastName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
+              Avbryt
+            </Button>
+            <Button type="submit" disabled={updateUserMutation.isPending}>
+              {updateUserMutation.isPending ? 'Sparar...' : 'Spara'}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
 
     <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
       <DialogContent className="sm:max-w-md">
