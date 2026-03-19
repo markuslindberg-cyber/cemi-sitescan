@@ -16,10 +16,33 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('updated');
   const queryClient = useQueryClient();
 
-  const { data: sites = [], isLoading } = useQuery({
+  const { data: allSites = [], isLoading } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => base44.entities.Site.list('-updated_date')
+    queryFn: () => base44.entities.Site.list()
   });
+
+  const { data: customers = [] } = useQuery({
+    queryKey: ['all-customers'],
+    queryFn: () => base44.entities.Customer.list()
+  });
+
+  const getSortedSites = () => {
+    let sorted = [...allSites];
+    if (sortBy === 'updated') {
+      sorted.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+    } else if (sortBy === 'customer') {
+      sorted.sort((a, b) => {
+        const customerA = customers.find(c => c.id === a.customer_id)?.name || '';
+        const customerB = customers.find(c => c.id === b.customer_id)?.name || '';
+        return customerA.localeCompare(customerB);
+      });
+    } else if (sortBy === 'manager') {
+      sorted.sort((a, b) => (a.site_manager || '').localeCompare(b.site_manager || ''));
+    }
+    return sorted;
+  };
+
+  const sites = getSortedSites();
 
   const { data: inspections = [] } = useQuery({
     queryKey: ['all-inspections'],
