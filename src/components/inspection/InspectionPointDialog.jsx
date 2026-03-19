@@ -16,7 +16,8 @@ const issueTypes = [
   { value: 'issue_damage', label: 'Problem/Skada' },
   { value: 'plant_health', label: 'Växthälsa' },
   { value: 'maintenance', label: 'Underhåll' },
-  { value: 'safety_concern', label: 'Säkerhetsproblem' }
+  { value: 'safety_concern', label: 'Säkerhetsrisk' },
+  { value: 'deviation', label: 'Avvikelse' }
 ];
 
 const severityLevels = [
