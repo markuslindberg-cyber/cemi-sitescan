@@ -218,7 +218,7 @@ export default function UsersPage() {
         </DialogHeader>
         <div className="flex flex-col items-center gap-4 py-4">
           <QRCodeCanvas
-            id="qr-canvas"
+            ref={qrRef}
             value={window.location.origin}
             size={256}
             level="H"
