@@ -229,6 +229,47 @@ export default function UsersPage() {
             ))}
           </div>
         )}
+      {pendingInvitations.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-amber-500" />
+            Väntande inbjudningar ({pendingInvitations.length})
+          </h2>
+          <div className="grid gap-3">
+            {pendingInvitations.map((inv) => (
+              <Card key={inv.id} className="border-amber-200 bg-amber-50">
+                <CardContent className="py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                        <Mail className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">{inv.email}</p>
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mt-0.5">
+                          <Badge className="bg-amber-100 text-amber-700 text-xs">
+                            {inv.role === 'admin' ? 'Admin' : 'Användare'}
+                          </Badge>
+                          <span>Inbjuden {new Date(inv.created_date).toLocaleDateString('sv-SE')}</span>
+                          {inv.invited_by && <span>av {inv.invited_by}</span>}
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-gray-400 hover:text-red-500"
+                      onClick={() => deleteInvitationMutation.mutate(inv.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
       </div>
     </div>
 
