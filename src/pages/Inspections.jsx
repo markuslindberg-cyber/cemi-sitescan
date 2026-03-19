@@ -36,27 +36,27 @@ export default function Inspections() {
     queryFn: () => base44.entities.User.list()
   });
 
-  const getSite = (siteId) => sites.find(s => s.id === siteId);
+  const getSite = (siteId) => sites.find((s) => s.id === siteId);
   const getSiteName = (siteId) => getSite(siteId)?.name || 'Okänd plats';
   const getSiteLocation = (siteId) => getSite(siteId)?.location || '';
-  const getCustomerName = (customerId) => customers.find(c => c.id === customerId)?.name || '';
+  const getCustomerName = (customerId) => customers.find((c) => c.id === customerId)?.name || '';
 
   // Sites filtered by selected customer
-  const sitesForCustomer = filterCustomer === 'all'
-    ? sites
-    : sites.filter(s => s.customer_id === filterCustomer);
+  const sitesForCustomer = filterCustomer === 'all' ?
+  sites :
+  sites.filter((s) => s.customer_id === filterCustomer);
 
   // Get unique inspector names and map to user data
-  const uniqueInspectorNames = [...new Set(inspections.map(ins => ins.inspector_name).filter(Boolean))].sort();
+  const uniqueInspectorNames = [...new Set(inspections.map((ins) => ins.inspector_name).filter(Boolean))].sort();
   const getInspectorDisplay = (name) => {
-    const user = users.find(u => u.full_name === name);
+    const user = users.find((u) => u.full_name === name);
     if (user && user.first_name && user.last_name) {
       return `${user.first_name} ${user.last_name}`;
     }
     return name;
   };
 
-  const filteredInspections = inspections.filter(ins => {
+  const filteredInspections = inspections.filter((ins) => {
     const site = getSite(ins.site_id);
     if (filterSite !== 'all' && ins.site_id !== filterSite) return false;
     if (filterCustomer !== 'all' && site?.customer_id !== filterCustomer) return false;
@@ -65,9 +65,9 @@ export default function Inspections() {
     return true;
   });
 
-  const uniqueSiteManagers = [...new Set(sites.filter(s => s.site_manager).map(s => s.site_manager))].sort();
+  const uniqueSiteManagers = [...new Set(sites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
   const getSiteManagerName = (managerId) => {
-    const user = users.find(u => u.id === managerId);
+    const user = users.find((u) => u.id === managerId);
     return user ? `${user.first_name} ${user.last_name}`.trim() || user.full_name : managerId;
   };
 
@@ -83,31 +83,31 @@ export default function Inspections() {
          <div className="flex flex-wrap gap-3 mb-6">
            <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
              <Button
-               size="sm"
-               variant={viewMode === 'grid' ? 'default' : 'ghost'}
-               onClick={() => setViewMode('grid')}
-               className="w-10 p-0"
-             >
+              size="sm"
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('grid')}
+              className="w-10 p-0">
+              
                <LayoutGrid className="w-4 h-4" />
              </Button>
              <Button
-               size="sm"
-               variant={viewMode === 'list' ? 'default' : 'ghost'}
-               onClick={() => setViewMode('list')}
-               className="w-10 p-0"
-             >
+              size="sm"
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('list')}
+              className="w-10 p-0">
+              
                <List className="w-4 h-4" />
              </Button>
            </div>
-           <Select value={filterCustomer} onValueChange={(v) => { setFilterCustomer(v); setFilterSite('all'); }}>
+           <Select value={filterCustomer} onValueChange={(v) => {setFilterCustomer(v);setFilterSite('all');}}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filtrera på kund" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alla kunder</SelectItem>
-              {customers.map(c => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              ))}
+              {customers.map((c) =>
+              <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              )}
             </SelectContent>
           </Select>
 
@@ -117,9 +117,9 @@ export default function Inspections() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alla platser</SelectItem>
-              {sitesForCustomer.map(s => (
-                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-              ))}
+              {sitesForCustomer.map((s) =>
+              <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              )}
             </SelectContent>
           </Select>
 
@@ -129,66 +129,66 @@ export default function Inspections() {
              </SelectTrigger>
              <SelectContent>
                <SelectItem value="all">Alla inspektörer</SelectItem>
-               {uniqueInspectorNames.map(name => (
-                 <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
-               ))}
+               {uniqueInspectorNames.map((name) =>
+              <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
+              )}
              </SelectContent>
            </Select>
 
            <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
-             <SelectTrigger className="w-48">
-               <SelectValue placeholder="Filtrera på områdesansvarig" />
-             </SelectTrigger>
+             
+
+            
              <SelectContent>
                <SelectItem value="all">Alla områdesansvariga</SelectItem>
-               {uniqueSiteManagers.map(managerId => (
-                 <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
-               ))}
+               {uniqueSiteManagers.map((managerId) =>
+              <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
+              )}
              </SelectContent>
            </Select>
           </div>
 
-        {isLoading ? (
-          <div className="grid gap-4">
-            {[1, 2, 3].map(i => (
-              <Card key={i} className="animate-pulse">
+        {isLoading ?
+        <div className="grid gap-4">
+            {[1, 2, 3].map((i) =>
+          <Card key={i} className="animate-pulse">
                 <CardContent className="p-6">
                   <div className="h-6 bg-gray-200 rounded mb-2" />
                   <div className="h-4 bg-gray-200 rounded w-2/3" />
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        ) : filteredInspections.length === 0 ? (
-          <Card className="p-12 text-center">
+          )}
+          </div> :
+        filteredInspections.length === 0 ?
+        <Card className="p-12 text-center">
             <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga inspektioner hittades</h3>
             <p className="text-gray-600">Prova att ändra filtret</p>
-          </Card>
-        ) : viewMode === 'list' ? (
-          <div className="space-y-3">
-            {filteredInspections.map(inspection => (
-              <Link
-                key={inspection.id}
-                to={createPageUrl(
-                  inspection.status === 'completed'
-                    ? `Report?id=${inspection.id}`
-                    : `Inspection?id=${inspection.id}`
-                )}
-              >
+          </Card> :
+        viewMode === 'list' ?
+        <div className="space-y-3">
+            {filteredInspections.map((inspection) =>
+          <Link
+            key={inspection.id}
+            to={createPageUrl(
+              inspection.status === 'completed' ?
+              `Report?id=${inspection.id}` :
+              `Inspection?id=${inspection.id}`
+            )}>
+            
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <Badge
-                            variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                            className={
-                              inspection.status === 'completed'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-yellow-100 text-yellow-800'
-                            }
-                          >
+                        variant={inspection.status === 'completed' ? 'default' : 'secondary'}
+                        className={
+                        inspection.status === 'completed' ?
+                        'bg-green-100 text-green-800' :
+                        'bg-yellow-100 text-yellow-800'
+                        }>
+                        
                             {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                           </Badge>
                           <span className="text-sm text-gray-500 flex items-center gap-1">
@@ -199,62 +199,62 @@ export default function Inspections() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
                           {getSiteName(inspection.site_id)}
                         </h3>
-                        {getSiteLocation(inspection.site_id) && (
-                          <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                        {getSiteLocation(inspection.site_id) &&
+                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
                             <MapPin className="w-4 h-4" />
                             {getSiteLocation(inspection.site_id)}
                           </p>
-                        )}
+                    }
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <User className="w-4 h-4" />
                           {inspection.inspector_name}
                         </div>
-                        {inspection.notes && (
-                          <p className="text-sm text-gray-600 mt-3 line-clamp-2">
+                        {inspection.notes &&
+                    <p className="text-sm text-gray-600 mt-3 line-clamp-2">
                             {inspection.notes}
                           </p>
-                        )}
+                    }
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-              ))}
-              </div>
-              ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredInspections.map(inspection => (
-              <Link
-                key={inspection.id}
-                to={createPageUrl(
-                  inspection.status === 'completed'
-                    ? `Report?id=${inspection.id}`
-                    : `Inspection?id=${inspection.id}`
-                )}
-              >
+          )}
+              </div> :
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredInspections.map((inspection) =>
+          <Link
+            key={inspection.id}
+            to={createPageUrl(
+              inspection.status === 'completed' ?
+              `Report?id=${inspection.id}` :
+              `Inspection?id=${inspection.id}`
+            )}>
+            
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                   <CardContent className="p-6">
                     <div className="mb-3">
                       <Badge
-                        variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                        className={
-                          inspection.status === 'completed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }
-                      >
+                    variant={inspection.status === 'completed' ? 'default' : 'secondary'}
+                    className={
+                    inspection.status === 'completed' ?
+                    'bg-green-100 text-green-800' :
+                    'bg-yellow-100 text-yellow-800'
+                    }>
+                    
                         {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                       </Badge>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       {getSiteName(inspection.site_id)}
                     </h3>
-                    {getSiteLocation(inspection.site_id) && (
-                      <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                    {getSiteLocation(inspection.site_id) &&
+                <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
                         <MapPin className="w-4 h-4" />
                         {getSiteLocation(inspection.site_id)}
                       </p>
-                    )}
+                }
                     <div className="text-sm text-gray-600 flex items-center gap-1 mb-2">
                       <Calendar className="w-4 h-4" />
                       {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
@@ -266,10 +266,10 @@ export default function Inspections() {
                   </CardContent>
                 </Card>
               </Link>
-              ))}
+          )}
               </div>
-              )}
+        }
       </div>
-    </div>
-  );
+    </div>);
+
 }
