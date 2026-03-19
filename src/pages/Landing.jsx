@@ -59,7 +59,15 @@ export default function Landing() {
   const visibleItems = navItems.filter(item => item.path !== 'Users' || isAdmin);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex flex-col items-center justify-center p-6">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-6"
+      style={{
+        backgroundImage: 'url(https://media.base44.com/images/public/698b067db5e721251596eb5e/bbb18a68d_0286130d-b419-4706-9d1f-80337e32bb89.jpg)',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center'
+      }}
+    >
       <div className="w-full max-w-2xl mx-auto">
 
         {/* Logo */}
