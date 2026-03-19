@@ -28,6 +28,11 @@ export default function Inspections() {
     queryFn: () => base44.entities.Customer.list()
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: () => base44.entities.User.list()
+  });
+
   const getSite = (siteId) => sites.find(s => s.id === siteId);
   const getSiteName = (siteId) => getSite(siteId)?.name || 'Okänd plats';
   const getSiteLocation = (siteId) => getSite(siteId)?.location || '';
@@ -38,8 +43,15 @@ export default function Inspections() {
     ? sites
     : sites.filter(s => s.customer_id === filterCustomer);
 
-  // Get unique inspector names
-  const inspectorNames = [...new Set(inspections.map(ins => ins.inspector_name).filter(Boolean))].sort();
+  // Get unique inspector names and map to user data
+  const uniqueInspectorNames = [...new Set(inspections.map(ins => ins.inspector_name).filter(Boolean))].sort();
+  const getInspectorDisplay = (name) => {
+    const user = users.find(u => u.full_name === name);
+    if (user && user.first_name && user.last_name) {
+      return `${user.first_name} ${user.last_name}`;
+    }
+    return name;
+  };
 
   const filteredInspections = inspections.filter(ins => {
     const site = getSite(ins.site_id);
@@ -89,8 +101,8 @@ export default function Inspections() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alla inspektörer</SelectItem>
-              {inspectorNames.map(name => (
-                <SelectItem key={name} value={name}>{name}</SelectItem>
+              {uniqueInspectorNames.map(name => (
+                <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
