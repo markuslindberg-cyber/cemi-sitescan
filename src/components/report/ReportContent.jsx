@@ -224,10 +224,17 @@ return (
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
                 <Badge className={`${severityColors[point.severity || 'medium']} border font-semibold uppercase text-xs px-3 py-1`}>
-                  {point.severity || 'medium'}
+                  {({ low: 'Låg', medium: 'Medel', high: 'Hög', critical: 'Kritisk' })[point.severity || 'medium']}
                 </Badge>
                 <span className="text-sm font-semibold text-gray-800 capitalize">
-                  {point.issue_type?.replace(/_/g, ' ')}
+                  {({
+                    improvement_suggestions: 'Förbättringsförslag',
+                    issue_damage: 'Skada',
+                    plant_health: 'Växthälsa',
+                    maintenance: 'Underhåll',
+                    safety_concern: 'Säkerhetsrisk',
+                    deviation: 'Avvikelse'
+                  })[point.issue_type] || point.issue_type?.replace(/_/g, ' ')}
                 </span>
               </div>
 
