@@ -207,7 +207,9 @@ export default function Site() {
               {customer && (
                 <div className="mb-3 pb-3 border-b">
                   <p className="text-sm text-gray-500">Kund</p>
-                  <p className="text-lg font-semibold text-gray-800">{customer.name}</p>
+                  <Link to={createPageUrl(`Customer?id=${customer.id}`)} onClick={e => e.stopPropagation()}>
+                    <p className="text-lg font-semibold text-green-700 hover:underline cursor-pointer">{customer.name}</p>
+                  </Link>
                   {customer.project_number && (
                     <p className="text-sm text-gray-600">Projekt: {customer.project_number}</p>
                   )}
