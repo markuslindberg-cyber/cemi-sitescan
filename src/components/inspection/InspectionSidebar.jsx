@@ -50,7 +50,7 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
     <div className="w-80 bg-white border-l overflow-y-auto flex flex-col">
       <div className="p-4 border-b space-y-3">
         <div>
-          <Label className="text-sm font-semibold text-gray-900 mb-1 block">Anledning</Label>
+          <Label className="text-sm font-semibold text-gray-900 mb-1 block">Anledning för inspektion</Label>
           <Select value={reasonCategory} onValueChange={handleReasonChange}>
             <SelectTrigger>
               <SelectValue placeholder="Välj anledning..." />
