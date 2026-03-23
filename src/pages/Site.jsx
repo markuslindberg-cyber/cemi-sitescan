@@ -372,7 +372,7 @@ export default function Site() {
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
                               </AlertDialogTrigger>
-                              <AlertDialogContent>
+                              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>Radera inspektion?</AlertDialogTitle>
                                   <AlertDialogDescription>
@@ -383,7 +383,7 @@ export default function Site() {
                                   <AlertDialogCancel>Avbryt</AlertDialogCancel>
                                   <AlertDialogAction
                                     className="bg-red-600 hover:bg-red-700"
-                                    onClick={() => deleteInspectionMutation.mutate(inspection)}
+                                    onClick={(e) => { e.stopPropagation(); deleteInspectionMutation.mutate(inspection); }}
                                   >
                                     Radera
                                   </AlertDialogAction>
