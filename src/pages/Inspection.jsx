@@ -131,7 +131,7 @@ export default function Inspection() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="flex flex-col bg-gray-50" style={{ height: '100dvh' }}>
       <div className="bg-white border-b px-3 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
         <div className="flex items-center gap-2 flex-1 min-w-0">
            <Link to={createPageUrl(`Site?id=${site.id}`)}>
