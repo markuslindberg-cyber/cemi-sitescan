@@ -18,8 +18,7 @@ const issueTypes = [
   { value: 'maintenance', label: 'Underhåll' },
   { value: 'safety_concern', label: 'Säkerhetsrisk' },
   { value: 'deviation', label: 'Avvikelse' },
-  { value: 'new_customer', label: 'Ny kund' },
-  { value: 'tender_calculation', label: 'Anbud/kalkylering' }
+  { value: 'general', label: 'Allmänt' }
 ];
 
 const severityLevels = [
