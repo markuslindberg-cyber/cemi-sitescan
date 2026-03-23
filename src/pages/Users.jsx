@@ -40,7 +40,10 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    base44.auth.me().then(user => setIsAdmin(user?.role === 'admin'));
+    base44.auth.me().then(user => {
+      setIsAdmin(user?.role === 'admin');
+      setCurrentUserId(user?.id);
+    });
   }, []);
 
   const { data: users, isLoading } = useQuery({
