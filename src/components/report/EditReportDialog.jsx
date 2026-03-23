@@ -142,6 +142,32 @@ export default function EditReportDialog({ open, onOpenChange, inspection, point
               </div>
             </div>
             <div>
+              <Label>Anledning</Label>
+              <Select
+                value={formData.reason_category}
+                onValueChange={val => setFormData(p => ({ ...p, reason_category: val }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Välj anledning..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {reasonCategories.map(r => (
+                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {formData.reason_category === 'other' && (
+              <div>
+                <Label>Beskriv anledning</Label>
+                <Input
+                  value={formData.reason_custom}
+                  onChange={e => setFormData(p => ({ ...p, reason_custom: e.target.value }))}
+                  placeholder="Ange anledning..."
+                />
+              </div>
+            )}
+            <div>
               <Label>Allmänna anteckningar</Label>
               <Textarea
                 value={formData.notes}
