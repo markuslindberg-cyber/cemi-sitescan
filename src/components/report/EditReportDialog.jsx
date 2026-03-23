@@ -9,6 +9,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+
+const reasonCategories = [
+  { value: 'tillsyn', label: 'Tillsyn' },
+  { value: 'besiktning', label: 'Besiktning' },
+  { value: 'ny_kundbesiktning', label: 'Ny Kundbesiktning' },
+  { value: 'anbud_kalkylering', label: 'Anbud/kalkylering' },
+  { value: 'egenkontroll', label: 'Egenkontroll' },
+  { value: 'other', label: 'Annan (ange nedan)' },
+];
 import { toast } from 'sonner';
 
 const issueTypeLabels = {
