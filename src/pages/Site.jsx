@@ -367,7 +367,7 @@ export default function Site() {
                                     variant="ghost"
                                     size="sm"
                                     className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    onClick={(e) => e.preventDefault()}
+                                    onClick={(e) => e.stopPropagation()}
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
