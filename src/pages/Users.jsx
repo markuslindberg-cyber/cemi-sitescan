@@ -50,7 +50,7 @@ export default function UsersPage() {
 
   const inviteMutation = useMutation({
     mutationFn: async ({ email, role, first_name, last_name }) => {
-      await base44.auth.inviteUser(email, role);
+      await base44.users.inviteUser(email, role);
       const me = await base44.auth.me();
       await base44.entities.Invitation.create({ email, role, invited_by: me.email });
       // Sätt först och efternamn för den nya användaren
