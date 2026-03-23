@@ -266,6 +266,26 @@ export default function Inspection() {
           </div>
         </SheetContent>
       </Sheet>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Radera inspektion?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Är du säker på att du vill radera denna inspektion? Alla inspektionspunkter kommer också att raderas. Detta kan inte ångras.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Avbryt</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteInspectionMutation.mutate()}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Radera
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
