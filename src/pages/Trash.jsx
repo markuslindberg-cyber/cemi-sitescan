@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Trash2, RefreshCw, AlertTriangle, RotateCcw } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,9 +27,17 @@ const entityTypeLabels = {
   InspectionPoint: 'Inspektionspunkt',
 };
 
+const entityMap = {
+  Inspection: base44.entities.Inspection,
+  Site: base44.entities.Site,
+  Customer: base44.entities.Customer,
+  InspectionPoint: base44.entities.InspectionPoint,
+};
+
 export default function TrashPage() {
   const queryClient = useQueryClient();
-  const [showEmptyDialog, setShowEmptyDialog] = useState(false);
+  const [selected, setSelected] = useState(new Set());
+  const [confirmAction, setConfirmAction] = useState(null); // 'delete' | 'restore' | 'empty'
 
   const { data: currentUser } = useQuery({
     queryKey: ['me'],
@@ -41,24 +50,64 @@ export default function TrashPage() {
     enabled: currentUser?.role === 'admin',
   });
 
-  const emptyTrashMutation = useMutation({
-    mutationFn: async () => {
-      await Promise.all(trashItems.map(item => base44.entities.Trash.delete(item.id)));
+  const toggleSelect = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.size === trashItems.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(trashItems.map(i => i.id)));
+    }
+  };
+
+  const selectedItems = trashItems.filter(i => selected.has(i.id));
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids) => {
+      await Promise.all(ids.map(id => base44.entities.Trash.delete(id)));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trash'] });
-      toast.success('Papperskorgen tömd');
-      setShowEmptyDialog(false);
+      toast.success('Objekt permanent raderade');
+      setSelected(new Set());
+      setConfirmAction(null);
     },
   });
 
-  const deleteItemMutation = useMutation({
-    mutationFn: (id) => base44.entities.Trash.delete(id),
+  const bulkRestoreMutation = useMutation({
+    mutationFn: async (items) => {
+      await Promise.all(items.map(async (item) => {
+        const entity = entityMap[item.entity_type];
+        if (entity && item.entity_data) {
+          const { id, created_date, updated_date, created_by, ...restData } = item.entity_data;
+          await entity.create(restData);
+        }
+        await base44.entities.Trash.delete(item.id);
+      }));
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trash'] });
-      toast.success('Objekt permanent raderat');
+      toast.success('Objekt återställda');
+      setSelected(new Set());
+      setConfirmAction(null);
     },
   });
+
+  const handleConfirm = () => {
+    if (confirmAction === 'delete') {
+      bulkDeleteMutation.mutate([...selected]);
+    } else if (confirmAction === 'restore') {
+      bulkRestoreMutation.mutate(selectedItems);
+    } else if (confirmAction === 'empty') {
+      bulkDeleteMutation.mutate(trashItems.map(i => i.id));
+    }
+  };
 
   if (currentUser?.role !== 'admin') {
     return (
@@ -77,6 +126,9 @@ export default function TrashPage() {
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
+  const allSelected = trashItems.length > 0 && selected.size === trashItems.length;
+  const someSelected = selected.size > 0;
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
@@ -88,17 +140,40 @@ export default function TrashPage() {
               <p className="text-sm text-gray-500">Objekt raderas automatiskt efter 30 dagar</p>
             </div>
           </div>
-          {trashItems.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowEmptyDialog(true)}
-            >
+          {trashItems.length > 0 && !someSelected && (
+            <Button variant="destructive" size="sm" onClick={() => setConfirmAction('empty')}>
               <Trash2 className="w-4 h-4 mr-2" />
               Töm papperskorg
             </Button>
           )}
         </div>
+
+        {/* Bulk action bar */}
+        {someSelected && (
+          <div className="flex items-center gap-3 bg-white border rounded-lg px-4 py-3 mb-4 shadow-sm">
+            <span className="text-sm text-gray-700 font-medium">{selected.size} markerade</span>
+            <div className="flex-1" />
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-green-700 border-green-300 hover:bg-green-50"
+              onClick={() => setConfirmAction('restore')}
+              disabled={bulkRestoreMutation.isPending}
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Återställ
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => setConfirmAction('delete')}
+              disabled={bulkDeleteMutation.isPending}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Radera permanent
+            </Button>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="flex justify-center py-16">
@@ -112,40 +187,46 @@ export default function TrashPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
+            {/* Select all row */}
+            <div className="flex items-center gap-3 px-4 py-2">
+              <Checkbox
+                checked={allSelected}
+                onCheckedChange={toggleAll}
+                id="select-all"
+              />
+              <label htmlFor="select-all" className="text-sm text-gray-600 cursor-pointer select-none">
+                Markera alla ({trashItems.length})
+              </label>
+            </div>
+
             {trashItems.map((item) => {
               const daysLeft = getDaysLeft(item.expires_at);
+              const isChecked = selected.has(item.id);
               return (
-                <Card key={item.id} className="bg-white">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium text-gray-900 truncate">{item.display_name}</span>
-                          <Badge variant="outline" className="text-xs flex-shrink-0">
-                            {entityTypeLabels[item.entity_type] || item.entity_type}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
-                          <span>
-                            Raderades {formatDistanceToNow(new Date(item.created_date), { addSuffix: true, locale: sv })}
-                          </span>
-                          {item.deleted_by && <span>av {item.deleted_by}</span>}
-                          <span className={daysLeft <= 3 ? 'text-red-500 font-medium' : ''}>
-                            {daysLeft} dagar kvar
-                          </span>
-                        </div>
+                <Card key={item.id} className={`bg-white transition-colors ${isChecked ? 'ring-2 ring-green-400' : ''}`}>
+                  <CardContent className="flex items-center gap-3 p-4">
+                    <Checkbox
+                      checked={isChecked}
+                      onCheckedChange={() => toggleSelect(item.id)}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-gray-900 truncate">{item.display_name}</span>
+                        <Badge variant="outline" className="text-xs flex-shrink-0">
+                          {entityTypeLabels[item.entity_type] || item.entity_type}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
+                        <span>
+                          Raderades {formatDistanceToNow(new Date(item.created_date), { addSuffix: true, locale: sv })}
+                        </span>
+                        {item.deleted_by && <span>av {item.deleted_by}</span>}
+                        <span className={daysLeft <= 3 ? 'text-red-500 font-medium' : ''}>
+                          {daysLeft} dagar kvar
+                        </span>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0 ml-2"
-                      onClick={() => deleteItemMutation.mutate(item.id)}
-                      disabled={deleteItemMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
                   </CardContent>
                 </Card>
               );
@@ -154,21 +235,27 @@ export default function TrashPage() {
         )}
       </div>
 
-      <AlertDialog open={showEmptyDialog} onOpenChange={setShowEmptyDialog}>
+      <AlertDialog open={!!confirmAction} onOpenChange={(open) => !open && setConfirmAction(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Töm papperskorg?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {confirmAction === 'restore' && 'Återställ objekt?'}
+              {confirmAction === 'delete' && 'Radera permanent?'}
+              {confirmAction === 'empty' && 'Töm papperskorg?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Alla {trashItems.length} objekt kommer att raderas permanent. Detta kan inte ångras.
+              {confirmAction === 'restore' && `${selected.size} objekt kommer att återställas.`}
+              {confirmAction === 'delete' && `${selected.size} objekt kommer att raderas permanent. Detta kan inte ångras.`}
+              {confirmAction === 'empty' && `Alla ${trashItems.length} objekt kommer att raderas permanent. Detta kan inte ångras.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Avbryt</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => emptyTrashMutation.mutate()}
-              className="bg-red-600 hover:bg-red-700"
+              onClick={handleConfirm}
+              className={confirmAction === 'restore' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
             >
-              Töm papperskorg
+              {confirmAction === 'restore' ? 'Återställ' : 'Radera'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
