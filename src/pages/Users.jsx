@@ -24,12 +24,14 @@ import { QRCodeCanvas } from 'qrcode.react';
 
 export default function UsersPage() {
   const [isAdmin, setIsAdmin] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(null); // user object
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteFirstName, setInviteFirstName] = useState('');
   const [inviteLastName, setInviteLastName] = useState('');
