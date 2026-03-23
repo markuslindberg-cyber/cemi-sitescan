@@ -245,6 +245,7 @@ export default function UsersPage() {
           </div>
         </div>
 
+
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-gray-500">Laddar användare...</p>
