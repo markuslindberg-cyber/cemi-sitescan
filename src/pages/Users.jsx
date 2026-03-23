@@ -314,24 +314,26 @@ export default function UsersPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 flex-wrap justify-end">
                       <Badge 
-                        className={user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}
+                        className={user.blocked ? 'bg-red-100 text-red-700' : user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}
                       >
                         <Shield className="w-3 h-3 mr-1" />
-                        {user.role}
+                        {user.blocked ? 'Blockerad' : user.role}
                       </Badge>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditUser(user)}
+                        disabled={user.id === currentUserId}
+                        title="Redigera"
                       >
                         <Edit2 className="w-4 h-4" />
                       </Button>
                       <Select 
                         value={user.role} 
                         onValueChange={(newRole) => handleRoleChange(user.id, newRole)}
-                        disabled={updateRoleMutation.isPending}
+                        disabled={updateRoleMutation.isPending || user.id === currentUserId}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
@@ -341,6 +343,29 @@ export default function UsersPage() {
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
+                      {user.id !== currentUserId && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title={user.blocked ? 'Avblockera' : 'Blockera'}
+                            className={user.blocked ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'}
+                            onClick={() => blockUserMutation.mutate({ userId: user.id, blocked: !user.blocked })}
+                            disabled={blockUserMutation.isPending}
+                          >
+                            {user.blocked ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Ta bort användare"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => setConfirmDelete(user)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardContent>
