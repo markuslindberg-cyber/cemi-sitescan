@@ -232,7 +232,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
 
   const handleDelete = () => {
     if (existingPoint && confirm('Är du säker på att du vill radera denna inspektionspunkt?')) {
-      deleteMutation.mutate(existingPoint.id);
+      deleteMutation.mutate(existingPoint);
     }
   };
 
