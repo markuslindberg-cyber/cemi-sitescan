@@ -162,6 +162,16 @@ export default function Inspection() {
             <List className="w-4 h-4" />
           </Button>
           <Button
+            onClick={handleDeleteInspection}
+            disabled={deleteInspectionMutation.isPending}
+            variant="outline"
+            size="sm"
+            className="text-red-600 border-red-200 hover:bg-red-50 text-xs sm:text-sm py-1 px-2 sm:px-3"
+          >
+            <Trash2 className="w-4 h-4 sm:mr-1" />
+            <span className="hidden sm:inline">Radera</span>
+          </Button>
+          <Button
             onClick={handleCompleteInspection}
             disabled={updateInspectionMutation.isPending}
             className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm py-1 px-2 sm:px-4"
