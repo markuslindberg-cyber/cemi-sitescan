@@ -315,12 +315,19 @@ export default function UsersPage() {
             ))}
           </div>
         )}
-      {pendingInvitations.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-amber-500" />
-            Väntande inbjudningar ({pendingInvitations.length})
-          </h2>
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-amber-500" />
+          Väntande inbjudningar ({pendingInvitations.length})
+        </h2>
+        {pendingInvitations.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center">
+              <Mail className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 text-sm">Inga väntande inbjudningar</p>
+            </CardContent>
+          </Card>
+        ) : (
           <div className="grid gap-3">
             {pendingInvitations.map((inv) => (
               <Card key={inv.id} className="border-amber-200 bg-amber-50">
@@ -354,8 +361,8 @@ export default function UsersPage() {
               </Card>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
       </div>
     </div>
     <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
