@@ -55,11 +55,25 @@ export default function Site() {
     return user ? user.full_name : managerId;
   };
 
+  const addToTrash = async (entityType, entityId, displayName, data) => {
+    const expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const user = await base44.auth.me();
+    await base44.entities.Trash.create({
+      entity_type: entityType,
+      entity_id: entityId,
+      display_name: displayName,
+      entity_data: data,
+      deleted_by: user?.email || '',
+      expires_at,
+    });
+  };
+
   const deleteInspectionMutation = useMutation({
-    mutationFn: async (inspectionId) => {
-      const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspectionId });
+    mutationFn: async (inspection) => {
+      const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspection.id });
       await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
-      return base44.entities.Inspection.delete(inspectionId);
+      await addToTrash('Inspection', inspection.id, `${inspection.inspection_number} – ${site?.name || ''}`, inspection);
+      return base44.entities.Inspection.delete(inspection.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspections', siteId] });
@@ -68,14 +82,13 @@ export default function Site() {
 
   const deleteSiteMutation = useMutation({
     mutationFn: async () => {
-      // Delete all inspections and their points for this site
       const siteInspections = await base44.entities.Inspection.filter({ site_id: siteId });
       for (const inspection of siteInspections) {
         const points = await base44.entities.InspectionPoint.filter({ inspection_id: inspection.id });
         await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
         await base44.entities.Inspection.delete(inspection.id);
       }
-      // Delete the site
+      await addToTrash('Site', siteId, site.name, site);
       return base44.entities.Site.delete(siteId);
     },
     onSuccess: () => {
