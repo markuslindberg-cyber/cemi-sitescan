@@ -61,7 +61,9 @@ export default function EditReportDialog({ open, onOpenChange, inspection, point
         report_title: inspection.report_title || '',
         inspection_date: inspection.inspection_date || '',
         inspector_name: inspection.inspector_name || '',
-        notes: inspection.notes || ''
+        notes: inspection.notes || '',
+        reason_category: inspection.reason_category || '',
+        reason_custom: inspection.reason_custom || ''
       });
     }
     if (points) {
