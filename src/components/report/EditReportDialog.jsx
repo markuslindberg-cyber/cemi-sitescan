@@ -26,7 +26,8 @@ const issueTypeLabels = {
   plant_health: 'Växthälsa',
   maintenance: 'Underhåll',
   safety_concern: 'Säkerhetsrisk',
-  deviation: 'Avvikelse'
+  deviation: 'Avvikelse',
+  general: 'Allmänt'
 };
 
 const severityLabels = {
