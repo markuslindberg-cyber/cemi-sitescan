@@ -385,7 +385,7 @@ export default function Site() {
                                       className="bg-red-600 hover:bg-red-700"
                                       onClick={(e) => {
                                         e.preventDefault();
-                                        deleteInspectionMutation.mutate(inspection.id);
+                                        deleteInspectionMutation.mutate(inspection);
                                       }}
                                     >
                                       Radera
