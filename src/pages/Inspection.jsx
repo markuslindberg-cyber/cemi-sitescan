@@ -221,10 +221,10 @@ export default function Inspection() {
                 setShowNotesSheet(false);
               }}
               onNotesUpdate={(notes) => {
-                updateInspectionMutation.mutate({
-                  id: inspectionId,
-                  data: { notes }
-                });
+                updateInspectionMutation.mutate({ id: inspectionId, data: { notes } });
+              }}
+              onReasonUpdate={(reasonData) => {
+                updateInspectionMutation.mutate({ id: inspectionId, data: reasonData });
               }}
             />
           </div>
