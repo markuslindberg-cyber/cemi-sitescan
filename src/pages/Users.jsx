@@ -8,7 +8,17 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2, Edit2 } from 'lucide-react';
+import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2, Edit2, Ban, CheckCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { QRCodeCanvas } from 'qrcode.react';
 
