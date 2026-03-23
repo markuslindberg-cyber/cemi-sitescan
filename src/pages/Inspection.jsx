@@ -81,9 +81,7 @@ export default function Inspection() {
   });
 
   const handleDeleteInspection = () => {
-    if (confirm('Är du säker på att du vill radera denna inspektion? Alla inspektionspunkter kommer också att raderas.')) {
-      deleteInspectionMutation.mutate();
-    }
+    setShowDeleteDialog(true);
   };
 
   const handleMapClick = (xOrLat, yOrLng) => {
