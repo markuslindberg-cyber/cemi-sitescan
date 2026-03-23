@@ -166,14 +166,15 @@ export default function UsersPage() {
             <p className="text-gray-600 mt-1">Hantera användare och deras roller</p>
           </div>
 
-          <Button
-            onClick={() => setShowQRCode(true)}
-            variant="outline"
-            className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
-          >
-            <QrCode className="w-4 h-4 mr-2" />
-            QR Code
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowQRCode(true)}
+              variant="outline"
+              className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+            >
+              <QrCode className="w-4 h-4 mr-2" />
+              QR Code
+            </Button>
 
           <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
             <DialogTrigger asChild>
