@@ -459,6 +459,26 @@ export default function UsersPage() {
       </DialogContent>
     </Dialog>
 
+    <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Ta bort användare?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {confirmDelete && `${confirmDelete.full_name || confirmDelete.email} kommer att tas bort permanent. Detta kan inte ångras.`}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-red-600 hover:bg-red-700"
+            onClick={() => deleteUserMutation.mutate(confirmDelete.id)}
+          >
+            Ta bort
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
     <Dialog open={showQRCode} onOpenChange={setShowQRCode}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
