@@ -315,90 +315,86 @@ export default function Site() {
             ) : (
               <div className="space-y-3">
                 {inspections.map(inspection => (
-                  <Link
+                  <Card
                     key={inspection.id}
-                    to={createPageUrl(
+                    className="hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => navigate(createPageUrl(
                       inspection.status === 'completed'
                         ? `Report?id=${inspection.id}`
                         : `Inspection?id=${inspection.id}`
-                    )}
+                    ))}
                   >
-                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                                  <span className="text-lg font-bold text-gray-900">
-                                    {inspection.inspection_number}
-                                  </span>
-                                  <Badge
-                                    variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                                    className={
-                                      inspection.status === 'completed'
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-yellow-100 text-yellow-800'
-                                    }
-                                  >
-                                    {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
-                                  </Badge>
-                                  <span className="text-sm text-gray-500 flex items-center gap-1">
-                                    <Calendar className="w-4 h-4" />
-                                    {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
-                                  </span>
-                                </div>
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <User className="w-4 h-4" />
-                              {inspection.inspector_name}
-                            </div>
-                            {inspection.notes && (
-                              <p className="text-sm text-gray-600 mt-2 line-clamp-1">
-                                {inspection.notes}
-                              </p>
-                            )}
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-lg font-bold text-gray-900">
+                              {inspection.inspection_number}
+                            </span>
+                            <Badge
+                              variant={inspection.status === 'completed' ? 'default' : 'secondary'}
+                              className={
+                                inspection.status === 'completed'
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }
+                            >
+                              {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
+                            </Badge>
+                            <span className="text-sm text-gray-500 flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
+                            </span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm">
-                              {inspection.status === 'completed' ? 'Visa rapport' : 'Fortsätt'}
-                            </Button>
-                            {currentUser?.role === 'admin' && (
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Radera inspektion?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Detta tar bort inspektion {inspection.inspection_number} och alla dess punkter permanent. Åtgärden kan inte ångras.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      className="bg-red-600 hover:bg-red-700"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        deleteInspectionMutation.mutate(inspection);
-                                      }}
-                                    >
-                                      Radera
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            )}
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <User className="w-4 h-4" />
+                            {inspection.inspector_name}
                           </div>
+                          {inspection.notes && (
+                            <p className="text-sm text-gray-600 mt-2 line-clamp-1">
+                              {inspection.notes}
+                            </p>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm">
+                            {inspection.status === 'completed' ? 'Visa rapport' : 'Fortsätt'}
+                          </Button>
+                          {currentUser?.role === 'admin' && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Radera inspektion?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Detta tar bort inspektion {inspection.inspection_number} och alla dess punkter permanent. Åtgärden kan inte ångras.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    className="bg-red-600 hover:bg-red-700"
+                                    onClick={() => deleteInspectionMutation.mutate(inspection)}
+                                  >
+                                    Radera
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             )}
