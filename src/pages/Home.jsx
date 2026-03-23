@@ -51,13 +51,16 @@ export default function Home() {
 
   const { data: users = [] } = useQuery({
     queryKey: ['all-users'],
-    queryFn: () => base44.entities.User.list()
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getUsers', {});
+      return res.data?.users || [];
+    }
   });
 
   const getUserName = (userId) => {
     if (!userId) return '';
     const user = users.find(u => u.id === userId);
-    if (!user) return userId;
+    if (!user) return '';
     return user.first_name && user.last_name 
       ? `${user.first_name} ${user.last_name}`
       : user.full_name || user.email;
