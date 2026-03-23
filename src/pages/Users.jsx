@@ -108,6 +108,23 @@ export default function UsersPage() {
     }
   });
 
+  const blockUserMutation = useMutation({
+    mutationFn: ({ userId, blocked }) => base44.entities.User.update(userId, { blocked }),
+    onSuccess: (_, { blocked }) => {
+      toast.success(blocked ? 'Användaren har blockerats' : 'Användaren har avblocketrats');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId) => base44.entities.User.delete(userId),
+    onSuccess: () => {
+      toast.success('Användaren har tagits bort');
+      setConfirmDelete(null);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+
   const updateUserMutation = useMutation({
     mutationFn: ({ userId, first_name, last_name }) => 
       base44.entities.User.update(userId, { first_name, last_name }),
