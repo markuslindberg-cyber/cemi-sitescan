@@ -58,6 +58,23 @@ export default function Inspection() {
     }
   });
 
+  const deleteInspectionMutation = useMutation({
+    mutationFn: async () => {
+      await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
+      await base44.entities.Inspection.delete(inspectionId);
+    },
+    onSuccess: () => {
+      toast.success('Inspektionen raderad');
+      navigate(createPageUrl(`Site?id=${site.id}`));
+    }
+  });
+
+  const handleDeleteInspection = () => {
+    if (confirm('Är du säker på att du vill radera denna inspektion? Alla inspektionspunkter kommer också att raderas.')) {
+      deleteInspectionMutation.mutate();
+    }
+  };
+
   const handleMapClick = (xOrLat, yOrLng) => {
     if (site?.map_type === 'google_maps') {
       setPendingPosition({ latitude: xOrLat, longitude: yOrLng });
