@@ -359,7 +359,6 @@ export default function UsersPage() {
       )}
       </div>
     </div>
-
     <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
       <DialogContent>
         <DialogHeader>
