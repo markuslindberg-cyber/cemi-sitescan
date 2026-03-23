@@ -24,8 +24,10 @@ const severityColors = {
   critical: 'bg-red-100 text-red-800 border-red-200'
 };
 
-export default function InspectionSidebar({ points, inspection, onPointClick, onNotesUpdate }) {
+export default function InspectionSidebar({ points, inspection, onPointClick, onNotesUpdate, onReasonUpdate }) {
   const [notes, setNotes] = useState(inspection?.notes || '');
+  const [reasonCategory, setReasonCategory] = useState(inspection?.reason_category || '');
+  const [reasonCustom, setReasonCustom] = useState(inspection?.reason_custom || '');
   const [saving, setSaving] = useState(false);
 
   const handleSaveNotes = async () => {
@@ -34,25 +36,58 @@ export default function InspectionSidebar({ points, inspection, onPointClick, on
     setSaving(false);
   };
 
+  const handleReasonChange = (val) => {
+    setReasonCategory(val);
+    onReasonUpdate({ reason_category: val, reason_custom: reasonCustom });
+  };
+
+  const handleReasonCustomChange = (val) => {
+    setReasonCustom(val);
+    onReasonUpdate({ reason_category: reasonCategory, reason_custom: val });
+  };
+
   return (
     <div className="w-80 bg-white border-l overflow-y-auto flex flex-col">
-      <div className="p-4 border-b">
-        <h2 className="font-semibold text-gray-900 mb-4">Inspektionsanteckningar</h2>
-        <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Lägg till allmänna anteckningar om inspektionen..."
-          rows={4}
-          className="mb-2"
-        />
-        <Button
-          size="sm"
-          onClick={handleSaveNotes}
-          disabled={saving || notes === (inspection?.notes || '')}
-          className="w-full"
-        >
-          {saving ? 'Sparar...' : 'Spara anteckningar'}
-        </Button>
+      <div className="p-4 border-b space-y-3">
+        <div>
+          <Label className="text-sm font-semibold text-gray-900 mb-1 block">Anledning</Label>
+          <Select value={reasonCategory} onValueChange={handleReasonChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Välj anledning..." />
+            </SelectTrigger>
+            <SelectContent>
+              {reasonCategories.map(r => (
+                <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {reasonCategory === 'other' && (
+            <Input
+              className="mt-2"
+              value={reasonCustom}
+              onChange={e => handleReasonCustomChange(e.target.value)}
+              placeholder="Ange anledning..."
+            />
+          )}
+        </div>
+        <div>
+          <h2 className="font-semibold text-gray-900 mb-2">Inspektionsanteckningar</h2>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Lägg till allmänna anteckningar om inspektionen..."
+            rows={4}
+            className="mb-2"
+          />
+          <Button
+            size="sm"
+            onClick={handleSaveNotes}
+            disabled={saving || notes === (inspection?.notes || '')}
+            className="w-full"
+          >
+            {saving ? 'Sparar...' : 'Spara anteckningar'}
+          </Button>
+        </div>
       </div>
 
       <div className="p-4 flex-1">
