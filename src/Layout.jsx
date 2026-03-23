@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Building2, Users, FileText, Menu, X, Home, Trash2 } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  React.useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
   
   const navItems = [
     { name: 'Områden', path: 'Home', icon: Building2 },
