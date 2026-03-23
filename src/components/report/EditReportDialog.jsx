@@ -97,10 +97,21 @@ export default function EditReportDialog({ open, onOpenChange, inspection, point
     setPointsData(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
-  const deletePoint = async (id) => {
+  const deletePoint = async (pointId) => {
     if (!confirm('Är du säker på att du vill radera denna inspektionspunkt?')) return;
-    await base44.entities.InspectionPoint.delete(id);
-    setPointsData(prev => prev.filter(p => p.id !== id));
+    const point = pointsData.find(p => p.id === pointId);
+    const user = await base44.auth.me();
+    const expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    await base44.entities.Trash.create({
+      entity_type: 'InspectionPoint',
+      entity_id: pointId,
+      display_name: `Inspektionspunkt – ${point?.issue_type || ''}`,
+      entity_data: point,
+      deleted_by: user?.email || '',
+      expires_at,
+    });
+    await base44.entities.InspectionPoint.delete(pointId);
+    setPointsData(prev => prev.filter(p => p.id !== pointId));
     queryClient.invalidateQueries({ queryKey: ['inspection-points', inspection.id] });
     toast.success('Inspektionspunkt raderad');
   };

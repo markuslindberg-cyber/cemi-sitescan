@@ -84,7 +84,19 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.InspectionPoint.delete(id),
+    mutationFn: async (point) => {
+      const user = await base44.auth.me();
+      const expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      await base44.entities.Trash.create({
+        entity_type: 'InspectionPoint',
+        entity_id: point.id,
+        display_name: `Inspektionspunkt – ${point.issue_type || ''}`,
+        entity_data: point,
+        deleted_by: user?.email || '',
+        expires_at,
+      });
+      return base44.entities.InspectionPoint.delete(point.id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspection-points'] });
       toast.success('Inspektionspunkt raderad');
