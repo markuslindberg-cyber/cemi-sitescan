@@ -10,7 +10,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Områden', path: 'Home', icon: Building2 },
     { name: 'Kunder', path: 'Customers', icon: Users },
     { name: 'Inspektioner', path: 'Inspections', icon: FileText },
-    { name: 'Användare', path: 'Users', icon: Users }
+    { name: 'Användare', path: 'Users', icon: Users },
+    { name: 'Papperskorg', path: 'Trash', icon: Trash2, adminOnly: true }
   ];
 
   return (
