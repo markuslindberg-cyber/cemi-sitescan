@@ -190,10 +190,10 @@ export default function Inspection() {
             inspection={inspection}
             onPointClick={handlePointClick}
             onNotesUpdate={(notes) => {
-              updateInspectionMutation.mutate({
-                id: inspectionId,
-                data: { notes }
-              });
+              updateInspectionMutation.mutate({ id: inspectionId, data: { notes } });
+            }}
+            onReasonUpdate={(reasonData) => {
+              updateInspectionMutation.mutate({ id: inspectionId, data: reasonData });
             }}
           />
         </div>
