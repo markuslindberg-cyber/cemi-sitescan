@@ -57,6 +57,12 @@ export default function ReportFrontPage({ inspection, site, customer }) {
             <p className="text-xl font-semibold text-gray-800">{inspection.inspector_name}</p>
           </div>
           
+          {reasonText && (
+            <div className="border-b pb-4">
+              <p className="text-sm text-gray-500 uppercase tracking-wide">Anledning</p>
+              <p className="text-xl font-semibold text-gray-800">{reasonText}</p>
+            </div>
+          )}
           {site.location && (
             <div>
               <p className="text-sm text-gray-500 uppercase tracking-wide">Plats</p>
