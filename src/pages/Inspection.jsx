@@ -72,6 +72,16 @@ export default function Inspection() {
   const deleteInspectionMutation = useMutation({
     mutationFn: async () => {
       await Promise.all(points.map(p => base44.entities.InspectionPoint.delete(p.id)));
+      const user = await base44.auth.me();
+      const expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      await base44.entities.Trash.create({
+        entity_type: 'Inspection',
+        entity_id: inspectionId,
+        display_name: `${inspection.inspection_number} – ${site?.name || ''}`,
+        entity_data: inspection,
+        deleted_by: user?.email || '',
+        expires_at,
+      });
       await base44.entities.Inspection.delete(inspectionId);
     },
     onSuccess: () => {
