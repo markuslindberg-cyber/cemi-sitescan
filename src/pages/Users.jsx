@@ -157,6 +157,7 @@ export default function UsersPage() {
   );
 
   return (
+    <>
     <div className="p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
