@@ -432,6 +432,5 @@ export default function UsersPage() {
         </div>
       </DialogContent>
     </Dialog>
-    </>
   );
 }
