@@ -1,6 +1,18 @@
 import React from 'react';
 
+const reasonLabels = {
+  tillsyn: 'Tillsyn',
+  besiktning: 'Besiktning',
+  ny_kundbesiktning: 'Ny Kundbesiktning',
+  anbud_kalkylering: 'Anbud/kalkylering',
+  egenkontroll: 'Egenkontroll',
+  other: null
+};
+
 export default function ReportFrontPage({ inspection, site, customer }) {
+  const reasonText = inspection.reason_category === 'other'
+    ? inspection.reason_custom
+    : reasonLabels[inspection.reason_category];
   return (
     <div className="flex-1 flex flex-col justify-center bg-white p-4 md:p-8 print:p-0">
       {/* Main content */}
