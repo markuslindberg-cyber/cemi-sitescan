@@ -9,6 +9,16 @@ import { createPageUrl } from '../utils';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import InteractiveMap from '../components/inspection/InteractiveMap';
 import GoogleMapInteractive from '../components/inspection/GoogleMapInteractive';
 import InspectionPointDialog from '../components/inspection/InspectionPointDialog';
