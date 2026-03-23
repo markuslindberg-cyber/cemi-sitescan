@@ -3,7 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Camera, FileText } from 'lucide-react';
+
+const reasonCategories = [
+  { value: 'tillsyn', label: 'Tillsyn' },
+  { value: 'besiktning', label: 'Besiktning' },
+  { value: 'ny_kundbesiktning', label: 'Ny Kundbesiktning' },
+  { value: 'anbud_kalkylering', label: 'Anbud/kalkylering' },
+  { value: 'egenkontroll', label: 'Egenkontroll' },
+  { value: 'other', label: 'Annan (ange nedan)' },
+];
 
 const severityColors = {
   low: 'bg-blue-100 text-blue-800 border-blue-200',
