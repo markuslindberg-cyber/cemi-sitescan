@@ -48,6 +48,7 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     setFormData(prev => ({
       ...prev,
       customer_id: customerId,
+      project_number: selectedCustomer?.project_number || prev.project_number,
       site_manager: selectedCustomer?.account_manager || '',
       map_type: selectedCustomer?.map_type || 'uploaded'
     }));
