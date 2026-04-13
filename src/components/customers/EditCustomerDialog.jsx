@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +14,7 @@ import UserSelect from '@/components/shared/UserSelect';
 export default function EditCustomerDialog({ open, onOpenChange, customer }) {
   const [formData, setFormData] = useState({
     name: '',
+    category: '',
     project_number: '',
     contact_person: '',
     email: '',
@@ -26,6 +28,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
     if (customer) {
       setFormData({
         name: customer.name || '',
+        category: customer.category || '',
         project_number: customer.project_number || '',
         contact_person: customer.contact_person || '',
         email: customer.email || '',
@@ -74,6 +77,19 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Företag eller kundnamn"
             />
+          </div>
+          <div>
+            <Label>Kategori</Label>
+            <Select value={formData.category} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Välj kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BRF">BRF</SelectItem>
+                <SelectItem value="Samfälligheter">Samfälligheter</SelectItem>
+                <SelectItem value="Kommersiella">Kommersiella</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="project_number">Projektnummer</Label>
