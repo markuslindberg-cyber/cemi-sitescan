@@ -35,11 +35,11 @@ export default function Layout({ children, currentPageName }) {
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" 
                   alt="CEMI Logo" 
-                  className="h-10 object-contain cursor-pointer"
+                  className="h-16 object-contain cursor-pointer"
                 />
               </Link>
-              <Link to={createPageUrl('Landing')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-700 transition-colors">
-                <Home className="w-4 h-4" />
+              <Link to={createPageUrl('Landing')} className="flex items-center gap-2 text-base font-medium text-gray-600 hover:text-green-700 transition-colors">
+                <Home className="w-5 h-5" />
                 <span className="hidden sm:inline">Startsida</span>
               </Link>
             </div>
