@@ -40,12 +40,19 @@ export default function Customers() {
 
   const { data: users = [] } = useQuery({
     queryKey: ['all-users'],
-    queryFn: () => base44.entities.User.list()
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getUsers', {});
+      return res.data?.users || [];
+    }
   });
 
   const getManagerName = (managerId) => {
+    if (!managerId) return '';
     const user = users.find(u => u.id === managerId);
-    return user ? user.full_name : managerId;
+    if (!user) return managerId;
+    return user.first_name && user.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user.full_name || user.email;
   };
 
   const getSortedCustomers = () => {
