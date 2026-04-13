@@ -58,7 +58,9 @@ export default function Customers() {
 
   const getSortedCustomers = () => {
     let filtered = [...allCustomers];
-    if (filterManager !== 'all') {
+    if (filterManager === 'none') {
+      filtered = filtered.filter(c => !c.account_manager);
+    } else if (filterManager !== 'all') {
       filtered = filtered.filter(c => c.account_manager === filterManager);
     }
     filtered.sort((a, b) => {
@@ -142,6 +144,7 @@ export default function Customers() {
                </SelectTrigger>
                <SelectContent>
                  <SelectItem value="all">Alla kundansvariga</SelectItem>
+                 <SelectItem value="none">Ingen ansvarig</SelectItem>
                  {uniqueManagers.map(manager => (
                    <SelectItem key={manager} value={manager}>{getManagerName(manager)}</SelectItem>
                  ))}

@@ -30,7 +30,9 @@ export default function Home() {
 
   const getSortedSites = () => {
     let filtered = [...allSites];
-    if (filterManager !== 'all') {
+    if (filterManager === 'none') {
+      filtered = filtered.filter((s) => !s.site_manager);
+    } else if (filterManager !== 'all') {
       filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
     filtered.sort((a, b) => {
@@ -113,6 +115,7 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                  <SelectItem value="all">Alla områdesansvariga</SelectItem>
+                 <SelectItem value="none">Ingen ansvarig</SelectItem>
                  {uniqueManagers.map((manager) =>
                  <SelectItem key={manager} value={manager}>{getUserName(manager)}</SelectItem>
                  )}
