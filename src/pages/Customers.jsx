@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Building2, MapPin, Calendar, Upload, LayoutGrid, List } from 'lucide-react';
+import { Plus, Building2, MapPin, Calendar, Upload, LayoutGrid, List, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
@@ -12,6 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const queryClient = useQueryClient();
+
+  useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [filterManager, setFilterManager] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
@@ -49,6 +56,25 @@ export default function Customers() {
     }
     return filtered;
   };
+
+  const deleteMutation = useMutation({
+    mutationFn: async (customer) => {
+      await base44.entities.Trash.create({
+        entity_type: 'Customer',
+        entity_id: customer.id,
+        entity_data: customer,
+        deleted_by: currentUser?.email || '',
+        display_name: customer.name,
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      });
+      await base44.entities.Customer.delete(customer.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      toast.success('Kunden har flyttats till papperskorgen');
+      setCustomerToDelete(null);
+    }
+  });
 
   const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
 
@@ -163,9 +189,17 @@ export default function Customers() {
                             <p className="text-sm text-gray-600 truncate">{customer.contact_person}</p>
                           )}
                         </div>
-                      </div>
+                        {currentUser?.role === 'admin' && (
+                          <button
+                            onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
+                            className="p-1.5 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors flex-shrink-0"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                        </div>
 
-                      {customer.email && (
+                        {customer.email && (
                         <p className="text-sm text-gray-600 mb-2 truncate">{customer.email}</p>
                       )}
                       {customer.phone && (
@@ -205,17 +239,47 @@ export default function Customers() {
                             )}
                           </div>
                         </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {currentUser?.role === 'admin' && (
+                            <button
+                              onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
+                              className="p-1.5 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                         <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
                           <span>{stats.sitesCount} platser</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+                          </div>
+                          </div>
+                          </CardContent>
+                          </Card>
+                          </Link>
+                          );
+                          })}
+                          </div>
+                          )}
+
+                          <AlertDialog open={!!customerToDelete} onOpenChange={(open) => !open && setCustomerToDelete(null)}>
+                          <AlertDialogContent>
+                          <AlertDialogHeader>
+                          <AlertDialogTitle>Radera kund?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                          Är du säker på att du vill flytta <strong>{customerToDelete?.name}</strong> till papperskorgen? Kunden kan återställas från papperskorgen inom 30 dagar.
+                          </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                          <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(customerToDelete)}
+                          className="bg-red-600 hover:bg-red-700"
+                          >
+                          Flytta till papperskorgen
+                          </AlertDialogAction>
+                          </AlertDialogFooter>
+                          </AlertDialogContent>
+                          </AlertDialog>
 
         <CreateCustomerDialog
           open={showCreateDialog}
