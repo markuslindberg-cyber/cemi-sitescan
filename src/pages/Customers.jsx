@@ -3,7 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Building2, MapPin, Calendar, Upload, LayoutGrid, List, Trash2 } from 'lucide-react';
+import { Plus, Building2, MapPin, Upload, LayoutGrid, List, Trash2, CheckSquare } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import UserSelect from '../components/shared/UserSelect';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -23,6 +25,9 @@ export default function Customers() {
   const [filterManager, setFilterManager] = useState('all');
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [bulkCategory, setBulkCategory] = useState('');
+  const [bulkManager, setBulkManager] = useState('');
 
   const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
@@ -92,6 +97,45 @@ export default function Customers() {
       setCustomerToDelete(null);
     }
   });
+
+  const bulkUpdateMutation = useMutation({
+    mutationFn: async ({ ids, data }) => {
+      await Promise.all(ids.map(id => base44.entities.Customer.update(id, data)));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      toast.success(`${selectedIds.size} kunder uppdaterade`);
+      setSelectedIds(new Set());
+      setBulkCategory('');
+      setBulkManager('');
+    }
+  });
+
+  const toggleSelect = (id, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === customers.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(customers.map(c => c.id)));
+    }
+  };
+
+  const applyBulkUpdate = () => {
+    const data = {};
+    if (bulkCategory) data.category = bulkCategory;
+    if (bulkManager) data.account_manager = bulkManager;
+    if (!Object.keys(data).length) { toast.error('Välj kategori eller kundansvarig att ändra'); return; }
+    bulkUpdateMutation.mutate({ ids: [...selectedIds], data });
+  };
 
   const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
 
@@ -178,6 +222,31 @@ export default function Customers() {
           </div>
         </div>
 
+        {selectedIds.size > 0 && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-green-800">{selectedIds.size} kunder markerade</span>
+            <Select value={bulkCategory} onValueChange={setBulkCategory}>
+              <SelectTrigger className="w-44 h-8 text-sm">
+                <SelectValue placeholder="Sätt kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BRF">BRF</SelectItem>
+                <SelectItem value="Samfälligheter">Samfälligheter</SelectItem>
+                <SelectItem value="Kommersiella">Kommersiella</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="w-52">
+              <UserSelect value={bulkManager} onValueChange={setBulkManager} placeholder="Sätt kundansvarig" />
+            </div>
+            <Button size="sm" onClick={applyBulkUpdate} disabled={bulkUpdateMutation.isPending} className="bg-green-600 hover:bg-green-700">
+              Tillämpa
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+              Avmarkera alla
+            </Button>
+          </div>
+        )}
+
         {customersLoading ? (
            <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-3'}>
              {[1, 2, 3].map(i => (
@@ -203,49 +272,59 @@ export default function Customers() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {customers.map(customer => {
               const stats = getCustomerStats(customer.id);
+              const isSelected = selectedIds.has(customer.id);
               return (
-                <Link key={customer.id} to={createPageUrl(`Customer?id=${customer.id}`)}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Building2 className="w-6 h-6 text-green-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-semibold text-gray-900 truncate">{customer.name}</h3>
-                          {customer.contact_person && (
-                            <p className="text-sm text-gray-600 truncate">{customer.contact_person}</p>
+                <div key={customer.id} className="relative">
+                  <div
+                    className="absolute top-3 left-3 z-10"
+                    onClick={(e) => toggleSelect(customer.id, e)}
+                  >
+                    <Checkbox checked={isSelected} className="bg-white border-gray-300" />
+                  </div>
+                  <Link to={createPageUrl(`Customer?id=${customer.id}`)}>
+                    <Card className={`hover:shadow-lg transition-shadow cursor-pointer h-full ${isSelected ? 'ring-2 ring-green-500' : ''}`}>
+                      <CardContent className="p-6">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Building2 className="w-6 h-6 text-green-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-semibold text-gray-900 truncate">{customer.name}</h3>
+                            {customer.contact_person && (
+                              <p className="text-sm text-gray-600 truncate">{customer.contact_person}</p>
+                            )}
+                          </div>
+                          {currentUser?.role === 'admin' && (
+                            <button
+                              onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
+                              className="p-1.5 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors flex-shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           )}
                         </div>
-                        {currentUser?.role === 'admin' && (
-                          <button
-                            onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
-                            className="p-1.5 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors flex-shrink-0"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                        {customer.category && (
+                          <span className="inline-block text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full mb-2">{customer.category}</span>
                         )}
-                        </div>
-
                         {customer.email && (
-                        <p className="text-sm text-gray-600 mb-2 truncate">{customer.email}</p>
-                      )}
-                      {customer.phone && (
-                        <p className="text-sm text-gray-600 mb-3">{customer.phone}</p>
-                      )}
-
-                      <div className="pt-3 border-t">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600 flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            Platser
-                          </span>
-                          <span className="font-semibold">{stats.sitesCount}</span>
+                          <p className="text-sm text-gray-600 mb-2 truncate">{customer.email}</p>
+                        )}
+                        {customer.phone && (
+                          <p className="text-sm text-gray-600 mb-3">{customer.phone}</p>
+                        )}
+                        <div className="pt-3 border-t">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600 flex items-center gap-1">
+                              <MapPin className="w-4 h-4" />
+                              Platser
+                            </span>
+                            <span className="font-semibold">{stats.sitesCount}</span>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
               );
             })}
           </div>
@@ -253,21 +332,31 @@ export default function Customers() {
           <div className="space-y-3">
             {customers.map(customer => {
               const stats = getCustomerStats(customer.id);
+              const isSelected = selectedIds.has(customer.id);
               return (
-                <Link key={customer.id} to={createPageUrl(`Customer?id=${customer.id}`)}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <Building2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-gray-900">{customer.name}</h3>
-                            {customer.contact_person && (
-                              <p className="text-xs text-gray-600">{customer.contact_person}</p>
-                            )}
+                <div key={customer.id} className="flex items-center gap-2">
+                  <div onClick={(e) => toggleSelect(customer.id, e)} className="pl-1 cursor-pointer">
+                    <Checkbox checked={isSelected} />
+                  </div>
+                  <Link to={createPageUrl(`Customer?id=${customer.id}`)} className="flex-1">
+                    <Card className={`hover:shadow-lg transition-shadow cursor-pointer ${isSelected ? 'ring-2 ring-green-500' : ''}`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <Building2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-gray-900">{customer.name}</h3>
+                              {customer.contact_person && (
+                                <p className="text-xs text-gray-600">{customer.contact_person}</p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {customer.category && (
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{customer.category}</span>
+                          )}
+                          <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
+                            <span>{stats.sitesCount} platser</span>
+                          </div>
                           {currentUser?.role === 'admin' && (
                             <button
                               onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
@@ -277,17 +366,14 @@ export default function Customers() {
                             </button>
                           )}
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
-                          <span>{stats.sitesCount} platser</span>
-                          </div>
-                          </div>
-                          </CardContent>
-                          </Card>
-                          </Link>
-                          );
-                          })}
-                          </div>
-                          )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
                           <AlertDialog open={!!customerToDelete} onOpenChange={(open) => !open && setCustomerToDelete(null)}>
                           <AlertDialogContent>
