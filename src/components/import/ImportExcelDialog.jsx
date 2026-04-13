@@ -7,7 +7,7 @@ import { Upload, Download, CheckCircle2, XCircle, Loader2, AlertCircle } from 'l
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 
-const CUSTOMER_COLUMNS = ['namn', 'projektnummer', 'kontaktperson', 'email', 'telefon', 'adress', 'anteckningar'];
+const CUSTOMER_COLUMNS = ['namn', 'projektnummer', 'kontaktperson', 'email', 'telefon', 'adress', 'anteckningar', 'kundansvarig_email'];
 const SITE_COLUMNS = ['platsnamn', 'kundnamn', 'adress', 'beskrivning'];
 
 function downloadTemplate(type) {
@@ -16,8 +16,8 @@ function downloadTemplate(type) {
   if (type === 'customers') {
     const wsData = [
       CUSTOMER_COLUMNS,
-      ['Exempelkund AB', 'PRJ-001', 'Anna Andersson', 'anna@exempel.se', '070-1234567', 'Storgatan 1, Stockholm', 'VIP-kund'],
-      ['Trädgård & Co', 'PRJ-002', 'Erik Eriksson', 'erik@tradgard.se', '073-9876543', 'Parkvägen 5, Göteborg', '']
+      ['Exempelkund AB', 'PRJ-001', 'Anna Andersson', 'anna@exempel.se', '070-1234567', 'Storgatan 1, Stockholm', 'VIP-kund', 'ansvarig@foretaget.se'],
+      ['Trädgård & Co', 'PRJ-002', 'Erik Eriksson', 'erik@tradgard.se', '073-9876543', 'Parkvägen 5, Göteborg', '', '']
     ];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     ws['!cols'] = CUSTOMER_COLUMNS.map(() => ({ wch: 20 }));
@@ -78,9 +78,12 @@ export default function ImportExcelDialog({ open, onOpenChange, type }) {
       const failed = [];
 
       if (isCustomers) {
+        const allUsers = await base44.entities.User.list();
         for (const row of dataRows) {
           if (!row[0]) continue; // skip empty rows
           try {
+            const managerEmail = (row[7] || '').trim().toLowerCase();
+            const manager = managerEmail ? allUsers.find(u => u.email?.toLowerCase() === managerEmail) : null;
             await base44.entities.Customer.create({
               name: row[0] || '',
               project_number: row[1] || '',
@@ -88,7 +91,8 @@ export default function ImportExcelDialog({ open, onOpenChange, type }) {
               email: row[3] || '',
               phone: row[4] || '',
               address: row[5] || '',
-              notes: row[6] || ''
+              notes: row[6] || '',
+              ...(manager ? { account_manager: manager.id } : {})
             });
             succeeded.push(row[0]);
           } catch (e) {
