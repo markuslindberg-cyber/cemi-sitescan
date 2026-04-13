@@ -110,7 +110,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
             />
           </div>
           <div>
-            <Label htmlFor="email">E-post</Label>
+            <Label htmlFor="email">E-post till beställare</Label>
             <Input
               id="email"
               type="email"
@@ -120,7 +120,7 @@ export default function EditCustomerDialog({ open, onOpenChange, customer }) {
             />
           </div>
           <div>
-            <Label htmlFor="phone">Telefon</Label>
+            <Label htmlFor="phone">Telefon till beställare</Label>
             <Input
               id="phone"
               value={formData.phone}
