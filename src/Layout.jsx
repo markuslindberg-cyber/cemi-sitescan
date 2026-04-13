@@ -27,7 +27,7 @@ export default function Layout({ children, currentPageName }) {
         backgroundPosition: 'center'
       }}
     >
-      <nav className="bg-white shadow-sm border-b print:hidden">
+      <nav className="bg-white shadow-sm border-b print:hidden relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
@@ -56,7 +56,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="bg-white border-b shadow-lg print:hidden">
+        <div className="absolute top-16 left-0 right-0 z-50 bg-white border-b shadow-lg print:hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col gap-2">
               {navItems.filter(item => !item.adminOnly || currentUser?.role === 'admin').map((item) => {
