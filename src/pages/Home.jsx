@@ -14,6 +14,7 @@ export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [filterManager, setFilterManager] = useState('all');
+  const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
 
@@ -29,14 +30,17 @@ export default function Home() {
 
   const getSortedSites = () => {
     let filtered = [...allSites];
-
-    // Apply manager filter
     if (filterManager !== 'all') {
       filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
-
-    // Sort by updated date
-    filtered.sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+    filtered.sort((a, b) => {
+      const aNoManager = !a.site_manager ? 0 : 1;
+      const bNoManager = !b.site_manager ? 0 : 1;
+      if (aNoManager !== bNoManager) return aNoManager - bNoManager;
+      if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
+      if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
+      return 0;
+    });
     return filtered;
   };
 
@@ -114,6 +118,16 @@ export default function Home() {
                  )}
                </SelectContent>
               </Select>
+             <Select value={sortBy} onValueChange={setSortBy}>
+               <SelectTrigger className="w-40">
+                 <SelectValue placeholder="Sortera" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="namn">Namn</SelectItem>
+                 <SelectItem value="datum">Datum</SelectItem>
+                 <SelectItem value="senast">Senast använd</SelectItem>
+               </SelectContent>
+             </Select>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

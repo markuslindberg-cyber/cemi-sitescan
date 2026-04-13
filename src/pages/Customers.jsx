@@ -21,6 +21,7 @@ export default function Customers() {
   useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [filterManager, setFilterManager] = useState('all');
+  const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
 
   const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
@@ -57,10 +58,17 @@ export default function Customers() {
 
   const getSortedCustomers = () => {
     let filtered = [...allCustomers];
-    // Apply manager filter
     if (filterManager !== 'all') {
       filtered = filtered.filter(c => c.account_manager === filterManager);
     }
+    filtered.sort((a, b) => {
+      const aNoManager = !a.account_manager ? 0 : 1;
+      const bNoManager = !b.account_manager ? 0 : 1;
+      if (aNoManager !== bNoManager) return aNoManager - bNoManager;
+      if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
+      if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
+      return 0;
+    });
     return filtered;
   };
 
@@ -130,13 +138,23 @@ export default function Customers() {
             </div>
              <Select value={filterManager} onValueChange={setFilterManager}>
                <SelectTrigger className="w-48">
-                 <SelectValue placeholder="Filtrera på kundasvarig" />
+                 <SelectValue placeholder="Filtrera på kundansvarig" />
                </SelectTrigger>
                <SelectContent>
-                 <SelectItem value="all">Alla kundasvariga</SelectItem>
+                 <SelectItem value="all">Alla kundansvariga</SelectItem>
                  {uniqueManagers.map(manager => (
                    <SelectItem key={manager} value={manager}>{getManagerName(manager)}</SelectItem>
                  ))}
+               </SelectContent>
+             </Select>
+             <Select value={sortBy} onValueChange={setSortBy}>
+               <SelectTrigger className="w-40">
+                 <SelectValue placeholder="Sortera" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="namn">Namn</SelectItem>
+                 <SelectItem value="datum">Datum</SelectItem>
+                 <SelectItem value="senast">Senast använd</SelectItem>
                </SelectContent>
              </Select>
             <Button

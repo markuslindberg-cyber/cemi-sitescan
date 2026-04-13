@@ -32,6 +32,7 @@ export default function UsersPage() {
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null); // user object
+  const [sortBy, setSortBy] = useState('namn');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteFirstName, setInviteFirstName] = useState('');
   const [inviteLastName, setInviteLastName] = useState('');
@@ -198,7 +199,18 @@ export default function UsersPage() {
             <p className="text-gray-600 mt-1">Hantera användare och deras roller</p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap items-center">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Sortera" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="namn">Namn</SelectItem>
+                <SelectItem value="roll">Roll</SelectItem>
+                <SelectItem value="datum">Datum</SelectItem>
+                <SelectItem value="senast">Senast använd</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               onClick={() => setShowQRCode(true)}
               variant="outline"
@@ -295,7 +307,13 @@ export default function UsersPage() {
           </Card>
         ) : (
           <div className="grid gap-4">
-            {users.map((user) => (
+            {[...users].sort((a, b) => {
+              if (sortBy === 'namn') return (`${a.first_name || ''} ${a.last_name || ''}`.trim() || a.full_name || '').localeCompare((`${b.first_name || ''} ${b.last_name || ''}`.trim() || b.full_name || ''), 'sv');
+              if (sortBy === 'roll') return (a.role || '').localeCompare(b.role || '');
+              if (sortBy === 'datum') return new Date(b.created_date) - new Date(a.created_date);
+              if (sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
+              return 0;
+            }).map((user) => (
               <Card key={user.id}>
                 <CardContent className="py-4">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -14,6 +14,7 @@ export default function Inspections() {
   const [filterSite, setFilterSite] = useState('all');
   const [filterInspector, setFilterInspector] = useState('all');
   const [filterSiteManager, setFilterSiteManager] = useState('all');
+  const [sortBy, setSortBy] = useState('datum');
   const [viewMode, setViewMode] = useState('list');
 
   const { data: inspections = [], isLoading } = useQuery({
@@ -63,6 +64,17 @@ export default function Inspections() {
     if (filterInspector !== 'all' && ins.inspector_name !== filterInspector) return false;
     if (filterSiteManager !== 'all' && site?.site_manager !== filterSiteManager) return false;
     return true;
+  }).sort((a, b) => {
+    const siteA = getSite(a.site_id);
+    const siteB = getSite(b.site_id);
+    const aNoManager = !siteA?.site_manager ? 0 : 1;
+    const bNoManager = !siteB?.site_manager ? 0 : 1;
+    if (aNoManager !== bNoManager) return aNoManager - bNoManager;
+    if (sortBy === 'namn') return (getSiteName(a.site_id)).localeCompare(getSiteName(b.site_id), 'sv');
+    if (sortBy === 'status') return (a.status || '').localeCompare(b.status || '');
+    if (sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
+    // datum (default)
+    return new Date(b.inspection_date) - new Date(a.inspection_date);
   });
 
   const uniqueSiteManagers = [...new Set(sites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
@@ -142,11 +154,22 @@ export default function Inspections() {
              <SelectContent>
                <SelectItem value="all">Alla områdesansvariga</SelectItem>
                {uniqueSiteManagers.map((managerId) =>
-              <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
-              )}
+               <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
+               )}
              </SelectContent>
            </Select>
-          </div>
+           <Select value={sortBy} onValueChange={setSortBy}>
+             <SelectTrigger className="w-40">
+               <SelectValue placeholder="Sortera" />
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="namn">Namn</SelectItem>
+               <SelectItem value="status">Status</SelectItem>
+               <SelectItem value="datum">Datum</SelectItem>
+               <SelectItem value="senast">Senast använd</SelectItem>
+             </SelectContent>
+           </Select>
+           </div>
 
         {isLoading ?
         <div className="grid gap-4">
