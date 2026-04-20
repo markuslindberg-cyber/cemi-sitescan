@@ -31,6 +31,7 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState(null);
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null); // user object
   const [sortBy, setSortBy] = useState('namn');
   const [inviteEmail, setInviteEmail] = useState('');
@@ -141,8 +142,8 @@ export default function UsersPage() {
   const [editRole, setEditRole] = useState('user');
 
   const updateUserMutation = useMutation({
-    mutationFn: ({ userId, first_name, last_name, role }) => 
-      base44.entities.User.update(userId, { first_name, last_name, role }),
+    mutationFn: ({ userId, first_name, last_name, role, email }) => 
+      base44.entities.User.update(userId, { first_name, last_name, role, email }),
     onSuccess: () => {
       toast.success('Användaren har uppdaterats');
       setIsEditOpen(false);
@@ -188,6 +189,7 @@ export default function UsersPage() {
     setEditingUser(user);
     setEditFirstName(user.first_name || '');
     setEditLastName(user.last_name || '');
+    setEditEmail(user.email || '');
     setEditRole(user.role || 'user');
     setIsEditOpen(true);
   };
@@ -202,7 +204,8 @@ export default function UsersPage() {
       userId: editingUser.id,
       first_name: editFirstName.trim(),
       last_name: editLastName.trim(),
-      role: editRole
+      role: editRole,
+      email: editEmail.trim()
     });
   };
 
@@ -483,6 +486,16 @@ export default function UsersPage() {
           <DialogTitle>Redigera användare</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSaveEdit} className="space-y-4">
+          <div>
+            <Label htmlFor="edit_email">E-postadress</Label>
+            <Input
+              id="edit_email"
+              type="email"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+              required
+            />
+          </div>
           <div>
             <Label htmlFor="edit_first_name">Förnamn</Label>
             <Input
