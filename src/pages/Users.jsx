@@ -138,9 +138,11 @@ export default function UsersPage() {
     },
   });
 
+  const [editRole, setEditRole] = useState('user');
+
   const updateUserMutation = useMutation({
-    mutationFn: ({ userId, first_name, last_name }) => 
-      base44.entities.User.update(userId, { first_name, last_name }),
+    mutationFn: ({ userId, first_name, last_name, role }) => 
+      base44.entities.User.update(userId, { first_name, last_name, role }),
     onSuccess: () => {
       toast.success('Användaren har uppdaterats');
       setIsEditOpen(false);
@@ -150,6 +152,14 @@ export default function UsersPage() {
     onError: (error) => {
       toast.error(error.message || 'Kunde inte uppdatera användaren');
     }
+  });
+
+  const resendUserInviteMutation = useMutation({
+    mutationFn: async (user) => {
+      await base44.users.inviteUser(user.email, user.role);
+    },
+    onSuccess: () => toast.success('Ny inbjudningslänk har skickats'),
+    onError: (error) => toast.error(error.message || 'Kunde inte skicka länk')
   });
 
   const handleInvite = (e) => {
@@ -178,6 +188,7 @@ export default function UsersPage() {
     setEditingUser(user);
     setEditFirstName(user.first_name || '');
     setEditLastName(user.last_name || '');
+    setEditRole(user.role || 'user');
     setIsEditOpen(true);
   };
 
@@ -190,7 +201,8 @@ export default function UsersPage() {
     updateUserMutation.mutate({
       userId: editingUser.id,
       first_name: editFirstName.trim(),
-      last_name: editLastName.trim()
+      last_name: editLastName.trim(),
+      role: editRole
     });
   };
 
@@ -489,13 +501,37 @@ export default function UsersPage() {
               required
             />
           </div>
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
-              Avbryt
+          <div>
+            <Label htmlFor="edit_role">Roll</Label>
+            <Select value={editRole} onValueChange={setEditRole}>
+              <SelectTrigger id="edit_role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">Användare</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="border-amber-500 text-amber-600 hover:bg-amber-50"
+              onClick={() => resendUserInviteMutation.mutate(editingUser)}
+              disabled={resendUserInviteMutation.isPending}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              {resendUserInviteMutation.isPending ? 'Skickar...' : 'Skicka ny länk'}
             </Button>
-            <Button type="submit" disabled={updateUserMutation.isPending}>
-              {updateUserMutation.isPending ? 'Sparar...' : 'Spara'}
-            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
+                Avbryt
+              </Button>
+              <Button type="submit" disabled={updateUserMutation.isPending}>
+                {updateUserMutation.isPending ? 'Sparar...' : 'Spara'}
+              </Button>
+            </div>
           </div>
         </form>
       </DialogContent>
