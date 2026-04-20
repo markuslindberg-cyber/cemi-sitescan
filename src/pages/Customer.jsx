@@ -93,9 +93,9 @@ export default function Customer() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-3">
                 <CardTitle className="text-2xl">{customer.name}</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => setShowEditDialog(true)}>
+                <Button variant="outline" size="sm" onClick={() => setShowEditDialog(true)} className="w-fit">
                   <Pencil className="w-4 h-4 mr-2" />
                   Redigera
                 </Button>
