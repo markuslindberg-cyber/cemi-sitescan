@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2, Edit2, Ban, CheckCircle } from 'lucide-react';
+import { UserPlus, Mail, Shield, User, QrCode, Download, Clock, Trash2, Edit2, Ban, CheckCircle, Send } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -95,6 +95,18 @@ export default function UsersPage() {
     mutationFn: (id) => base44.entities.Invitation.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invitations'] });
+    }
+  });
+
+  const resendInvitationMutation = useMutation({
+    mutationFn: async (inv) => {
+      await base44.users.inviteUser(inv.email, inv.role);
+    },
+    onSuccess: () => {
+      toast.success('Ny inbjudan har skickats');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Kunde inte skicka inbjudan');
     }
   });
 
@@ -424,14 +436,26 @@ export default function UsersPage() {
                         </div>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-gray-400 hover:text-red-500"
-                      onClick={() => deleteInvitationMutation.mutate(inv.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-amber-500 hover:text-amber-700 hover:bg-amber-100"
+                        title="Skicka ny inbjudan"
+                        onClick={() => resendInvitationMutation.mutate(inv)}
+                        disabled={resendInvitationMutation.isPending}
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-red-500"
+                        onClick={() => deleteInvitationMutation.mutate(inv.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
