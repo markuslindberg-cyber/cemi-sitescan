@@ -102,21 +102,22 @@ export default function Report() {
 
   return (
     <div className="min-h-screen bg-gray-50 print:bg-white">
-      <div className="print:hidden bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+      <div className="print:hidden bg-white border-b px-4 py-3 flex flex-wrap items-center justify-between gap-2 sticky top-0 z-10">
         <Link to={createPageUrl(`Site?id=${site.id}`)}>
           <Button variant="ghost" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Tillbaka till platsen
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            <span className="hidden sm:inline">Tillbaka till platsen</span>
+            <span className="sm:hidden">Tillbaka</span>
           </Button>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button onClick={() => setIsEditingReport(true)} variant="outline" size="sm">
-            <Edit2 className="w-4 h-4 mr-2" />
-            Redigera rapport
+            <Edit2 className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Redigera rapport</span>
           </Button>
-          <Button onClick={handlePrint} variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Ladda ner PDF
+          <Button onClick={handlePrint} variant="outline" size="sm">
+            <Download className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Ladda ner PDF</span>
           </Button>
         </div>
       </div>
