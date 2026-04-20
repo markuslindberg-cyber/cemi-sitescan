@@ -176,7 +176,7 @@ export default function Site() {
               </div>
             )}
             <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex flex-col gap-3 mb-3">
                 <h1 className="text-3xl font-bold text-gray-900">{site.name}</h1>
                 <div className="flex gap-2">
                   <Button
