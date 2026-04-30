@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SitesFilterMenu from '../components/sites/SitesFilterMenu';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -109,28 +109,14 @@ export default function Home() {
                 <List className="w-4 h-4" />
               </Button>
             </div>
-             <Select value={filterManager} onValueChange={setFilterManager}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filtrera på områdesansvarig" />
-              </SelectTrigger>
-              <SelectContent>
-                 <SelectItem value="all">Alla områdesansvariga</SelectItem>
-                 <SelectItem value="none">Ingen ansvarig</SelectItem>
-                 {uniqueManagers.map((manager) =>
-                 <SelectItem key={manager} value={manager}>{getUserName(manager)}</SelectItem>
-                 )}
-               </SelectContent>
-              </Select>
-             <Select value={sortBy} onValueChange={setSortBy}>
-               <SelectTrigger className="w-40">
-                 <SelectValue placeholder="Sortera" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="namn">Namn</SelectItem>
-                 <SelectItem value="datum">Datum</SelectItem>
-                 <SelectItem value="senast">Senast använd</SelectItem>
-               </SelectContent>
-             </Select>
+            <SitesFilterMenu
+              filterManager={filterManager}
+              setFilterManager={setFilterManager}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              uniqueManagers={uniqueManagers}
+              getUserName={getUserName}
+            />
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
