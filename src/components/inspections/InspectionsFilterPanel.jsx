@@ -36,8 +36,8 @@ export default function InspectionsFilterPanel({
       </Button>
       
       {open && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold">Filtrera inspektioner</h2>
               <button 
