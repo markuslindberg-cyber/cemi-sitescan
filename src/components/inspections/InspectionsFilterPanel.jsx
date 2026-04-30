@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 
 export default function InspectionsFilterPanel({
   filterCustomer,
@@ -25,18 +24,30 @@ export default function InspectionsFilterPanel({
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Filter className="w-4 h-4" />
-          Filter
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Filtrera inspektioner</DialogTitle>
-        </DialogHeader>
-        <div className="grid grid-cols-2 gap-4">
+    <>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="gap-2"
+        onClick={() => setOpen(true)}
+      >
+        <Filter className="w-4 h-4" />
+        Filter
+      </Button>
+      
+      {open && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-semibold">Filtrera inspektioner</h2>
+              <button 
+                onClick={() => setOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium block mb-2">Kund</label>
             <Select value={filterCustomer} onValueChange={(v) => {
@@ -114,8 +125,10 @@ export default function InspectionsFilterPanel({
               </SelectContent>
             </Select>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
+          </div>
+          </div>
+          </div>
+          )}
+          </>
+          );
+          }
