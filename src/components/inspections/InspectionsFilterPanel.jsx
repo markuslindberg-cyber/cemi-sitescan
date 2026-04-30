@@ -51,6 +51,7 @@ export default function InspectionsFilterPanel({
           <Select value={filterCustomer} onValueChange={(v) => {
             setFilterCustomer(v);
             setFilterSite('all');
+            setIsOpen(false);
           }}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Filtrera på kund" />
@@ -63,7 +64,10 @@ export default function InspectionsFilterPanel({
             </SelectContent>
           </Select>
 
-          <Select value={filterSite} onValueChange={setFilterSite}>
+          <Select value={filterSite} onValueChange={(v) => {
+            setFilterSite(v);
+            setIsOpen(false);
+          }}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Filtrera på plats" />
             </SelectTrigger>
@@ -75,7 +79,10 @@ export default function InspectionsFilterPanel({
             </SelectContent>
           </Select>
 
-          <Select value={filterInspector} onValueChange={setFilterInspector}>
+          <Select value={filterInspector} onValueChange={(v) => {
+            setFilterInspector(v);
+            setIsOpen(false);
+          }}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Filtrera på inspektör" />
             </SelectTrigger>
@@ -87,7 +94,10 @@ export default function InspectionsFilterPanel({
             </SelectContent>
           </Select>
 
-          <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
+          <Select value={filterSiteManager} onValueChange={(v) => {
+            setFilterSiteManager(v);
+            setIsOpen(false);
+          }}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Filtrera på områdesansvarig" />
             </SelectTrigger>
