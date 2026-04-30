@@ -13,7 +13,7 @@ import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import CustomersFilterMenu from '../components/customers/CustomersFilterMenu';
+import CustomersFilterPanel from '../components/customers/CustomersFilterPanel';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -179,7 +179,7 @@ export default function Customers() {
               </Button>
             </div>
 
-            <CustomersFilterMenu
+            <CustomersFilterPanel
               filterManager={filterManager}
               setFilterManager={setFilterManager}
               sortBy={sortBy}

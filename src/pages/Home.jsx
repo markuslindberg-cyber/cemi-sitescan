@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
-import SitesFilterMenu from '../components/sites/SitesFilterMenu';
+import SitesFilterPanel from '../components/sites/SitesFilterPanel';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -105,7 +105,7 @@ export default function Home() {
               </Button>
             </div>
 
-            <SitesFilterMenu
+            <SitesFilterPanel
               filterManager={filterManager}
               setFilterManager={setFilterManager}
               sortBy={sortBy}
