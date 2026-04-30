@@ -1,5 +1,5 @@
-import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import FilterBar from '../FilterBar';
+import FilterSelect from '../FilterSelect';
 
 export default function CustomersFilterMenu({
   filterManager,
@@ -10,29 +10,30 @@ export default function CustomersFilterMenu({
   getManagerName
 }) {
   return (
-    <>
-      <Select value={filterManager} onValueChange={setFilterManager}>
-        <SelectTrigger className="w-48">
-          <SelectValue placeholder="Filtrera på kundansvarig" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Alla kundansvariga</SelectItem>
-          <SelectItem value="none">Ingen ansvarig</SelectItem>
-          {uniqueManagers.map(manager => (
-            <SelectItem key={manager} value={manager}>{getManagerName(manager)}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Select value={sortBy} onValueChange={setSortBy}>
-        <SelectTrigger className="w-40">
-          <SelectValue placeholder="Sortera" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="namn">Namn</SelectItem>
-          <SelectItem value="datum">Datum</SelectItem>
-          <SelectItem value="senast">Senast använd</SelectItem>
-        </SelectContent>
-      </Select>
-    </>
+    <FilterBar title="Filtrera kunder">
+      <FilterSelect
+        label="Kundansvarig"
+        value={filterManager}
+        onChange={setFilterManager}
+        options={[
+          { value: 'all', label: 'Alla kundansvariga' },
+          { value: 'none', label: 'Ingen ansvarig' },
+          ...uniqueManagers.map(manager => ({ value: manager, label: getManagerName(manager) }))
+        ]}
+        placeholder="Kundansvarig"
+      />
+
+      <FilterSelect
+        label="Sortera efter"
+        value={sortBy}
+        onChange={setSortBy}
+        options={[
+          { value: 'namn', label: 'Namn' },
+          { value: 'datum', label: 'Datum' },
+          { value: 'senast', label: 'Senast använd' }
+        ]}
+        placeholder="Sortera"
+      />
+    </FilterBar>
   );
 }
