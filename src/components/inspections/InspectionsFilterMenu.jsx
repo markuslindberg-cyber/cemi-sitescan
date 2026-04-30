@@ -30,7 +30,7 @@ export default function InspectionsFilterMenu({
           Filter
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-4 max-h-96 overflow-y-auto">
+      <PopoverContent className="w-64 p-4 max-h-96 overflow-y-auto z-50">
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">Kund</label>

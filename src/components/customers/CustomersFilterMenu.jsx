@@ -20,7 +20,7 @@ export default function CustomersFilterMenu({
           Filter
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-4">
+      <PopoverContent className="w-56 p-4 z-50">
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">Kundansvarig</label>
