@@ -28,6 +28,23 @@ export default function Home() {
     queryFn: () => base44.entities.Customer.list()
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getUsers', {});
+      return res.data?.users || [];
+    }
+  });
+
+  const getUserName = (userId) => {
+    if (!userId) return '';
+    const user = users.find(u => u.id === userId);
+    if (!user) return '';
+    return user.first_name && user.last_name 
+      ? `${user.first_name} ${user.last_name}`
+      : user.full_name || user.email;
+  };
+
   const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort((a, b) => getUserName(a).localeCompare(getUserName(b)));
 
   const getSortedSites = () => {
@@ -49,23 +66,6 @@ export default function Home() {
     queryKey: ['all-inspections'],
     queryFn: () => base44.entities.Inspection.list('-inspection_date')
   });
-
-  const { data: users = [] } = useQuery({
-    queryKey: ['all-users'],
-    queryFn: async () => {
-      const res = await base44.functions.invoke('getUsers', {});
-      return res.data?.users || [];
-    }
-  });
-
-  const getUserName = (userId) => {
-    if (!userId) return '';
-    const user = users.find(u => u.id === userId);
-    if (!user) return '';
-    return user.first_name && user.last_name 
-      ? `${user.first_name} ${user.last_name}`
-      : user.full_name || user.email;
-  };
 
   const getInspectionCount = (siteId) => {
     return inspections.filter((i) => i.site_id === siteId).length;
