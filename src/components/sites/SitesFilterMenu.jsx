@@ -19,7 +19,7 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setOpen(false)}>
           <div className="bg-white rounded-lg shadow-lg w-80 p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold">Filtrera platser</h2>
@@ -30,11 +30,11 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-2">Områdesansvarig</label>
                 <Select value={filterManager} onValueChange={setFilterManager}>
-                   <SelectTrigger className="w-full" onClick={(e) => e.stopPropagation()}>
+                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Filtrera på områdesansvarig" />
                   </SelectTrigger>
                   <SelectContent noPortal>
@@ -50,7 +50,7 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-2">Sortera efter</label>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                   <SelectTrigger className="w-full" onClick={(e) => e.stopPropagation()}>
+                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Sortera" />
                   </SelectTrigger>
                   <SelectContent noPortal>
