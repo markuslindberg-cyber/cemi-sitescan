@@ -1,5 +1,7 @@
-import FilterBar from '../FilterBar';
-import FilterSelect from '../FilterSelect';
+import React, { useState } from 'react';
+import { ChevronDown, Filter } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 export default function InspectionsFilterPanel({
   filterCustomer,
@@ -19,73 +21,94 @@ export default function InspectionsFilterPanel({
   getInspectorDisplay,
   getSiteManagerName
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const activeFilters = [
+    filterCustomer !== 'all',
+    filterSite !== 'all',
+    filterInspector !== 'all',
+    filterSiteManager !== 'all'
+  ].filter(Boolean).length;
+
   return (
-    <FilterBar title="Filtrera inspektioner">
-      <div className="grid grid-cols-2 gap-4">
-        <FilterSelect
-          label="Kund"
-          value={filterCustomer}
-          onChange={(v) => {
+    <div className="w-full md:w-auto">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full md:w-auto gap-2"
+      >
+        <Filter className="w-4 h-4" />
+        <span>Filtrera {activeFilters > 0 && `(${activeFilters})`}</span>
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </Button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 md:relative mt-2 md:mt-0 bg-white md:bg-transparent border md:border-0 rounded-lg md:rounded-0 shadow-lg md:shadow-none p-4 md:p-0 space-y-4 md:space-y-0 md:flex md:gap-2 md:flex-wrap z-50">
+          <Select value={filterCustomer} onValueChange={(v) => {
             setFilterCustomer(v);
             setFilterSite('all');
-          }}
-          options={[
-            { value: 'all', label: 'Alla kunder' },
-            ...customers.map((c) => ({ value: c.id, label: c.name }))
-          ]}
-          placeholder="Alla kunder"
-        />
+          }}>
+            <SelectTrigger className="w-full md:w-48">
+              <SelectValue placeholder="Filtrera på kund" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla kunder</SelectItem>
+              {customers.map((c) =>
+                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
 
-        <FilterSelect
-          label="Plats"
-          value={filterSite}
-          onChange={setFilterSite}
-          options={[
-            { value: 'all', label: 'Alla platser' },
-            ...sitesForCustomer.map((s) => ({ value: s.id, label: s.name }))
-          ]}
-          placeholder="Alla platser"
-        />
+          <Select value={filterSite} onValueChange={setFilterSite}>
+            <SelectTrigger className="w-full md:w-48">
+              <SelectValue placeholder="Filtrera på plats" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla platser</SelectItem>
+              {sitesForCustomer.map((s) =>
+                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
 
-        <FilterSelect
-          label="Inspektör"
-          value={filterInspector}
-          onChange={setFilterInspector}
-          options={[
-            { value: 'all', label: 'Alla inspektörer' },
-            ...uniqueInspectorNames.map((name) => ({ value: name, label: getInspectorDisplay(name) }))
-          ]}
-          placeholder="Alla inspektörer"
-        />
+          <Select value={filterInspector} onValueChange={setFilterInspector}>
+            <SelectTrigger className="w-full md:w-48">
+              <SelectValue placeholder="Filtrera på inspektör" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla inspektörer</SelectItem>
+              {uniqueInspectorNames.map((name) =>
+                <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
 
-        <FilterSelect
-          label="Områdesansvarig"
-          value={filterSiteManager}
-          onChange={setFilterSiteManager}
-          options={[
-            { value: 'all', label: 'Alla områdesansvariga' },
-            ...uniqueSiteManagers.map((managerId) => ({ value: managerId, label: getSiteManagerName(managerId) }))
-          ]}
-          placeholder="Alla områdesansvariga"
-        />
+          <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
+            <SelectTrigger className="w-full md:w-48">
+              <SelectValue placeholder="Filtrera på områdesansvarig" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla områdesansvariga</SelectItem>
+              {uniqueSiteManagers.map((managerId) =>
+                <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
 
-        <div className="col-span-2">
-          <FilterSelect
-            label="Sortera efter"
-            value={sortBy}
-            onChange={setSortBy}
-            options={[
-              { value: 'datum', label: 'Datum' },
-              { value: 'plats', label: 'Plats' },
-              { value: 'kund', label: 'Kund' },
-              { value: 'inspektör', label: 'Inspektör' },
-              { value: 'status', label: 'Status' },
-              { value: 'senast', label: 'Senast använd' }
-            ]}
-            placeholder="Sortera efter"
-          />
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full md:w-40">
+              <SelectValue placeholder="Sortera" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="namn">Namn</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+              <SelectItem value="datum">Datum</SelectItem>
+              <SelectItem value="senast">Senast använd</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-      </div>
-    </FilterBar>
+      )}
+    </div>
   );
 }
