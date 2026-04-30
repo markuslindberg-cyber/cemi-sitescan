@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import InspectionsFilterMenu from '../components/inspections/InspectionsFilterMenu';
+import InspectionsFilterPanel from '../components/inspections/InspectionsFilterPanel';
 
 export default function Inspections() {
   const [filterCustomer, setFilterCustomer] = useState('all');
@@ -109,7 +109,7 @@ export default function Inspections() {
               <List className="w-4 h-4" />
             </Button>
           </div>
-          <InspectionsFilterMenu
+          <InspectionsFilterPanel
             filterCustomer={filterCustomer}
             setFilterCustomer={setFilterCustomer}
             filterSite={filterSite}
