@@ -57,7 +57,7 @@ export default function InspectionsFilterPanel({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent noPortal>
                 <SelectItem value="all">Alla kunder</SelectItem>
                 {customers.map((c) =>
                   <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
@@ -72,7 +72,7 @@ export default function InspectionsFilterPanel({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent noPortal>
                 <SelectItem value="all">Alla platser</SelectItem>
                 {sitesForCustomer.map((s) =>
                   <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
@@ -87,7 +87,7 @@ export default function InspectionsFilterPanel({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent noPortal>
                 <SelectItem value="all">Alla inspektörer</SelectItem>
                 {uniqueInspectorNames.map((name) =>
                   <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
@@ -102,7 +102,7 @@ export default function InspectionsFilterPanel({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent noPortal>
                 <SelectItem value="all">Alla områdesansvariga</SelectItem>
                 {uniqueSiteManagers.map((managerId) =>
                   <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
@@ -117,7 +117,7 @@ export default function InspectionsFilterPanel({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent noPortal>
                 <SelectItem value="namn">Namn</SelectItem>
                 <SelectItem value="status">Status</SelectItem>
                 <SelectItem value="datum">Datum</SelectItem>

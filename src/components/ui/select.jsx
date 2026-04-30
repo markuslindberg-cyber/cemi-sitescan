@@ -50,12 +50,11 @@ const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) =
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName
 
-const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => {
+const SelectContent = React.forwardRef(({ className, children, position = "popper", noPortal = false, ...props }, ref) => {
   const isMobile = useIsMobile();
 
-  return (
-    <SelectPrimitive.Portal>
-      <SelectPrimitive.Content
+  const content = (
+    <SelectPrimitive.Content
         ref={ref}
         className={cn(
           isMobile 
@@ -79,8 +78,13 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
         </SelectPrimitive.Viewport>
         {!isMobile && <SelectScrollDownButton />}
       </SelectPrimitive.Content>
-    </SelectPrimitive.Portal>
   );
+
+  if (noPortal) {
+    return content;
+  }
+
+  return <SelectPrimitive.Portal>{content}</SelectPrimitive.Portal>;
 });
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
