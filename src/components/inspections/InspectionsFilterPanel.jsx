@@ -46,7 +46,7 @@ export default function InspectionsFilterPanel({
       {isOpen && (
         <div 
           className="absolute top-full left-0 right-0 md:static md:mt-0 mt-2 bg-white md:bg-transparent border md:border-0 rounded-lg md:rounded-0 shadow-lg md:shadow-none p-4 md:p-0 space-y-4 md:space-y-0 md:flex md:gap-2 md:flex-wrap z-50"
-          onMouseDown={(e) => e.preventDefault()}
+          onClick={(e) => e.stopPropagation()}
         >
           <Select value={filterCustomer} onValueChange={(v) => {
             setFilterCustomer(v);
