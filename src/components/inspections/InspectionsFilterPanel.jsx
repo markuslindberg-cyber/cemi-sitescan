@@ -47,14 +47,14 @@ export default function InspectionsFilterPanel({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4" onClick={(e) => e.stopPropagation()}>
           <div>
             <label className="text-sm font-medium block mb-2">Kund</label>
             <Select value={filterCustomer} onValueChange={(v) => {
               setFilterCustomer(v);
               setFilterSite('all');
             }}>
-              <SelectTrigger>
+              <SelectTrigger onClick={(e) => e.stopPropagation()}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent noPortal>
@@ -69,7 +69,7 @@ export default function InspectionsFilterPanel({
           <div>
             <label className="text-sm font-medium block mb-2">Plats</label>
             <Select value={filterSite} onValueChange={setFilterSite}>
-              <SelectTrigger>
+              <SelectTrigger onClick={(e) => e.stopPropagation()}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent noPortal>
@@ -84,7 +84,7 @@ export default function InspectionsFilterPanel({
           <div>
             <label className="text-sm font-medium block mb-2">Inspektör</label>
             <Select value={filterInspector} onValueChange={setFilterInspector}>
-              <SelectTrigger>
+              <SelectTrigger onClick={(e) => e.stopPropagation()}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent noPortal>
@@ -99,7 +99,7 @@ export default function InspectionsFilterPanel({
           <div>
             <label className="text-sm font-medium block mb-2">Områdesansvarig</label>
             <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
-              <SelectTrigger>
+              <SelectTrigger onClick={(e) => e.stopPropagation()}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent noPortal>
@@ -114,7 +114,7 @@ export default function InspectionsFilterPanel({
           <div className="col-span-2">
             <label className="text-sm font-medium block mb-2">Sortera efter</label>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger>
+              <SelectTrigger onClick={(e) => e.stopPropagation()}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent noPortal>
