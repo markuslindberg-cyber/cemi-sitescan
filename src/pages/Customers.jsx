@@ -14,6 +14,8 @@ import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CustomersFilterMenu from '../components/customers/CustomersFilterMenu';
+import FilterBar from '../components/FilterBar';
+import FilterSelect from '../components/FilterSelect';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -23,6 +25,7 @@ export default function Customers() {
 
   useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [filterManager, setFilterManager] = useState('all');
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -70,6 +73,8 @@ export default function Customers() {
     });
     return filtered;
   };
+
+  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
 
   const deleteMutation = useMutation({
     mutationFn: async (customer) => {
@@ -173,6 +178,21 @@ export default function Customers() {
               </Button>
             </div>
 
+            <FilterBar title="Filtrera kunder">
+             <div>
+               <FilterSelect
+                 label="Sortera efter"
+                 value={sortBy}
+                 onChange={setSortBy}
+                 options={[
+                   { value: 'namn', label: 'Namn' },
+                   { value: 'datum', label: 'Datum' },
+                   { value: 'senast', label: 'Senast använd' }
+                 ]}
+                 placeholder="Sortera efter"
+               />
+             </div>
+            </FilterBar>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

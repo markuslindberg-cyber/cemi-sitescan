@@ -9,12 +9,15 @@ import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import SitesFilterMenu from '../components/sites/SitesFilterMenu';
+import FilterBar from '../components/FilterBar';
+import FilterSelect from '../components/FilterSelect';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
+  const [filterManager, setFilterManager] = useState('all');
   const queryClient = useQueryClient();
 
   const { data: allSites = [], isLoading } = useQuery({
@@ -36,6 +39,8 @@ export default function Home() {
     });
     return filtered;
   };
+
+  const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
 
   const sites = getSortedSites();
 
@@ -99,6 +104,21 @@ export default function Home() {
               </Button>
             </div>
 
+            <FilterBar title="Filtrera områden">
+              <div>
+                <FilterSelect
+                  label="Sortera efter"
+                  value={sortBy}
+                  onChange={setSortBy}
+                  options={[
+                    { value: 'namn', label: 'Namn' },
+                    { value: 'datum', label: 'Datum' },
+                    { value: 'senast', label: 'Senast använd' }
+                  ]}
+                  placeholder="Sortera efter"
+                />
+              </div>
+            </FilterBar>
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
