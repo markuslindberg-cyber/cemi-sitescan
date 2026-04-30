@@ -9,8 +9,7 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
         value={filterManager}
         onChange={setFilterManager}
         options={[
-          { value: 'all', label: 'Alla områdesansvariga' },
-          { value: 'none', label: 'Ingen ansvarig' },
+          { value: 'all', label: 'Alla områdesansvariga', disabled: true },
           ...uniqueManagers.map((manager) => ({ value: manager, label: getUserName(manager) }))
         ]}
         placeholder="Områdesansvarig"
