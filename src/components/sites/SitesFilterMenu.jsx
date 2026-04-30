@@ -37,7 +37,7 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
                    <SelectTrigger className="w-full">
                     <SelectValue placeholder="Filtrera på områdesansvarig" />
                   </SelectTrigger>
-                  <SelectContent noPortal>
+                  <SelectContent>
                     <SelectItem value="all">Alla områdesansvariga</SelectItem>
                     <SelectItem value="none">Ingen ansvarig</SelectItem>
                     {uniqueManagers.map((manager) =>
@@ -53,7 +53,7 @@ export default function SitesFilterMenu({ filterManager, setFilterManager, sortB
                    <SelectTrigger className="w-full">
                     <SelectValue placeholder="Sortera" />
                   </SelectTrigger>
-                  <SelectContent noPortal>
+                  <SelectContent>
                     <SelectItem value="namn">Namn</SelectItem>
                     <SelectItem value="datum">Datum</SelectItem>
                     <SelectItem value="senast">Senast använd</SelectItem>
