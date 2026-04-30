@@ -99,17 +99,6 @@ export default function InspectionsFilterPanel({
             </SelectContent>
           </Select>
 
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="Sortera" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="namn">Namn</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-              <SelectItem value="datum">Datum</SelectItem>
-              <SelectItem value="senast">Senast använd</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       )}
     </div>

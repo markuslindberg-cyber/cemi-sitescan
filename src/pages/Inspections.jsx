@@ -95,24 +95,24 @@ export default function Inspections() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
-            <Button
-              size="sm"
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
-              onClick={() => setViewMode('grid')}
-              className="w-10 p-0">
-              <LayoutGrid className="w-4 h-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              onClick={() => setViewMode('list')}
-              className="w-10 p-0">
-              <List className="w-4 h-4" />
-            </Button>
-          </div>
-          <InspectionsFilterPanel
+         <div className="flex flex-wrap gap-3 mb-6 items-start">
+           <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
+             <Button
+               size="sm"
+               variant={viewMode === 'grid' ? 'default' : 'ghost'}
+               onClick={() => setViewMode('grid')}
+               className="w-10 p-0">
+               <LayoutGrid className="w-4 h-4" />
+             </Button>
+             <Button
+               size="sm"
+               variant={viewMode === 'list' ? 'default' : 'ghost'}
+               onClick={() => setViewMode('list')}
+               className="w-10 p-0">
+               <List className="w-4 h-4" />
+             </Button>
+           </div>
+           <InspectionsFilterPanel
             filterCustomer={filterCustomer}
             setFilterCustomer={setFilterCustomer}
             filterSite={filterSite}
@@ -130,7 +130,18 @@ export default function Inspections() {
             getInspectorDisplay={getInspectorDisplay}
             getSiteManagerName={getSiteManagerName}
           />
-        </div>
+
+          <select
+           value={sortBy}
+           onChange={(e) => setSortBy(e.target.value)}
+           className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors"
+          >
+           <option value="datum">Sortera: Datum</option>
+           <option value="namn">Sortera: Namn</option>
+           <option value="status">Sortera: Status</option>
+           <option value="senast">Sortera: Senast använd</option>
+          </select>
+          </div>
 
         {isLoading ?
         <div className="grid gap-4">
