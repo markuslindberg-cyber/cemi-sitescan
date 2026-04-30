@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Building2, Users, FileText, User } from 'lucide-react';
+import { Building2, Users, FileText } from 'lucide-react';
 import { createPageUrl } from '../../utils';
 
 export default function BottomTabNav({ currentUser }) {
@@ -9,8 +9,7 @@ export default function BottomTabNav({ currentUser }) {
   const tabs = [
     { name: 'Områden', path: 'Home', icon: Building2 },
     { name: 'Kunder', path: 'Customers', icon: Users },
-    { name: 'Inspektioner', path: 'Inspections', icon: FileText },
-    { name: 'Profil', path: 'Users', icon: User }
+    { name: 'Inspektioner', path: 'Inspections', icon: FileText }
   ];
 
   const isActive = (path) => {
