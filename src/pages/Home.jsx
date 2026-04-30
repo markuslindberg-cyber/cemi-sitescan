@@ -36,9 +36,6 @@ export default function Home() {
       filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
     filtered.sort((a, b) => {
-      const aNoManager = !a.site_manager ? 0 : 1;
-      const bNoManager = !b.site_manager ? 0 : 1;
-      if (aNoManager !== bNoManager) return aNoManager - bNoManager;
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
       return 0;

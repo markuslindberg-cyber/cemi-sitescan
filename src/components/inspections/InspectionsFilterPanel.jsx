@@ -75,9 +75,11 @@ export default function InspectionsFilterPanel({
             value={sortBy}
             onChange={setSortBy}
             options={[
-              { value: 'namn', label: 'Namn' },
-              { value: 'status', label: 'Status' },
               { value: 'datum', label: 'Datum' },
+              { value: 'plats', label: 'Plats' },
+              { value: 'kund', label: 'Kund' },
+              { value: 'inspektör', label: 'Inspektör' },
+              { value: 'status', label: 'Status' },
               { value: 'senast', label: 'Senast använd' }
             ]}
             placeholder="Sortera efter"

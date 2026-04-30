@@ -67,10 +67,13 @@ export default function Inspections() {
   }).sort((a, b) => {
     const siteA = getSite(a.site_id);
     const siteB = getSite(b.site_id);
-    const aNoManager = !siteA?.site_manager ? 0 : 1;
-    const bNoManager = !siteB?.site_manager ? 0 : 1;
-    if (aNoManager !== bNoManager) return aNoManager - bNoManager;
-    if (sortBy === 'namn') return (getSiteName(a.site_id)).localeCompare(getSiteName(b.site_id), 'sv');
+    if (sortBy === 'plats') return (getSiteName(a.site_id)).localeCompare(getSiteName(b.site_id), 'sv');
+    if (sortBy === 'kund') {
+      const custA = customers.find(c => c.id === siteA?.customer_id)?.name || '';
+      const custB = customers.find(c => c.id === siteB?.customer_id)?.name || '';
+      return custA.localeCompare(custB, 'sv');
+    }
+    if (sortBy === 'inspektör') return (a.inspector_name || '').localeCompare(b.inspector_name || '', 'sv');
     if (sortBy === 'status') return (a.status || '').localeCompare(b.status || '');
     if (sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
     // datum (default)

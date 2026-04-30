@@ -70,9 +70,6 @@ export default function Customers() {
       filtered = filtered.filter(c => c.account_manager === filterManager);
     }
     filtered.sort((a, b) => {
-      const aNoManager = !a.account_manager ? 0 : 1;
-      const bNoManager = !b.account_manager ? 0 : 1;
-      if (aNoManager !== bNoManager) return aNoManager - bNoManager;
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
       return 0;
