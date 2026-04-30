@@ -60,7 +60,7 @@ export default function Landing() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-center p-4"
+      className="min-h-screen flex flex-col items-center justify-start pt-4 px-4 pb-8"
       style={{
         backgroundImage: 'url(https://media.base44.com/images/public/698b067db5e721251596eb5e/bbb18a68d_0286130d-b419-4706-9d1f-80337e32bb89.jpg)',
         backgroundSize: 'cover',
