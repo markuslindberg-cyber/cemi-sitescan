@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import InspectionsFilterMenu from '../components/inspections/InspectionsFilterMenu';
 
 export default function Inspections() {
   const [filterCustomer, setFilterCustomer] = useState('all');
@@ -92,84 +92,42 @@ export default function Inspections() {
         </div>
 
         {/* Filters */}
-         <div className="flex flex-wrap gap-3 mb-6">
-           <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
-             <Button
+        <div className="flex flex-wrap gap-3 mb-6">
+          <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
+            <Button
               size="sm"
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               onClick={() => setViewMode('grid')}
               className="w-10 p-0">
-              
-               <LayoutGrid className="w-4 h-4" />
-             </Button>
-             <Button
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+            <Button
               size="sm"
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               onClick={() => setViewMode('list')}
               className="w-10 p-0">
-              
-               <List className="w-4 h-4" />
-             </Button>
-           </div>
-           <Select value={filterCustomer} onValueChange={(v) => {setFilterCustomer(v);setFilterSite('all');}}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filtrera på kund" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alla kunder</SelectItem>
-              {customers.map((c) =>
-              <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              )}
-            </SelectContent>
-          </Select>
-
-          <Select value={filterSite} onValueChange={setFilterSite}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filtrera på plats" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alla platser</SelectItem>
-              {sitesForCustomer.map((s) =>
-              <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-              )}
-            </SelectContent>
-          </Select>
-
-          <Select value={filterInspector} onValueChange={setFilterInspector}>
-             <SelectTrigger className="w-48">
-               <SelectValue placeholder="Filtrera på inspektör" />
-             </SelectTrigger>
-             <SelectContent>
-               <SelectItem value="all">Alla inspektörer</SelectItem>
-               {uniqueInspectorNames.map((name) =>
-              <SelectItem key={name} value={name}>{getInspectorDisplay(name)}</SelectItem>
-              )}
-             </SelectContent>
-           </Select>
-
-           <Select value={filterSiteManager} onValueChange={setFilterSiteManager}>
-             <SelectTrigger className="w-48">
-               <SelectValue placeholder="Filtrera på områdesansvarig" />
-             </SelectTrigger>
-             <SelectContent>
-               <SelectItem value="all">Alla områdesansvariga</SelectItem>
-               {uniqueSiteManagers.map((managerId) =>
-               <SelectItem key={managerId} value={managerId}>{getSiteManagerName(managerId)}</SelectItem>
-               )}
-             </SelectContent>
-           </Select>
-           <Select value={sortBy} onValueChange={setSortBy}>
-             <SelectTrigger className="w-40">
-               <SelectValue placeholder="Sortera" />
-             </SelectTrigger>
-             <SelectContent>
-               <SelectItem value="namn">Namn</SelectItem>
-               <SelectItem value="status">Status</SelectItem>
-               <SelectItem value="datum">Datum</SelectItem>
-               <SelectItem value="senast">Senast använd</SelectItem>
-             </SelectContent>
-           </Select>
-           </div>
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
+          <InspectionsFilterMenu
+            filterCustomer={filterCustomer}
+            setFilterCustomer={setFilterCustomer}
+            filterSite={filterSite}
+            setFilterSite={setFilterSite}
+            filterInspector={filterInspector}
+            setFilterInspector={setFilterInspector}
+            filterSiteManager={filterSiteManager}
+            setFilterSiteManager={setFilterSiteManager}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            customers={customers}
+            sitesForCustomer={sitesForCustomer}
+            uniqueInspectorNames={uniqueInspectorNames}
+            uniqueSiteManagers={uniqueSiteManagers}
+            getInspectorDisplay={getInspectorDisplay}
+            getSiteManagerName={getSiteManagerName}
+          />
+        </div>
 
         {isLoading ?
         <div className="grid gap-4">
