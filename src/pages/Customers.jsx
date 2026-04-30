@@ -317,37 +317,37 @@ export default function Customers() {
               const stats = getCustomerStats(customer.id);
               const isSelected = selectedIds.has(customer.id);
               return (
-                <div key={customer.id} className="flex items-center gap-2">
-                  <div onClick={(e) => toggleSelect(customer.id, e)} className="pl-1 cursor-pointer">
+                <div key={customer.id} className="flex items-start gap-2">
+                  <div onClick={(e) => toggleSelect(customer.id, e)} className="pt-1 cursor-pointer">
                     <Checkbox checked={isSelected} />
                   </div>
                   <Link to={createPageUrl(`Customer?id=${customer.id}`)} className="flex-1">
                     <Card className={`hover:shadow-lg transition-shadow cursor-pointer ${isSelected ? 'ring-2 ring-green-500' : ''}`}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <Building2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-start gap-2 sm:gap-3">
+                            <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-gray-900">{customer.name}</h3>
+                              <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{customer.name}</h3>
                               {customer.contact_person && (
-                                <p className="text-xs text-gray-600">{customer.contact_person}</p>
+                                <p className="text-xs text-gray-600 truncate">{customer.contact_person}</p>
                               )}
                             </div>
                           </div>
-                          {customer.category && (
-                            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{customer.category}</span>
-                          )}
-                          <div className="flex items-center gap-4 text-sm text-gray-600 flex-shrink-0">
-                            <span>{stats.sitesCount} platser</span>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                            {customer.category && (
+                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full whitespace-nowrap">{customer.category}</span>
+                            )}
+                            <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">{stats.sitesCount} platser</span>
+                            {currentUser?.role === 'admin' && (
+                              <button
+                                onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
+                                className="p-1 ml-auto rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
-                          {currentUser?.role === 'admin' && (
-                            <button
-                              onClick={(e) => { e.preventDefault(); setCustomerToDelete(customer); }}
-                              className="p-1.5 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
                         </div>
                       </CardContent>
                     </Card>

@@ -330,41 +330,41 @@ export default function Site() {
                         : `Inspection?id=${inspection.id}`
                     ))}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-lg font-bold text-gray-900">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <span className="font-bold text-sm sm:text-base text-gray-900">
                               {inspection.inspection_number}
                             </span>
                             <Badge
                               variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                              className={
+                              className={`text-xs sm:text-sm ${
                                 inspection.status === 'completed'
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-yellow-100 text-yellow-800'
-                              }
+                              }`}
                             >
                               {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                             </Badge>
-                            <span className="text-sm text-gray-500 flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
-                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
+                            <span className="text-xs sm:text-sm text-gray-500 flex items-center gap-1 whitespace-nowrap">
+                              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <User className="w-4 h-4" />
-                            {inspection.inspector_name}
+                          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+                            <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">{inspection.inspector_name}</span>
                           </div>
                           {inspection.notes && (
-                            <p className="text-sm text-gray-600 mt-2 line-clamp-1">
+                            <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-1">
                               {inspection.notes}
                             </p>
                           )}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm">
-                            {inspection.status === 'completed' ? 'Visa rapport' : 'Fortsätt'}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+                            {inspection.status === 'completed' ? 'Visa' : 'Fortsätt'}
                           </Button>
                           {currentUser?.role === 'admin' && (
                             <AlertDialog>

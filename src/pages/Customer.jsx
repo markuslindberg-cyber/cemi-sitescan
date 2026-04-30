@@ -172,20 +172,20 @@ export default function Customer() {
               {sites.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">Inga platser för denna kund</p>
               ) : (
-                <div className="space-y-3">
+               <div className="space-y-3">
                   {sites.map(site => (
                     <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
                       <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                        <CardContent className="p-4">
-                          <h4 className="font-semibold text-gray-900 mb-1">{site.name}</h4>
+                        <CardContent className="p-3 sm:p-4">
+                          <h4 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{site.name}</h4>
                           {site.location && (
-                            <p className="text-sm text-gray-600">{site.location}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 truncate">{site.location}</p>
                           )}
                         </CardContent>
                       </Card>
                     </Link>
                   ))}
-                </div>
+               </div>
               )}
             </CardContent>
           </Card>
@@ -201,7 +201,7 @@ export default function Customer() {
               {customerInspections.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">Inga inspektioner ännu</p>
               ) : (
-                <div className="space-y-3">
+               <div className="space-y-3">
                   {customerInspections.slice(0, 10).map(inspection => (
                     <Link
                       key={inspection.id}
@@ -212,32 +212,32 @@ export default function Customer() {
                       )}
                     >
                       <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between mb-2">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex items-center justify-between gap-2 mb-2">
                             <Badge
                               variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                              className={
+                              className={`text-xs sm:text-sm ${
                                 inspection.status === 'completed'
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-yellow-100 text-yellow-800'
-                              }
+                              }`}
                             >
                               {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                             </Badge>
-                            <span className="text-sm text-gray-500 flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
-                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
+                            <span className="text-xs sm:text-sm text-gray-500 flex items-center gap-1 whitespace-nowrap">
+                              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                              {new Date(inspection.inspection_date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-gray-900 text-sm">
+                          <h4 className="font-semibold text-sm text-gray-900 truncate">
                             {getSiteName(inspection.site_id)}
                           </h4>
-                          <p className="text-xs text-gray-600 mt-1">{inspection.inspector_name}</p>
+                          <p className="text-xs text-gray-600 mt-1 truncate">{inspection.inspector_name}</p>
                         </CardContent>
                       </Card>
                     </Link>
                   ))}
-                </div>
+               </div>
               )}
             </CardContent>
           </Card>

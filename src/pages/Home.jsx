@@ -198,23 +198,23 @@ export default function Home() {
             {sites.map((site) =>
           <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between gap-4">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900">{site.name}</h3>
+                        <h3 className="font-semibold text-gray-900 truncate">{site.name}</h3>
                         {site.location &&
-                    <p className="text-sm text-gray-600 flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            {site.location}
+                    <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 truncate">
+                            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">{site.location}</span>
                           </p>
                     }
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-500 flex-shrink-0">
-                        <span>{getInspectionCount(site.id)} inspektioner</span>
+                      <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-shrink-0">
+                        <span className="whitespace-nowrap">{getInspectionCount(site.id)} insp.</span>
                         {getLastInspectionDate(site.id) &&
-                    <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {new Date(getLastInspectionDate(site.id)).toLocaleDateString()}
+                    <span className="flex items-center gap-1 whitespace-nowrap">
+                            <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                            {new Date(getLastInspectionDate(site.id)).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                           </span>
                     }
                       </div>

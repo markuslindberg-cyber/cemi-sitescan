@@ -172,44 +172,42 @@ export default function Inspections() {
             )}>
             
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Badge
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge
                         variant={inspection.status === 'completed' ? 'default' : 'secondary'}
-                        className={
+                        className={`text-xs sm:text-sm ${
                         inspection.status === 'completed' ?
                         'bg-green-100 text-green-800' :
                         'bg-yellow-100 text-yellow-800'
-                        }>
+                        }`}>
                         
                             {inspection.status === 'completed' ? 'Slutförd' : 'Pågående'}
                           </Badge>
-                          <span className="text-sm text-gray-500 flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {new Date(inspection.inspection_date).toLocaleDateString('sv-SE')}
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          {getSiteName(inspection.site_id)}
-                        </h3>
-                        {getSiteLocation(inspection.site_id) &&
-                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
-                            <MapPin className="w-4 h-4" />
-                            {getSiteLocation(inspection.site_id)}
+                        <span className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
+                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                          {new Date(inspection.inspection_date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                      <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">
+                        {getSiteName(inspection.site_id)}
+                      </h3>
+                      {getSiteLocation(inspection.site_id) &&
+                    <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 truncate">
+                            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">{getSiteLocation(inspection.site_id)}</span>
                           </p>
                     }
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <User className="w-4 h-4" />
-                          {inspection.inspector_name}
-                        </div>
-                        {inspection.notes &&
-                    <p className="text-sm text-gray-600 mt-3 line-clamp-2">
+                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="truncate">{inspection.inspector_name}</span>
+                      </div>
+                      {inspection.notes &&
+                    <p className="text-xs sm:text-sm text-gray-600 line-clamp-1">
                             {inspection.notes}
                           </p>
                     }
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
