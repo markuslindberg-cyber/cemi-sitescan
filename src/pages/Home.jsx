@@ -9,6 +9,7 @@ import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import SitesFilterPanel from '../components/sites/SitesFilterPanel';
+import SortDropdown from '../components/SortDropdown';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -108,11 +109,10 @@ export default function Home() {
             <SitesFilterPanel
               filterManager={filterManager}
               setFilterManager={setFilterManager}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
               uniqueManagers={uniqueManagers}
               getUserName={getUserName}
             />
+            <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

@@ -14,6 +14,7 @@ import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CustomersFilterPanel from '../components/customers/CustomersFilterPanel';
+import SortDropdown from '../components/SortDropdown';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -182,11 +183,10 @@ export default function Customers() {
             <CustomersFilterPanel
               filterManager={filterManager}
               setFilterManager={setFilterManager}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
               uniqueManagers={uniqueManagers}
               getManagerName={getManagerName}
             />
+            <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

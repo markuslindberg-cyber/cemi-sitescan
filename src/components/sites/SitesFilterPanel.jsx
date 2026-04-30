@@ -5,8 +5,6 @@ import { Button } from '@/components/ui/button';
 export default function SitesFilterPanel({
   filterManager,
   setFilterManager,
-  sortBy,
-  setSortBy,
   uniqueManagers,
   getUserName
 }) {
@@ -71,42 +69,7 @@ export default function SitesFilterPanel({
             )}
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setOpenDropdown(openDropdown === 'sort' ? null : 'sort')}
-              className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors text-left"
-            >
-              <span className="text-gray-700">
-                {sortBy === 'namn' && 'Sortera: Namn'}
-                {sortBy === 'datum' && 'Sortera: Datum'}
-                {sortBy === 'senast' && 'Sortera: Senast använd'}
-              </span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === 'sort' ? 'rotate-180' : ''}`} />
-            </button>
-            {openDropdown === 'sort' && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-md z-10">
-                <button
-                  onClick={() => handleFilterSelect(setSortBy, 'namn')}
-                  className={`w-full text-left px-3 py-2 hover:bg-gray-100 text-sm ${sortBy === 'namn' ? 'bg-blue-50 text-blue-700 font-medium' : ''}`}
-                >
-                  Namn
-                </button>
-                <button
-                  onClick={() => handleFilterSelect(setSortBy, 'datum')}
-                  className={`w-full text-left px-3 py-2 hover:bg-gray-100 text-sm ${sortBy === 'datum' ? 'bg-blue-50 text-blue-700 font-medium' : ''}`}
-                >
-                  Datum
-                </button>
-                <button
-                  onClick={() => handleFilterSelect(setSortBy, 'senast')}
-                  className={`w-full text-left px-3 py-2 hover:bg-gray-100 text-sm ${sortBy === 'senast' ? 'bg-blue-50 text-blue-700 font-medium' : ''}`}
-                >
-                  Senast använd
-                </button>
-              </div>
-            )}
-          </div>
+
         </div>
       )}
     </div>
