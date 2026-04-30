@@ -8,6 +8,7 @@ import PageNotFound from './lib/PageNotFound';
 import TrashPage from './pages/Trash.jsx';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { AnimatePresence } from 'framer-motion';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -42,26 +43,28 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          }
-        />
-      ))}
-      <Route path="/Trash" element={<LayoutWrapper currentPageName="Trash"><TrashPage /></LayoutWrapper>} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes>
+        <Route path="/" element={
+          <LayoutWrapper currentPageName={mainPageKey}>
+            <MainPage />
+          </LayoutWrapper>
+        } />
+        {Object.entries(Pages).map(([path, Page]) => (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <LayoutWrapper currentPageName={path}>
+                <Page />
+              </LayoutWrapper>
+            }
+          />
+        ))}
+        <Route path="/Trash" element={<LayoutWrapper currentPageName="Trash"><TrashPage /></LayoutWrapper>} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </AnimatePresence>
   );
 };
 

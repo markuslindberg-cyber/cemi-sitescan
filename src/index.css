@@ -2,8 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overscroll-behavior: none;
+}
+
+button, [role="button"], nav, [role="navigation"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 @layer base {
   :root {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;

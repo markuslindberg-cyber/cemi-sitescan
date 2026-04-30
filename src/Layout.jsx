@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Building2, Users, FileText, Menu, X, Home, Trash2 } from 'lucide-react';
+import BottomTabNav from './components/mobile/BottomTabNav';
 
 export default function Layout({ children, currentPageName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,13 +83,15 @@ export default function Layout({ children, currentPageName }) {
         </div>
       )}
       
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 pb-20 md:pb-0">{children}</div>
       
       <footer className="bg-white border-t mt-auto print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-sm text-gray-600 text-center">© {new Date().getFullYear()} CEMI. Utemiljöbesiktningssystem.</p>
         </div>
       </footer>
+
+      <BottomTabNav currentUser={currentUser} />
     </div>
   );
 }

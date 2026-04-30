@@ -2,8 +2,15 @@
 module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+    safelist: [
+      'pb-safe',
+      'safe-area-inset-bottom'
+    ],
   theme: {
   	extend: {
+      spacing: {
+        'safe': 'env(safe-area-inset-bottom)'
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
