@@ -9,8 +9,6 @@ import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import SitesFilterMenu from '../components/sites/SitesFilterMenu';
-import FilterBar from '../components/FilterBar';
-import FilterSelect from '../components/FilterSelect';
 
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -30,8 +28,13 @@ export default function Home() {
     queryFn: () => base44.entities.Customer.list()
   });
 
+  const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort((a, b) => getUserName(a).localeCompare(getUserName(b)));
+
   const getSortedSites = () => {
     let filtered = [...allSites];
+    if (filterManager !== 'all') {
+      filtered = filtered.filter((s) => s.site_manager === filterManager);
+    }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
@@ -39,8 +42,6 @@ export default function Home() {
     });
     return filtered;
   };
-
-  const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
 
   const sites = getSortedSites();
 
@@ -104,21 +105,14 @@ export default function Home() {
               </Button>
             </div>
 
-            <FilterBar title="Filtrera områden">
-              <div>
-                <FilterSelect
-                  label="Sortera efter"
-                  value={sortBy}
-                  onChange={setSortBy}
-                  options={[
-                    { value: 'namn', label: 'Namn' },
-                    { value: 'datum', label: 'Datum' },
-                    { value: 'senast', label: 'Senast använd' }
-                  ]}
-                  placeholder="Sortera efter"
-                />
-              </div>
-            </FilterBar>
+            <SitesFilterMenu
+              filterManager={filterManager}
+              setFilterManager={setFilterManager}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              uniqueManagers={uniqueManagers}
+              getUserName={getUserName}
+            />
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

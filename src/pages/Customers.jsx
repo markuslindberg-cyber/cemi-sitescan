@@ -14,8 +14,6 @@ import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CustomersFilterMenu from '../components/customers/CustomersFilterMenu';
-import FilterBar from '../components/FilterBar';
-import FilterSelect from '../components/FilterSelect';
 
 export default function Customers() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -64,8 +62,13 @@ export default function Customers() {
       : user.full_name || user.email;
   };
 
+  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
+
   const getSortedCustomers = () => {
     let filtered = [...allCustomers];
+    if (filterManager !== 'all') {
+      filtered = filtered.filter((c) => c.account_manager === filterManager);
+    }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
@@ -73,8 +76,6 @@ export default function Customers() {
     });
     return filtered;
   };
-
-  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
 
   const deleteMutation = useMutation({
     mutationFn: async (customer) => {
@@ -178,21 +179,14 @@ export default function Customers() {
               </Button>
             </div>
 
-            <FilterBar title="Filtrera kunder">
-             <div>
-               <FilterSelect
-                 label="Sortera efter"
-                 value={sortBy}
-                 onChange={setSortBy}
-                 options={[
-                   { value: 'namn', label: 'Namn' },
-                   { value: 'datum', label: 'Datum' },
-                   { value: 'senast', label: 'Senast använd' }
-                 ]}
-                 placeholder="Sortera efter"
-               />
-             </div>
-            </FilterBar>
+            <CustomersFilterMenu
+              filterManager={filterManager}
+              setFilterManager={setFilterManager}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              uniqueManagers={uniqueManagers}
+              getManagerName={getManagerName}
+            />
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
