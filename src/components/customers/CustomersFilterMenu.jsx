@@ -16,8 +16,7 @@ export default function CustomersFilterMenu({
         value={filterManager}
         onChange={setFilterManager}
         options={[
-          { value: 'all', label: 'Alla kundansvariga' },
-          { value: 'none', label: 'Ingen ansvarig' },
+          { value: 'all', label: 'Alla kundansvariga', disabled: true },
           ...uniqueManagers.map(manager => ({ value: manager, label: getManagerName(manager) }))
         ]}
         placeholder="Kundansvarig"
