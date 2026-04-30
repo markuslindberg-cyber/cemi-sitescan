@@ -31,7 +31,7 @@ export default function InspectionsFilterPanel({
   ].filter(Boolean).length;
 
   return (
-    <div className="w-full md:w-auto">
+    <div className="relative w-full md:w-auto">
       <Button
         variant="outline"
         size="sm"
@@ -44,7 +44,7 @@ export default function InspectionsFilterPanel({
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 md:relative mt-2 md:mt-0 bg-white md:bg-transparent border md:border-0 rounded-lg md:rounded-0 shadow-lg md:shadow-none p-4 md:p-0 space-y-4 md:space-y-0 md:flex md:gap-2 md:flex-wrap z-50">
+        <div className="absolute top-full left-0 right-0 md:static md:mt-0 mt-2 bg-white md:bg-transparent border md:border-0 rounded-lg md:rounded-0 shadow-lg md:shadow-none p-4 md:p-0 space-y-4 md:space-y-0 md:flex md:gap-2 md:flex-wrap z-40">
           <Select value={filterCustomer} onValueChange={(v) => {
             setFilterCustomer(v);
             setFilterSite('all');
