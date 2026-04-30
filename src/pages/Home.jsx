@@ -13,7 +13,6 @@ import SitesFilterMenu from '../components/sites/SitesFilterMenu';
 export default function Home() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
-  const [filterManager, setFilterManager] = useState('all');
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
@@ -30,11 +29,6 @@ export default function Home() {
 
   const getSortedSites = () => {
     let filtered = [...allSites];
-    if (filterManager === 'none') {
-      filtered = filtered.filter((s) => !s.site_manager);
-    } else if (filterManager !== 'all') {
-      filtered = filtered.filter((s) => s.site_manager === filterManager);
-    }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
@@ -42,8 +36,6 @@ export default function Home() {
     });
     return filtered;
   };
-
-  const uniqueManagers = [...new Set(allSites.filter((s) => s.site_manager).map((s) => s.site_manager))].sort();
 
   const sites = getSortedSites();
 
@@ -106,14 +98,7 @@ export default function Home() {
                 <List className="w-4 h-4" />
               </Button>
             </div>
-            <SitesFilterMenu
-              filterManager={filterManager}
-              setFilterManager={setFilterManager}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              uniqueManagers={uniqueManagers}
-              getUserName={getUserName}
-            />
+
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"

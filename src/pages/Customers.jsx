@@ -23,7 +23,6 @@ export default function Customers() {
 
   useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
   const [showImportDialog, setShowImportDialog] = useState(false);
-  const [filterManager, setFilterManager] = useState('all');
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -64,11 +63,6 @@ export default function Customers() {
 
   const getSortedCustomers = () => {
     let filtered = [...allCustomers];
-    if (filterManager === 'none') {
-      filtered = filtered.filter(c => !c.account_manager);
-    } else if (filterManager !== 'all') {
-      filtered = filtered.filter(c => c.account_manager === filterManager);
-    }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
@@ -135,8 +129,6 @@ export default function Customers() {
     bulkUpdateMutation.mutate({ ids: [...selectedIds], data });
   };
 
-  const uniqueManagers = [...new Set(allCustomers.filter(c => c.account_manager).map(c => c.account_manager))].sort((a, b) => getManagerName(a).localeCompare(getManagerName(b)));
-
   const customers = getSortedCustomers();
 
   const getCustomerStats = (customerId) => {
@@ -180,14 +172,7 @@ export default function Customers() {
                 <List className="w-4 h-4" />
               </Button>
             </div>
-            <CustomersFilterMenu
-              filterManager={filterManager}
-              setFilterManager={setFilterManager}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              uniqueManagers={uniqueManagers}
-              getManagerName={getManagerName}
-            />
+
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
