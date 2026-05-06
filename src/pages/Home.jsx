@@ -158,19 +158,23 @@ export default function Home() {
             {sites.map((site) =>
           <Link key={site.id} to={createPageUrl(`Site?id=${site.id}`)}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                  {site.map_image_url ?
-              <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
+                  {site.map_image_url ? (
+                    <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
+                      <img src={site.map_image_url} alt={site.name} className="w-full h-full object-cover" />
+                    </div>
+                  ) : site.map_type === 'google_maps' && site.google_maps_center ? (
+                    <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
                       <img
-                  src={site.map_image_url}
-                  alt={site.name}
-                  className="w-full h-full object-cover" />
-                
-                    </div> :
-
-              <div className="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center rounded-t-lg">
+                        src={`https://staticmap.openstreetmap.de/staticmap.php?center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 17}&size=400x200&maptype=osm`}
+                        alt={site.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center rounded-t-lg">
                       <MapPin className="w-16 h-16 text-green-600 opacity-50" />
                     </div>
-              }
+                  )}
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{site.name}</h3>
                     {site.location &&
