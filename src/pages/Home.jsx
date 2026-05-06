@@ -163,11 +163,12 @@ export default function Home() {
                       <img src={site.map_image_url} alt={site.name} className="w-full h-full object-cover" />
                     </div>
                   ) : site.map_type === 'google_maps' && site.google_maps_center ? (
-                    <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100">
-                      <img
-                        src={`https://staticmap.openstreetmap.de/staticmap.php?center=${site.google_maps_center.lat},${site.google_maps_center.lng}&zoom=${site.google_maps_zoom || 17}&size=400x200&maptype=osm`}
-                        alt={site.name}
-                        className="w-full h-full object-cover"
+                    <div className="h-48 overflow-hidden rounded-t-lg bg-gray-100 relative pointer-events-none">
+                      <iframe
+                        title={site.name}
+                        src={`https://www.openstreetmap.org/export/embed.html?bbox=${site.google_maps_center.lng - 0.002},${site.google_maps_center.lat - 0.001},${site.google_maps_center.lng + 0.002},${site.google_maps_center.lat + 0.001}&layer=mapnik&marker=${site.google_maps_center.lat},${site.google_maps_center.lng}`}
+                        className="w-full h-full border-0"
+                        style={{ marginTop: '-30px', height: 'calc(100% + 30px)' }}
                       />
                     </div>
                   ) : (
