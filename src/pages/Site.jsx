@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
 import EditSiteDialog from '../components/sites/EditSiteDialog';
+import GoogleMapInteractive from '../components/inspection/GoogleMapInteractive';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function Site() {
@@ -162,7 +163,17 @@ export default function Site() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
-            {site.map_image_url ? (
+            {site.map_type === 'google_maps' && site.google_maps_center ? (
+              <div className="h-96 overflow-hidden rounded-t-lg">
+                <GoogleMapInteractive
+                  center={site.google_maps_center}
+                  zoom={site.google_maps_zoom || 18}
+                  points={[]}
+                  onMapClick={() => {}}
+                  onPointClick={() => {}}
+                />
+              </div>
+            ) : site.map_image_url ? (
               <div className="h-96 overflow-hidden rounded-t-lg bg-gray-100">
                 <img
                   src={site.map_image_url}
