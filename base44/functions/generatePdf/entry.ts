@@ -1,6 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import puppeteer from 'npm:puppeteer-core@23.11.1';
-import chromium from 'npm:@sparticuz/chromium@133.0.0';
+import { jsPDF } from 'npm:jspdf@2.5.2';
 
 Deno.serve(async (req) => {
   try {
@@ -15,7 +14,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing inspectionId' }, { status: 400 });
     }
 
-    // Fetch all data needed for the report
     const [inspections, allPoints] = await Promise.all([
       base44.asServiceRole.entities.Inspection.list(),
       base44.asServiceRole.entities.InspectionPoint.filter({ inspection_id: inspectionId }),
@@ -34,33 +32,414 @@ Deno.serve(async (req) => {
     const site = sites.find(s => s.id === inspection.site_id);
     const customer = site?.customer_id ? customers.find(c => c.id === site.customer_id) : null;
 
-    // Build the HTML for the report
-    const html = buildReportHtml({ inspection, site, customer, points: allPoints });
+    const severityLabel = { low: 'Låg', medium: 'Medel', high: 'Hög', critical: 'Kritisk' };
+    const issueTypeLabel = {
+      improvement_suggestions: 'Förbättringsförslag',
+      issue_damage: 'Skada',
+      plant_health: 'Växthälsa',
+      maintenance: 'Underhåll',
+      safety_concern: 'Säkerhetsrisk',
+      deviation: 'Avvikelse',
+      general: 'General',
+    };
+    const reasonLabel = {
+      tillsyn: 'Tillsyn',
+      besiktning: 'Besiktning',
+      ny_kundbesiktning: 'Ny kundbesiktning',
+      anbud_kalkylering: 'Anbud/kalkylering',
+      egenkontroll: 'Egenkontroll',
+      other: inspection.reason_custom || 'Övrigt',
+    };
 
-    // Launch puppeteer
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+    const formatDate = (d) => d ? new Date(d).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+
+    // Helper to fetch image as base64
+    const fetchImageBase64 = async (url) => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const buf = await res.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const base64 = btoa(binary);
+        const ct = res.headers.get('content-type') || 'image/jpeg';
+        return { base64, format: ct.includes('png') ? 'PNG' : 'JPEG' };
+      } catch {
+        return null;
+      }
+    };
+
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 20;
+    const contentW = pageW - margin * 2;
+
+    const addPageHeader = (pageNum) => {
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text(`Sida ${pageNum}`, pageW - margin, margin - 8, { align: 'right' });
+      doc.setDrawColor(220);
+      doc.line(margin, margin - 6, pageW - margin, margin - 6);
+      doc.setTextColor(20);
+    };
+
+    const addWrappedText = (text, x, y, maxW, fontSize, color = [20, 20, 20], fontStyle = 'normal') => {
+      doc.setFontSize(fontSize);
+      doc.setTextColor(...color);
+      doc.setFont('helvetica', fontStyle);
+      const lines = doc.splitTextToSize(String(text || ''), maxW);
+      doc.text(lines, x, y);
+      return y + lines.length * (fontSize * 0.4);
+    };
+
+    // ---- PAGE 1: FRONT PAGE ----
+    addPageHeader(1);
+    let y = margin + 10;
+
+    // Logo
+    const logoData = await fetchImageBase64('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png');
+    if (logoData) {
+      doc.addImage(logoData.base64, logoData.format, pageW / 2 - 25, y, 50, 20, undefined, 'FAST');
+    }
+    y += 30;
+
+    // Title
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20, 20, 20);
+    const title = inspection.report_title || 'Tillsynsrapport';
+    doc.text(title, pageW / 2, y, { align: 'center' });
+    y += 8;
+
+    // Red underline
+    doc.setDrawColor(220, 38, 38);
+    doc.setLineWidth(1.5);
+    doc.line(pageW / 2 - 15, y, pageW / 2 + 15, y);
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(220);
+    y += 10;
+
+    // Site name
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(80);
+    doc.text(site?.name || '', pageW / 2, y, { align: 'center' });
+    y += 20;
+
+    // Info rows
+    const infoRows = [
+      customer ? ['KUND', `${customer.name}${customer.project_number ? '\nProjektnummer: ' + customer.project_number : ''}`] : null,
+      ['BESIKTNINGSDATUM', formatDate(inspection.inspection_date)],
+      ['BESIKTNINGSMAN', inspection.inspector_name || ''],
+      ['ANLEDNING', reasonLabel[inspection.reason_category] || ''],
+      site?.location ? ['PLATS', site.location] : null,
+    ].filter(Boolean);
+
+    doc.setDrawColor(220);
+    doc.setLineWidth(0.2);
+    doc.rect(margin, y, contentW, infoRows.length * 16, 'S');
+
+    infoRows.forEach((row, i) => {
+      const rowY = y + i * 16;
+      if (i > 0) {
+        doc.line(margin, rowY, margin + contentW, rowY);
+      }
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(120);
+      doc.text(row[0], margin + 4, rowY + 5);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(20);
+      const lines = doc.splitTextToSize(row[1], contentW - 8);
+      doc.text(lines, margin + 4, rowY + 11);
     });
 
-    const page = await browser.newPage();
+    // ---- PAGE 2: SUMMARY ----
+    doc.addPage();
+    addPageHeader(2);
+    y = margin + 10;
 
-    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 60000 });
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20);
+    doc.text('Sammanfattning', margin, y);
+    y += 12;
 
-    // Wait a bit more for images to render fully
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Overview box
+    doc.setDrawColor(220);
+    doc.rect(margin, y, contentW, 30, 'S');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20);
+    doc.text('Besiktningsöversikt', margin + 4, y + 6);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100);
+    doc.text('Besiktningsnummer', margin + 4, y + 13);
+    doc.text('Plats', margin + contentW / 2 + 4, y + 13);
+    doc.text('Datum', margin + 4, y + 22);
+    doc.text('Besiktningsman', margin + contentW / 2 + 4, y + 22);
+    doc.setTextColor(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text(inspection.inspection_number || '', margin + 4, y + 18);
+    doc.text(site?.name || '', margin + contentW / 2 + 4, y + 18);
+    doc.text(inspection.inspection_date || '', margin + 4, y + 27);
+    doc.text(inspection.inspector_name || '', margin + contentW / 2 + 4, y + 27);
+    y += 36;
 
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
-      printBackground: true,
+    // Severity grid
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(20);
+    doc.text('Allvarlighetsgrad', margin + 4, y);
+    y += 6;
+    const sevColors = { low: [219, 234, 254], medium: [254, 249, 195], high: [255, 237, 213], critical: [254, 226, 226] };
+    const sevTextColors = { low: [30, 64, 175], medium: [133, 77, 14], high: [154, 52, 18], critical: [153, 27, 27] };
+    const severities = ['low', 'medium', 'high', 'critical'];
+    const boxW = (contentW - 4) / 2;
+    const boxH = 18;
+    severities.forEach((s, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const bx = margin + col * (boxW + 4);
+      const by = y + row * (boxH + 2);
+      const count = allPoints.filter(p => p.severity === s).length;
+      const pct = allPoints.length > 0 ? Math.round((count / allPoints.length) * 100) : 0;
+      doc.setFillColor(...sevColors[s]);
+      doc.roundedRect(bx, by, boxW, boxH, 2, 2, 'F');
+      doc.setDrawColor(...sevColors[s]);
+      doc.roundedRect(bx, by, boxW, boxH, 2, 2, 'S');
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...sevTextColors[s]);
+      doc.text(String(count), bx + boxW / 2, by + 10, { align: 'center' });
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(60);
+      doc.text(`${severityLabel[s]}`, bx + boxW / 2, by + 15, { align: 'center' });
+    });
+    y += boxH * 2 + 10;
+
+    // Key observations
+    const keyObs = [];
+    if (allPoints.filter(p => p.severity === 'critical').length > 0) keyObs.push({ color: [220, 38, 38], text: `${allPoints.filter(p => p.severity === 'critical').length} kritiska noteringar` });
+    if (allPoints.filter(p => p.severity === 'high').length > 0) keyObs.push({ color: [234, 88, 12], text: `${allPoints.filter(p => p.severity === 'high').length} noteringar med hög prioritet` });
+    if (allPoints.filter(p => p.severity === 'medium').length > 0) keyObs.push({ color: [202, 138, 4], text: `${allPoints.filter(p => p.severity === 'medium').length} noteringar med medelprioritetet` });
+    if (allPoints.filter(p => p.severity === 'low').length > 0) keyObs.push({ color: [37, 99, 235], text: `${allPoints.filter(p => p.severity === 'low').length} noteringar med låg prioritet` });
+
+    if (keyObs.length > 0) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(20);
+      doc.text('Viktiga iakttagelser', margin + 4, y);
+      y += 6;
+      doc.setDrawColor(220);
+      doc.rect(margin, y, contentW, keyObs.length * 10 + 4, 'S');
+      keyObs.forEach((o, i) => {
+        doc.setFillColor(...o.color);
+        doc.circle(margin + 8, y + 5 + i * 10, 2, 'F');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(20);
+        doc.text(o.text, margin + 14, y + 7 + i * 10);
+      });
+    }
+
+    // ---- PAGE 3: OVERVIEW + MAP ----
+    doc.addPage();
+    addPageHeader(3);
+    y = margin + 10;
+
+    // Inspection number badge
+    doc.setFillColor(31, 41, 55);
+    doc.roundedRect(margin, y, 30, 7, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255);
+    doc.text(inspection.inspection_number || '', margin + 15, y + 5, { align: 'center' });
+    doc.setTextColor(100);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Besiktnings-ID', margin + 34, y + 5);
+    y += 12;
+
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20);
+    doc.text(inspection.report_title || 'Detaljerad besiktningsrapport', margin, y);
+    y += 8;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(80);
+    doc.text(site?.name || '', margin, y);
+    y += 10;
+    doc.setDrawColor(200);
+    doc.line(margin, y, margin + contentW, y);
+    y += 8;
+
+    // Map image
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20);
+    doc.text('Platsöversikt', margin, y);
+    y += 6;
+
+    const mapUrl = inspection.map_screenshot_url || site?.map_image_url;
+    if (mapUrl) {
+      const mapImg = await fetchImageBase64(mapUrl);
+      if (mapImg) {
+        const maxImgH = 100;
+        doc.addImage(mapImg.base64, mapImg.format, margin, y, contentW, maxImgH, undefined, 'FAST');
+        y += maxImgH + 6;
+      }
+    } else {
+      doc.setFontSize(9);
+      doc.setTextColor(120);
+      doc.text('Ingen karta konfigurerad', margin, y + 10);
+      y += 20;
+    }
+
+    // Point index
+    doc.addPage();
+    addPageHeader(3);
+    y = margin + 10;
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(20);
+    doc.text(`Detaljerade fynd (${allPoints.length} punkter)`, margin, y);
+    y += 8;
+    doc.setDrawColor(220);
+    doc.setFillColor(249, 250, 251);
+    doc.rect(margin, y, contentW, Math.ceil(allPoints.length / 2) * 8 + 12, 'FD');
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(60);
+    doc.text('Punktöversikt:', margin + 4, y + 7);
+    doc.setFont('helvetica', 'normal');
+    allPoints.forEach((p, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      doc.text(`Punkt ${i + 1}: Sida ${i + 4}`, margin + 4 + col * (contentW / 2), y + 14 + row * 8);
     });
 
-    await browser.close();
+    // ---- INSPECTION POINT PAGES ----
+    for (let index = 0; index < allPoints.length; index++) {
+      const point = allPoints[index];
+      doc.addPage();
+      addPageHeader(index + 4);
+      y = margin + 10;
 
-    return new Response(pdfBuffer, {
+      // Number circle
+      doc.setFillColor(31, 41, 55);
+      doc.circle(margin + 6, y + 4, 6, 'F');
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255);
+      doc.text(String(index + 1), margin + 6, y + 6, { align: 'center' });
+
+      // Severity badge
+      const sev = point.severity || 'medium';
+      doc.setFillColor(...sevColors[sev]);
+      doc.roundedRect(margin + 16, y, 20, 8, 1, 1, 'F');
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...sevTextColors[sev]);
+      doc.text(severityLabel[sev].toUpperCase(), margin + 26, y + 5.5, { align: 'center' });
+
+      // Issue type
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(20);
+      doc.text(issueTypeLabel[point.issue_type] || (point.issue_type || '').replace(/_/g, ' '), margin + 40, y + 6);
+      y += 14;
+
+      // Notes
+      if (point.notes) {
+        const noteLines = doc.splitTextToSize(point.notes, contentW - 10);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(55);
+        doc.text(noteLines, margin + 10, y);
+        y += noteLines.length * 5 + 4;
+      }
+
+      // Photos
+      if (point.photo_details && point.photo_details.length > 0) {
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(60);
+        doc.text(`📷 Dokumentation (${point.photo_details.length} ${point.photo_details.length === 1 ? 'foto' : 'foton'})`, margin + 10, y);
+        y += 6;
+
+        const photoW = (contentW - 10 - 4) / 2;
+        const photoH = 60;
+
+        for (let pi = 0; pi < point.photo_details.length; pi++) {
+          const photo = point.photo_details[pi];
+          const col = pi % 2;
+          const row = Math.floor(pi / 2);
+
+          if (col === 0 && pi > 0) {
+            // Check if we need a new page
+            if (y + photoH + 10 > pageH - margin) {
+              doc.addPage();
+              addPageHeader(index + 4);
+              y = margin + 10;
+            }
+          }
+
+          const px = margin + 10 + col * (photoW + 4);
+          const py = y + row * (photoH + (photo.comment ? 14 : 4));
+
+          const imgData = await fetchImageBase64(photo.url);
+          if (imgData) {
+            doc.addImage(imgData.base64, imgData.format, px, py, photoW, photoH, undefined, 'FAST');
+          } else {
+            doc.setDrawColor(200);
+            doc.rect(px, py, photoW, photoH, 'S');
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text('Bild ej tillgänglig', px + photoW / 2, py + photoH / 2, { align: 'center' });
+          }
+
+          if (photo.comment) {
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'italic');
+            doc.setTextColor(80);
+            const commentLines = doc.splitTextToSize(photo.comment, photoW);
+            doc.text(commentLines, px, py + photoH + 4);
+          }
+
+          // Advance y after each row
+          if (col === 1 || pi === point.photo_details.length - 1) {
+            y += photoH + (photo.comment ? 14 : 8);
+          }
+        }
+      }
+
+      // GPS
+      if (point.latitude && point.longitude) {
+        if (y + 10 > pageH - margin) {
+          doc.addPage();
+          addPageHeader(index + 4);
+          y = margin + 10;
+        }
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(120);
+        doc.setFillColor(249, 250, 251);
+        doc.roundedRect(margin + 10, y, 70, 8, 1, 1, 'F');
+        doc.text(`📍 GPS: ${point.latitude.toFixed(6)}, ${point.longitude.toFixed(6)}`, margin + 14, y + 5.5);
+      }
+    }
+
+    const pdfOutput = doc.output('arraybuffer');
+    const pdfBytes = new Uint8Array(pdfOutput);
+
+    return new Response(pdfBytes, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
@@ -72,288 +451,3 @@ Deno.serve(async (req) => {
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
-
-function buildReportHtml({ inspection, site, customer, points }) {
-  const severityLabel = { low: 'Låg', medium: 'Medel', high: 'Hög', critical: 'Kritisk' };
-  const severityColor = { low: '#dbeafe', medium: '#fef9c3', high: '#ffedd5', critical: '#fee2e2' };
-  const severityTextColor = { low: '#1e40af', medium: '#854d0e', high: '#9a3412', critical: '#991b1b' };
-  const issueTypeLabel = {
-    improvement_suggestions: 'Förbättringsförslag',
-    issue_damage: 'Skada',
-    plant_health: 'Växthälsa',
-    maintenance: 'Underhåll',
-    safety_concern: 'Säkerhetsrisk',
-    deviation: 'Avvikelse',
-    general: 'General',
-  };
-  const reasonLabel = {
-    tillsyn: 'Tillsyn',
-    besiktning: 'Besiktning',
-    ny_kundbesiktning: 'Ny kundbesiktning',
-    anbud_kalkylering: 'Anbud/kalkylering',
-    egenkontroll: 'Egenkontroll',
-    other: inspection.reason_custom || 'Övrigt',
-  };
-
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-
-  const totalPoints = points.length;
-  const countBySeverity = (s) => points.filter(p => p.severity === s).length;
-  const countByType = (t) => points.filter(p => p.issue_type === t).length;
-  const pct = (n) => totalPoints > 0 ? Math.round((n / totalPoints) * 100) : 0;
-
-  const summaryBySeverity = ['low', 'medium', 'high', 'critical'].map(s => ({
-    label: severityLabel[s], count: countBySeverity(s), pct: pct(countBySeverity(s)), color: severityColor[s], textColor: severityTextColor[s]
-  }));
-
-  const summaryByType = Object.keys(issueTypeLabel).filter(t => t !== 'general').map(t => ({
-    label: issueTypeLabel[t], count: countByType(t), pct: pct(countByType(t))
-  }));
-
-  const keyObservations = [];
-  if (countBySeverity('critical') > 0) keyObservations.push({ color: '#dc2626', text: `${countBySeverity('critical')} kritiska noteringar` });
-  if (countBySeverity('high') > 0) keyObservations.push({ color: '#ea580c', text: `${countBySeverity('high')} noteringar med hög prioritet` });
-  if (countBySeverity('medium') > 0) keyObservations.push({ color: '#ca8a04', text: `${countBySeverity('medium')} noteringar med medelprioritetet` });
-  if (countBySeverity('low') > 0) keyObservations.push({ color: '#2563eb', text: `${countBySeverity('low')} noteringar med låg prioritet` });
-
-  // Build inspection point pages
-  const pointPages = points.map((point, index) => {
-    const photos = (point.photo_details || []).map((photo, pi) => `
-      <div style="break-inside:avoid; margin-bottom:8px;">
-        <img src="${photo.url}" crossorigin="anonymous" style="width:100%; height:auto; border-radius:8px; border:1px solid #d1d5db; display:block;" />
-        ${photo.comment ? `<p style="font-size:10px; color:#4b5563; font-style:italic; margin-top:4px; background:#f9fafb; padding:6px; border-radius:4px;">${photo.comment}</p>` : ''}
-      </div>
-    `).join('');
-
-    const photoGrid = point.photo_details && point.photo_details.length > 0 ? `
-      <div style="margin-top:12px;">
-        <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#374151; margin-bottom:10px;">
-          📷 Dokumentation (${point.photo_details.length} ${point.photo_details.length === 1 ? 'foto' : 'foton'})
-        </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          ${photos}
-        </div>
-      </div>
-    ` : '';
-
-    const gps = point.latitude && point.longitude ? `
-      <div style="margin-top:10px; font-size:11px; color:#6b7280; background:#f9fafb; padding:6px 10px; border-radius:6px; display:inline-block;">
-        📍 GPS: ${point.latitude.toFixed(6)}, ${point.longitude.toFixed(6)}
-      </div>
-    ` : '';
-
-    return `
-      <div style="page-break-before:always; padding: 0;">
-        <div style="text-align:right; font-size:9pt; color:#666; border-bottom:1px solid #e5e7eb; margin-bottom:8px; padding-bottom:4px;">Sida ${index + 4}</div>
-        <div style="display:flex; gap:16px; align-items:flex-start;">
-          <div style="flex-shrink:0; width:40px; height:40px; background:#1f2937; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;">${index + 1}</div>
-          <div style="flex:1;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-              <span style="background:${severityColor[point.severity || 'medium']}; color:${severityTextColor[point.severity || 'medium']}; border:1px solid; padding:3px 12px; border-radius:6px; font-weight:600; font-size:11px; text-transform:uppercase;">
-                ${severityLabel[point.severity || 'medium']}
-              </span>
-              <span style="font-size:13px; font-weight:600; color:#1f2937;">
-                ${issueTypeLabel[point.issue_type] || (point.issue_type || '').replace(/_/g, ' ')}
-              </span>
-            </div>
-            ${point.notes ? `<p style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:12px;">${point.notes}</p>` : ''}
-            ${photoGrid}
-            ${gps}
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Map image for overview page
-  const mapHtml = inspection.map_screenshot_url
-    ? `<img src="${inspection.map_screenshot_url}" crossorigin="anonymous" style="width:100%; height:auto; border:1px solid #d1d5db; border-radius:8px;" />`
-    : site?.map_image_url
-    ? `<img src="${site.map_image_url}" crossorigin="anonymous" style="width:100%; height:auto; border:1px solid #d1d5db; border-radius:8px;" />`
-    : `<div style="padding:20px; text-align:center; color:#9ca3af;">Ingen karta konfigurerad</div>`;
-
-  return `<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; color: #111827; background: white; }
-    .page { padding: 0; }
-    .page-header { text-align:right; font-size:9pt; color:#666; border-bottom:1px solid #e5e7eb; margin-bottom:8px; padding-bottom:4px; }
-    h1 { font-size: 28pt; font-weight: 800; }
-    h2 { font-size: 18pt; font-weight: 700; }
-    table { width:100%; border-collapse:collapse; }
-    td, th { padding: 4px 8px; }
-  </style>
-</head>
-<body>
-
-<!-- PAGE 1: FRONT PAGE -->
-<div class="page">
-  <div class="page-header">Sida 1</div>
-  <div style="text-align:center; padding: 40px 0 30px;">
-    <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png" crossorigin="anonymous" style="height:80px; object-fit:contain;" />
-    <div style="margin-top:16px; font-size:13px; color:#374151;">
-      <span style="font-weight:700; color:#7c3aed;">phm</span> partner
-    </div>
-  </div>
-  <div style="text-align:center; margin: 40px 0;">
-    <h1 style="font-size:32pt; color:#111827;">${inspection.report_title || 'Tillsynsrapport'}</h1>
-    <div style="width:60px; height:4px; background:#dc2626; margin:16px auto;"></div>
-    <h2 style="font-size:20pt; font-weight:400; color:#374151;">${site?.name || ''}</h2>
-  </div>
-  <div style="margin-top:40px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden;">
-    ${customer ? `
-    <div style="padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-      <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:4px;">KUND</p>
-      <p style="font-weight:700; font-size:14px;">${customer.name}</p>
-      ${customer.project_number ? `<p style="font-size:12px; color:#6b7280;">Projektnummer: ${customer.project_number}</p>` : ''}
-    </div>` : ''}
-    <div style="padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-      <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:4px;">BESIKTNINGSDATUM</p>
-      <p style="font-weight:700; font-size:14px;">${formatDate(inspection.inspection_date)}</p>
-    </div>
-    <div style="padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-      <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:4px;">BESIKTNINGSMAN</p>
-      <p style="font-weight:700; font-size:14px;">${inspection.inspector_name || ''}</p>
-    </div>
-    <div style="padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-      <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:4px;">ANLEDNING</p>
-      <p style="font-weight:700; font-size:14px;">${reasonLabel[inspection.reason_category] || ''}</p>
-    </div>
-    ${site?.location ? `
-    <div style="padding:16px 20px;">
-      <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:4px;">PLATS</p>
-      <p style="font-weight:700; font-size:14px;">${site.location}</p>
-    </div>` : ''}
-  </div>
-</div>
-
-<!-- PAGE 2: SUMMARY -->
-<div class="page" style="page-break-before:always;">
-  <div class="page-header">Sida 2</div>
-  <h2 style="font-size:22pt; font-weight:800; margin-bottom:20px;">Sammanfattning</h2>
-
-  <div style="border:1px solid #e5e7eb; border-radius:8px; padding:16px; margin-bottom:16px;">
-    <p style="font-weight:700; font-size:13px; margin-bottom:12px;">Besiktningsöversikt</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-      <div>
-        <p style="font-size:11px; color:#6b7280;">Besiktningsnummer</p>
-        <p style="font-weight:700; font-size:13px; background:#f3f4f6; display:inline-block; padding:2px 8px; border-radius:4px; font-family:monospace;">${inspection.inspection_number || ''}</p>
-      </div>
-      <div>
-        <p style="font-size:11px; color:#6b7280;">Plats</p>
-        <p style="font-weight:700; font-size:13px;">${site?.name || ''}</p>
-      </div>
-      <div>
-        <p style="font-size:11px; color:#6b7280;">Datum</p>
-        <p style="font-weight:700; font-size:13px;">${inspection.inspection_date || ''}</p>
-      </div>
-      <div>
-        <p style="font-size:11px; color:#6b7280;">Besiktningsman</p>
-        <p style="font-weight:700; font-size:13px;">${inspection.inspector_name || ''}</p>
-      </div>
-      <div>
-        <p style="font-size:11px; color:#6b7280;">Totalt antal punkter</p>
-        <p style="font-weight:700; font-size:13px;">${totalPoints}</p>
-      </div>
-    </div>
-  </div>
-
-  <div style="border:1px solid #e5e7eb; border-radius:8px; padding:16px; margin-bottom:16px;">
-    <p style="font-weight:700; font-size:13px; margin-bottom:12px;">Allvarlighetsgrad</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-      ${summaryBySeverity.map(s => `
-        <div style="border:1px solid #e5e7eb; border-radius:6px; padding:12px; text-align:center;">
-          <p style="font-size:20px; font-weight:700; color:${s.textColor};">${s.count}</p>
-          <p style="font-size:12px; color:#374151;">${s.label}</p>
-          <p style="font-size:11px; color:#6b7280;">${s.pct}%</p>
-        </div>
-      `).join('')}
-    </div>
-  </div>
-
-  <div style="border:1px solid #e5e7eb; border-radius:8px; padding:16px; margin-bottom:16px;">
-    <p style="font-weight:700; font-size:13px; margin-bottom:12px;">Ärendekategorier</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-      ${summaryByType.map(t => `
-        <div style="border:1px solid #e5e7eb; border-radius:6px; padding:10px;">
-          <p style="font-size:18px; font-weight:700; color:#374151;">${t.count}</p>
-          <p style="font-size:12px; color:#374151;">${t.label}</p>
-          <p style="font-size:11px; color:#6b7280;">${t.pct}%</p>
-        </div>
-      `).join('')}
-    </div>
-  </div>
-
-  ${keyObservations.length > 0 ? `
-  <div style="border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
-    <p style="font-weight:700; font-size:13px; margin-bottom:10px;">Viktiga iakttagelser</p>
-    ${keyObservations.map(o => `
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; background:#f9fafb; padding:8px 12px; border-radius:6px;">
-        <span style="color:${o.color}; font-size:18px;">●</span>
-        <span style="font-size:13px;">${o.text}</span>
-      </div>
-    `).join('')}
-  </div>` : ''}
-</div>
-
-<!-- PAGE 3: DETAILED OVERVIEW WITH MAP -->
-<div class="page" style="page-break-before:always;">
-  <div class="page-header">Sida 3</div>
-  <div style="margin-bottom:16px; padding-bottom:16px; border-bottom:2px solid #d1d5db;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-      <span style="background:#1f2937; color:white; padding:3px 12px; border-radius:4px; font-size:12px; font-weight:700; font-family:monospace;">${inspection.inspection_number}</span>
-      <span style="font-size:12px; color:#6b7280;">Besiktnings-ID</span>
-    </div>
-    <h1 style="font-size:22pt; font-weight:800; margin-bottom:6px;">${inspection.report_title || 'Detaljerad besiktningsrapport'}</h1>
-    <h2 style="font-size:14pt; font-weight:400; color:#374151; margin-bottom:14px;">${site?.name || ''}</h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-      <div>
-        <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:3px;">Besiktningsdatum</p>
-        <p style="font-weight:600; font-size:13px;">${formatDate(inspection.inspection_date)}</p>
-      </div>
-      <div>
-        <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:3px;">Besiktningsman</p>
-        <p style="font-weight:600; font-size:13px;">${inspection.inspector_name || ''}</p>
-      </div>
-      ${customer ? `
-      <div>
-        <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:3px;">Kund</p>
-        <p style="font-weight:600; font-size:13px;">${customer.name}</p>
-        ${customer.project_number ? `<p style="font-size:11px; color:#6b7280;">Projekt: ${customer.project_number}</p>` : ''}
-      </div>` : ''}
-      ${site?.location ? `
-      <div>
-        <p style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#6b7280; margin-bottom:3px;">Plats</p>
-        <p style="font-size:13px;">${site.location}</p>
-      </div>` : ''}
-    </div>
-  </div>
-
-  <h2 style="font-size:16pt; font-weight:700; margin-bottom:12px;">Platsöversikt</h2>
-  ${mapHtml}
-
-  <div style="margin-top:24px; page-break-before:always;">
-    <h2 style="font-size:16pt; font-weight:700; margin-bottom:12px;">Detaljerade fynd (${points.length} punkter)</h2>
-    <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
-      <p style="font-size:13px; font-weight:600; color:#374151; margin-bottom:10px;">Punktöversikt:</p>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-        ${points.map((p, i) => `
-          <div style="font-size:12px; color:#4b5563;">
-            <span style="font-weight:600;">Punkt ${i + 1}:</span> Sida ${i + 4}
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- INSPECTION POINT PAGES -->
-${pointPages}
-
-</body>
-</html>`;
-}
