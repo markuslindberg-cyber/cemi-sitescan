@@ -8,11 +8,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Badge } from '@/components/ui/badge';
 import EditSiteDialog from '../components/sites/EditSiteDialog';
+import CreateInspectionDialog from '../components/inspection/CreateInspectionDialog';
 import GoogleMapInteractive from '../components/inspection/GoogleMapInteractive';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function Site() {
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showCreateInspectionDialog, setShowCreateInspectionDialog] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
   const siteId = urlParams.get('id');
   const navigate = useNavigate();
@@ -105,7 +107,7 @@ export default function Site() {
   });
 
   const createInspectionMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ reason_category, notes }) => {
       const user = await base44.auth.me();
       const allInspections = await base44.entities.Inspection.list('-created_date');
       const nextNumber = allInspections.length + 1;
@@ -116,11 +118,14 @@ export default function Site() {
         inspection_number: inspectionNumber,
         inspection_date: new Date().toISOString().split('T')[0],
         inspector_name: user.full_name || user.email,
-        status: 'in_progress'
+        status: 'in_progress',
+        reason_category,
+        notes
       });
     },
     onSuccess: (newInspection) => {
       queryClient.invalidateQueries({ queryKey: ['inspections', siteId] });
+      setShowCreateInspectionDialog(false);
       navigate(createPageUrl(`Inspection?id=${newInspection.id}`));
     }
   });
@@ -270,7 +275,7 @@ export default function Site() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button
-                onClick={() => createInspectionMutation.mutate()}
+                onClick={() => setShowCreateInspectionDialog(true)}
                 disabled={createInspectionMutation.isPending}
                 className="w-full bg-green-600 hover:bg-green-700"
               >
@@ -322,7 +327,7 @@ export default function Site() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Inga inspektioner ännu</h3>
                 <p className="text-gray-600 mb-6">Starta din första inspektion för att dokumentera fynd</p>
                 <Button
-                  onClick={() => createInspectionMutation.mutate()}
+                  onClick={() => setShowCreateInspectionDialog(true)}
                   className="bg-green-600 hover:bg-green-700"
                 >
                   <Plus className="w-5 h-5 mr-2" />
@@ -422,6 +427,12 @@ export default function Site() {
           open={showEditDialog}
           onOpenChange={setShowEditDialog}
           site={site}
+        />
+        <CreateInspectionDialog
+          open={showCreateInspectionDialog}
+          onOpenChange={setShowCreateInspectionDialog}
+          onConfirm={(data) => createInspectionMutation.mutate(data)}
+          isLoading={createInspectionMutation.isPending}
         />
       </div>
     </div>
