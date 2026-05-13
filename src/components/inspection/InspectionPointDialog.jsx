@@ -30,8 +30,8 @@ const severityLevels = [
 
 export default function InspectionPointDialog({ open, onOpenChange, inspectionId, position, existingPoint }) {
   const [formData, setFormData] = useState({
-    issue_type: 'maintenance',
-    severity: 'medium',
+    issue_type: 'general',
+    severity: 'low',
     notes: '',
     photo_details: [],
     latitude: null,
@@ -54,8 +54,8 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
       });
     } else {
       setFormData({
-        issue_type: 'maintenance',
-        severity: 'medium',
+        issue_type: 'general',
+        severity: 'low',
         notes: '',
         photo_details: [],
         latitude: position?.latitude || null,
