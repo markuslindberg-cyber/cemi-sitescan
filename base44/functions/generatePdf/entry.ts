@@ -51,25 +51,63 @@ Deno.serve(async (req) => {
       other: inspection.reason_custom || 'Övrigt',
     };
 
-    // Fetch image as base64 - with size limit to prevent OOM
-    const fetchImageBase64 = async (url) => {
-      try {
-        if (!url) return null;
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        const buf = await res.arrayBuffer();
-        // Skip images larger than 1MB to avoid OOM
-        if (buf.byteLength > 1024 * 1024) return null;
-        const bytes = new Uint8Array(buf);
-        let binary = '';
-        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-        const base64 = btoa(binary);
-        const ct = res.headers.get('content-type') || 'image/jpeg';
-        return { base64, format: ct.includes('png') ? 'PNG' : 'JPEG' };
-      } catch {
-        return null;
+    // Try supabase render first, fall back to direct URL
+    const toResizedUrl = (url) => {
+      // base44.app/api/apps/{appId}/files/mp/public/{appId}/{file}
+      const base44Match = url.match(/base44\.app\/api\/apps\/([^/]+)\/files\/mp\/public\/([^/]+)\/([^?]+)/);
+      if (base44Match) {
+        return `https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/render/image/public/base44-prod/public/${base44Match[2]}/${base44Match[3]}?width=900&quality=70&resize=contain`;
       }
+      const supabaseMatch = url.match(/https:\/\/([^/]+\.supabase\.co)\/storage\/v1\/object\/public\/([^?]+)/);
+      if (supabaseMatch) {
+        return `https://${supabaseMatch[1]}/storage/v1/render/image/public/${supabaseMatch[2]}?width=900&quality=70&resize=contain`;
+      }
+      return url;
     };
+
+    // Fetch image as base64, trying resized then original URL
+    const fetchImageBase64 = async (url) => {
+      if (!url) return null;
+      const attempts = [toResizedUrl(url), url];
+      for (const attemptUrl of attempts) {
+        try {
+          const res = await fetch(attemptUrl, { redirect: 'follow' });
+          if (!res.ok) continue;
+          const buf = await res.arrayBuffer();
+          if (buf.byteLength > 3 * 1024 * 1024) continue; // skip > 3MB
+          const bytes = new Uint8Array(buf);
+          const chunkSize = 8192;
+          let binary = '';
+          for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+          }
+          const base64 = btoa(binary);
+          const ct = res.headers.get('content-type') || 'image/jpeg';
+          const format = ct.includes('png') ? 'PNG' : 'JPEG';
+          console.log(`OK image (${buf.byteLength} bytes): ${attemptUrl}`);
+          return { base64, format };
+        } catch (e) {
+          console.log(`Failed: ${attemptUrl} -> ${e.message}`);
+        }
+      }
+      return null;
+    };
+
+    // Pre-fetch all images in parallel to save time
+    const mapUrl = inspection.map_screenshot_url || site?.map_image_url;
+    const logoUrl = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/render/image/public/base44-prod/public/698b067db5e721251596eb5e/0e240ccf1_image.png';
+
+    // Fetch images in small batches to avoid memory limit
+    const allPhotoUrls = allPoints.flatMap(p => (p.photo_details || []).slice(0, 2).map(ph => ph.url));
+    const uniqueUrls = [...new Set([logoUrl, mapUrl, ...allPhotoUrls].filter(Boolean))];
+    const imageCache = {};
+    const batchSize = 3;
+    for (let i = 0; i < uniqueUrls.length; i += batchSize) {
+      const batch = uniqueUrls.slice(i, i + batchSize);
+      const results = await Promise.all(batch.map(url => fetchImageBase64(url)));
+      batch.forEach((url, idx) => { imageCache[url] = results[idx]; });
+    }
+    const getImage = (url) => url ? imageCache[url] || null : null;
 
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageW = 210;
@@ -89,6 +127,17 @@ Deno.serve(async (req) => {
     // ---- PAGE 1: FRONT PAGE ----
     addPageHeader('Sida 1');
     let y = margin + 10;
+
+    // Logo
+    const logoImg = getImage(logoUrl);
+    if (logoImg) {
+      const logoH = 18;
+      const logoW = 50;
+      doc.addImage(logoImg.base64, logoImg.format, margin, y, logoW, logoH, undefined, 'FAST');
+      y += logoH + 8;
+    } else {
+      y += 4;
+    }
 
     // Title
     doc.setFontSize(28);
@@ -211,17 +260,37 @@ Deno.serve(async (req) => {
     }
 
     // Map image on page 2
-    const mapUrl = inspection.map_screenshot_url || site?.map_image_url;
     if (mapUrl) {
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(20);
       doc.text('Platskarta', margin, y);
       y += 6;
-      const mapImg = await fetchImageBase64(mapUrl);
+      const mapImg = getImage(mapUrl);
       if (mapImg) {
-        const maxImgH = 90;
+        const maxImgH = 100;
         doc.addImage(mapImg.base64, mapImg.format, margin, y, contentW, maxImgH, undefined, 'FAST');
+
+        // Draw inspection point markers on top of the map
+        const markerColors = {
+          low: [59, 130, 246],
+          medium: [234, 179, 8],
+          high: [249, 115, 22],
+          critical: [239, 68, 68],
+        };
+        allPoints.forEach((point, idx) => {
+          if (point.x_position == null || point.y_position == null) return;
+          const mx = margin + (point.x_position / 100) * contentW;
+          const my = y + (point.y_position / 100) * maxImgH;
+          const color = markerColors[point.severity] || markerColors.medium;
+          doc.setFillColor(...color);
+          doc.circle(mx, my, 3.5, 'F');
+          doc.setFontSize(6);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(255, 255, 255);
+          doc.text(String(idx + 1), mx, my + 2, { align: 'center' });
+        });
+
         y += maxImgH + 6;
       }
     }
@@ -265,8 +334,8 @@ Deno.serve(async (req) => {
         y += noteLines.length * 5 + 6;
       }
 
-      // Photos - max 4 per point to avoid OOM
-      const photos = (point.photo_details || []).slice(0, 4);
+      // Photos - max 2 per point for performance
+      const photos = (point.photo_details || []).slice(0, 2);
       if (photos.length > 0) {
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
@@ -276,6 +345,8 @@ Deno.serve(async (req) => {
 
         const photoW = (contentW - 4) / 2;
         const photoH = 55;
+
+        const photoImages = photos.map(p => getImage(p.url));
 
         for (let pi = 0; pi < photos.length; pi++) {
           const photo = photos[pi];
@@ -290,7 +361,7 @@ Deno.serve(async (req) => {
           }
 
           const px = margin + col * (photoW + 4);
-          const imgData = await fetchImageBase64(photo.url);
+          const imgData = photoImages[pi];
           if (imgData) {
             doc.addImage(imgData.base64, imgData.format, px, y, photoW, photoH, undefined, 'FAST');
           } else {
