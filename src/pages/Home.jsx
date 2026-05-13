@@ -86,7 +86,7 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Områden</h1>
             <p className="text-gray-600 mt-2">Hantera dina platser och inspektioner</p>
           </div>
-          <div className="flex gap-2 items-center flex-wrap">
+          <div className="flex gap-2 items-center flex-wrap w-full md:w-auto">
             <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
               <Button
                 size="sm"
@@ -116,17 +116,17 @@ export default function Home() {
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-50">
-              
+              className="border-green-600 text-green-600 hover:bg-green-50 flex-1 md:flex-none">
               <Upload className="w-5 h-5 mr-2" />
-              Importera Excel
+              <span className="hidden sm:inline">Importera Excel</span>
+              <span className="sm:hidden">Importera</span>
             </Button>
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-green-600 hover:bg-green-700">
-              
+              className="bg-green-600 hover:bg-green-700 flex-1 md:flex-none">
               <Plus className="w-5 h-5 mr-2" />
-              Lägg till plats
+              <span className="hidden sm:inline">Lägg till plats</span>
+              <span className="sm:hidden">Ny plats</span>
             </Button>
           </div>
         </div>

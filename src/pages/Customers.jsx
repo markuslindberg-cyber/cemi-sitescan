@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateCustomerDialog from '../components/customers/CreateCustomerDialog';
 import ImportExcelDialog from '../components/import/ImportExcelDialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CustomersFilterPanel from '../components/customers/CustomersFilterPanel';
 import SortDropdown from '../components/SortDropdown';
 
@@ -160,7 +159,7 @@ export default function Customers() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Kunder</h1>
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
           </div>
-          <div className="flex gap-2 items-center flex-wrap">
+          <div className="flex gap-2 items-center flex-wrap w-full md:w-auto">
             <div className="flex gap-1 border rounded-lg p-1 bg-gray-50">
               <Button
                 size="sm"
@@ -190,17 +189,19 @@ export default function Customers() {
             <Button
               onClick={() => setShowImportDialog(true)}
               variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-50"
+              className="border-green-600 text-green-600 hover:bg-green-50 flex-1 md:flex-none"
             >
               <Upload className="w-5 h-5 mr-2" />
-              Importera Excel
+              <span className="hidden sm:inline">Importera Excel</span>
+              <span className="sm:hidden">Importera</span>
             </Button>
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 flex-1 md:flex-none"
             >
               <Plus className="w-5 h-5 mr-2" />
-              Lägg till kund
+              <span className="hidden sm:inline">Lägg till kund</span>
+              <span className="sm:hidden">Ny kund</span>
             </Button>
           </div>
         </div>
@@ -208,16 +209,16 @@ export default function Customers() {
         {selectedIds.size > 0 && (
           <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex flex-wrap items-center gap-3">
             <span className="text-sm font-medium text-green-800">{selectedIds.size} kunder markerade</span>
-            <Select value={bulkCategory} onValueChange={setBulkCategory}>
-              <SelectTrigger className="w-44 h-8 text-sm">
-                <SelectValue placeholder="Sätt kategori" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="BRF">BRF</SelectItem>
-                <SelectItem value="Samfälligheter">Samfälligheter</SelectItem>
-                <SelectItem value="Kommersiella">Kommersiella</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              value={bulkCategory}
+              onChange={(e) => setBulkCategory(e.target.value)}
+              className="h-8 px-2 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="">Sätt kategori</option>
+              <option value="BRF">BRF</option>
+              <option value="Samfälligheter">Samfälligheter</option>
+              <option value="Kommersiella">Kommersiella</option>
+            </select>
             <div className="w-52">
               <UserSelect value={bulkManager} onValueChange={setBulkManager} placeholder="Sätt kundansvarig" />
             </div>

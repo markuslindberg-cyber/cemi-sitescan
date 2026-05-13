@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X, Loader2, Trash2, MapPin, Eye, EyeOff } from 'lucide-react';
+import { Upload, X, Loader2, Trash2, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -238,7 +237,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {existingPoint ? 'Redigera inspektionspunkt' : 'Lägg till inspektionspunkt'}
@@ -246,43 +245,33 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="issue_type">Ärendetyp</Label>
-              <Select
+              <select
+                id="issue_type"
                 value={formData.issue_type}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, issue_type: value }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, issue_type: e.target.value }))}
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {issueTypes.map(type => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {issueTypes.map(type => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+              </select>
             </div>
 
             <div>
               <Label htmlFor="severity">Allvarlighetsgrad</Label>
-              <Select
+              <select
+                id="severity"
                 value={formData.severity}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, severity: value }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, severity: e.target.value }))}
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {severityLevels.map(level => (
-                    <SelectItem key={level.value} value={level.value}>
-                      <span className={level.color}>{level.label}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {severityLevels.map(level => (
+                  <option key={level.value} value={level.value}>{level.label}</option>
+                ))}
+              </select>
             </div>
           </div>
 
