@@ -176,7 +176,7 @@ return (
                   )}
               </div>
 
-              <div className="mt-8">
+              <div className="mt-8" style={{ pageBreakBefore: 'always' }}>
                 <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Detaljerade fynd ({points.length} punkter)</h2>
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-sm font-semibold text-gray-700 mb-3">Punktöversikt:</p>
