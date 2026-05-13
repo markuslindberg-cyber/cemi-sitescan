@@ -26,7 +26,7 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Starta ny inspektion</DialogTitle>
         </DialogHeader>
@@ -37,7 +37,7 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent side="auto" align="center" className="w-[var(--radix-select-trigger-width)]">
                 {reasonCategories.map(r => (
                   <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
                 ))}
