@@ -19,6 +19,7 @@ export default function Report() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
   const [isEditingReport, setIsEditingReport] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
@@ -55,8 +56,23 @@ export default function Report() {
     enabled: !!inspectionId
   });
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      const response = await base44.functions.invoke('generatePdf', { inspectionId });
+      // response.data is the raw PDF ArrayBuffer via axios
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `rapport-${inspection?.inspection_number || inspectionId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const updateTitleMutation = useMutation({
@@ -115,9 +131,10 @@ export default function Report() {
             <Edit2 className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Redigera rapport</span>
           </Button>
-          <Button onClick={handlePrint} variant="outline" size="sm">
+          <Button onClick={handleDownloadPdf} variant="outline" size="sm" disabled={isGeneratingPdf}>
             <Download className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Ladda ner PDF</span>
+            <span className="hidden sm:inline">{isGeneratingPdf ? 'Genererar PDF...' : 'Ladda ner PDF'}</span>
+            <span className="sm:hidden">{isGeneratingPdf ? '...' : 'PDF'}</span>
           </Button>
         </div>
       </div>
