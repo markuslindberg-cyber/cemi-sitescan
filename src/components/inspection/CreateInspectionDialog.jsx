@@ -25,7 +25,7 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[85vw] max-w-sm gap-3 p-4">
+      <DialogContent className="w-[90vw] max-w-sm gap-3 p-4">
         <DialogHeader>
           <DialogTitle>Starta ny inspektion</DialogTitle>
         </DialogHeader>
@@ -33,9 +33,9 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
           <div>
             <Label>Anledning för inspektion</Label>
             <select
+              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               value={reason_category}
               onChange={(e) => setReasonCategory(e.target.value)}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
             >
               {reasonCategories.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
