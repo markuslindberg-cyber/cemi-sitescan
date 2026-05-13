@@ -51,30 +51,36 @@ Deno.serve(async (req) => {
       other: inspection.reason_custom || 'Övrigt',
     };
 
-    // Try supabase render first, fall back to direct URL
+    // Convert any image URL to a small resized version via Supabase render
     const toResizedUrl = (url) => {
-      // base44.app/api/apps/{appId}/files/mp/public/{appId}/{file}
       const base44Match = url.match(/base44\.app\/api\/apps\/([^/]+)\/files\/mp\/public\/([^/]+)\/([^?]+)/);
       if (base44Match) {
-        return `https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/render/image/public/base44-prod/public/${base44Match[2]}/${base44Match[3]}?width=900&quality=70&resize=contain`;
+        return `https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/render/image/public/base44-prod/public/${base44Match[2]}/${base44Match[3]}?width=600&quality=60&resize=contain`;
       }
       const supabaseMatch = url.match(/https:\/\/([^/]+\.supabase\.co)\/storage\/v1\/object\/public\/([^?]+)/);
       if (supabaseMatch) {
-        return `https://${supabaseMatch[1]}/storage/v1/render/image/public/${supabaseMatch[2]}?width=900&quality=70&resize=contain`;
+        return `https://${supabaseMatch[1]}/storage/v1/render/image/public/${supabaseMatch[2]}?width=600&quality=60&resize=contain`;
       }
       return url;
     };
 
-    // Fetch image as base64, trying resized then original URL
+    // Fetch image as base64 with a strict timeout and size limit
     const fetchImageBase64 = async (url) => {
       if (!url) return null;
-      const attempts = [toResizedUrl(url), url];
+      const resizedUrl = toResizedUrl(url);
+      const attempts = resizedUrl !== url ? [resizedUrl, url] : [url];
       for (const attemptUrl of attempts) {
         try {
-          const res = await fetch(attemptUrl, { redirect: 'follow' });
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 8000);
+          const res = await fetch(attemptUrl, { redirect: 'follow', signal: controller.signal });
+          clearTimeout(timer);
           if (!res.ok) continue;
           const buf = await res.arrayBuffer();
-          if (buf.byteLength > 12 * 1024 * 1024) continue; // skip > 12MB
+          if (buf.byteLength > 4 * 1024 * 1024) {
+            console.log(`Skipping oversized image (${buf.byteLength} bytes): ${attemptUrl}`);
+            continue;
+          }
           const bytes = new Uint8Array(buf);
           const chunkSize = 8192;
           let binary = '';
