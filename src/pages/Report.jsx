@@ -111,7 +111,13 @@ export default function Report() {
             <Edit2 className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Redigera rapport</span>
           </Button>
-          <Button onClick={() => window.print()} variant="outline" size="sm">
+          <Button onClick={() => {
+            const imgs = document.querySelectorAll('img');
+            const promises = Array.from(imgs).map(img =>
+              img.complete ? Promise.resolve() : new Promise(res => { img.onload = res; img.onerror = res; })
+            );
+            Promise.all(promises).then(() => window.print());
+          }} variant="outline" size="sm">
             <Printer className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Skriv ut</span>
             <span className="sm:hidden">Skriv ut</span>

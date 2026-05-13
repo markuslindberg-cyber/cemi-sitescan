@@ -151,6 +151,8 @@ return (
                     src={inspection.map_screenshot_url}
                     alt="Site map with inspection points"
                     className="w-full h-auto object-contain border border-gray-300 rounded-lg"
+                    crossOrigin="anonymous"
+                    loading="eager"
                   />
                 ) : site.map_image_url ? (
                     <MapWithMarkers imageUrl={site.map_image_url} points={points} />
@@ -233,9 +235,11 @@ return (
                     {point.photo_details.map((photo, photoIndex) => (
                       <div key={photoIndex}>
                         <img
-                          src={photo.url}
-                          alt={`Point ${index + 1} photo ${photoIndex + 1}`}
-                          className="w-full h-auto object-contain rounded-lg border border-gray-300"
+                         src={photo.url}
+                         alt={`Point ${index + 1} photo ${photoIndex + 1}`}
+                         className="w-full h-auto object-contain rounded-lg border border-gray-300"
+                         crossOrigin="anonymous"
+                         loading="eager"
                         />
                         {(photo.comment || photo.show_address) && (
                           <div className="mt-1 space-y-1">
