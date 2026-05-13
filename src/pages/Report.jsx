@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Download, Edit2 } from 'lucide-react';
+import { ArrowLeft, Printer, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import ReportContent from '../components/report/ReportContent';
@@ -19,7 +19,6 @@ export default function Report() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
   const [isEditingReport, setIsEditingReport] = useState(false);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: inspection, isLoading: inspectionLoading } = useQuery({
@@ -55,25 +54,6 @@ export default function Report() {
     queryFn: () => base44.entities.InspectionPoint.filter({ inspection_id: inspectionId }),
     enabled: !!inspectionId
   });
-
-  const handleDownloadPdf = async () => {
-    setIsGeneratingPdf(true);
-    try {
-      const response = await base44.functions.invoke('generatePdf', { inspectionId });
-      const { pdf_base64, filename } = response.data;
-      const a = document.createElement('a');
-      a.href = pdf_base64;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch (err) {
-      console.error('PDF download error:', err);
-      alert('Kunde inte generera PDF: ' + err.message);
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
 
   const updateTitleMutation = useMutation({
     mutationFn: (title) => base44.entities.Inspection.update(inspectionId, { report_title: title }),
@@ -131,10 +111,10 @@ export default function Report() {
             <Edit2 className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Redigera rapport</span>
           </Button>
-          <Button onClick={handleDownloadPdf} variant="outline" size="sm" disabled={isGeneratingPdf}>
-            <Download className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">{isGeneratingPdf ? 'Genererar PDF...' : 'Ladda ner PDF'}</span>
-            <span className="sm:hidden">{isGeneratingPdf ? '...' : 'PDF'}</span>
+          <Button onClick={() => window.print()} variant="outline" size="sm">
+            <Printer className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Skriv ut</span>
+            <span className="sm:hidden">Skriv ut</span>
           </Button>
         </div>
       </div>
