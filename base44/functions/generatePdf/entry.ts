@@ -325,15 +325,11 @@ Deno.serve(async (req) => {
       }
     }
 
-    const pdfOutput = doc.output('arraybuffer');
-    const pdfBytes = new Uint8Array(pdfOutput);
+    const pdfBase64 = doc.output('datauristring');
 
-    return new Response(pdfBytes, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="rapport-${inspection.inspection_number || inspectionId}.pdf"`,
-      },
+    return Response.json({
+      pdf_base64: pdfBase64,
+      filename: `rapport-${inspection.inspection_number || inspectionId}.pdf`,
     });
   } catch (error) {
     console.error('PDF generation error:', error);

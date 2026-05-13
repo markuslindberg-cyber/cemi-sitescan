@@ -59,28 +59,14 @@ export default function Report() {
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
     try {
-      const { appBaseUrl, appId, token } = (await import('@/lib/app-params')).appParams;
-      const baseUrl = appBaseUrl || `https://api.base44.com`;
-      const url = `${baseUrl}/api/apps/${appId}/functions/generatePdf`;
-      const headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch(url, {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body: JSON.stringify({ inspectionId }),
-      });
-      if (!res.ok) throw new Error('PDF generation failed: ' + res.status);
-      const arrayBuffer = await res.arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-      const objectUrl = URL.createObjectURL(blob);
+      const response = await base44.functions.invoke('generatePdf', { inspectionId });
+      const { pdf_base64, filename } = response.data;
       const a = document.createElement('a');
-      a.href = objectUrl;
-      a.download = `rapport-${inspection?.inspection_number || inspectionId}.pdf`;
+      a.href = pdf_base64;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(objectUrl);
     } catch (err) {
       console.error('PDF download error:', err);
       alert('Kunde inte generera PDF: ' + err.message);
