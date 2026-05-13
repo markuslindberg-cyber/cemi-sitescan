@@ -59,9 +59,16 @@ export default function Report() {
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
     try {
-      const response = await base44.functions.invoke('generatePdf', { inspectionId });
-      // response.data is the raw PDF ArrayBuffer via axios
-      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const appId = import.meta.env.VITE_BASE44_APP_ID;
+      const res = await fetch(`https://api.base44.com/api/apps/${appId}/functions/generatePdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ inspectionId }),
+      });
+      if (!res.ok) throw new Error('PDF generation failed');
+      const arrayBuffer = await res.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
