@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
           const res = await fetch(attemptUrl, { redirect: 'follow' });
           if (!res.ok) continue;
           const buf = await res.arrayBuffer();
-          if (buf.byteLength > 3 * 1024 * 1024) continue; // skip > 3MB
+          if (buf.byteLength > 12 * 1024 * 1024) continue; // skip > 12MB
           const bytes = new Uint8Array(buf);
           const chunkSize = 8192;
           let binary = '';
