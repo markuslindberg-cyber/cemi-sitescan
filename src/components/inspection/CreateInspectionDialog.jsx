@@ -26,7 +26,7 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto flex flex-col items-center justify-center">
         <DialogHeader>
           <DialogTitle>Starta ny inspektion</DialogTitle>
         </DialogHeader>
