@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 
 const reasonCategories = [
@@ -33,16 +32,15 @@ export default function CreateInspectionDialog({ open, onOpenChange, onConfirm, 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div>
             <Label>Anledning för inspektion</Label>
-            <Select value={reason_category} onValueChange={setReasonCategory}>
-              <SelectTrigger className="mt-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent side="bottom" align="center">
-                {reasonCategories.map(r => (
-                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              value={reason_category}
+              onChange={(e) => setReasonCategory(e.target.value)}
+              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              {reasonCategories.map(r => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
           </div>
 
           <div>
