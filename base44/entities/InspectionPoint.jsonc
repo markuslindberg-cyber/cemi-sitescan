@@ -1,0 +1,116 @@
+{
+  "name": "InspectionPoint",
+  "type": "object",
+  "properties": {
+    "inspection_id": {
+      "type": "string",
+      "description": "Reference to the Inspection entity"
+    },
+    "x_position": {
+      "type": "number",
+      "description": "X coordinate as percentage of map width (0-100)"
+    },
+    "y_position": {
+      "type": "number",
+      "description": "Y coordinate as percentage of map height (0-100)"
+    },
+    "issue_type": {
+      "type": "string",
+      "enum": [
+        "improvement_suggestions",
+        "issue_damage",
+        "plant_health",
+        "maintenance",
+        "safety_concern",
+        "deviation",
+        "general"
+      ],
+      "description": "Type of issue identified"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Severity level of the issue"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Detailed notes about this inspection point"
+    },
+    "photo_details": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "description": "Details of photos taken at this point, including URLs and comments"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Latitude of the inspection point"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Longitude of the inspection point"
+    }
+  },
+  "required": [
+    "inspection_id",
+    "x_position",
+    "y_position"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
