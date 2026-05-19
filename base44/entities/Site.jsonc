@@ -1,0 +1,108 @@
+{
+  "name": "Site",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to the Customer entity"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the site/garden"
+    },
+    "project_number": {
+      "type": "string",
+      "description": "Project number or reference"
+    },
+    "location": {
+      "type": "string",
+      "description": "Address or location description"
+    },
+    "site_manager": {
+      "type": "string",
+      "description": "User ID of the site manager responsible for this site"
+    },
+    "map_type": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "google_maps"
+      ],
+      "default": "uploaded",
+      "description": "Type of map to use"
+    },
+    "map_image_url": {
+      "type": "string",
+      "description": "URL to the uploaded map/drawing (for uploaded type)"
+    },
+    "google_maps_center": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      },
+      "description": "Center coordinates for Google Maps"
+    },
+    "google_maps_zoom": {
+      "type": "number",
+      "default": 18,
+      "description": "Zoom level for Google Maps"
+    },
+    "description": {
+      "type": "string",
+      "description": "Additional details about the site"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.site_manager": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.site_manager": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
