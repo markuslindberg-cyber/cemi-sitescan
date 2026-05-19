@@ -1,0 +1,49 @@
+{
+  "name": "Invitation",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email address of the invited user"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "admin"
+      ],
+      "default": "user",
+      "description": "Role assigned to the invited user"
+    },
+    "invited_by": {
+      "type": "string",
+      "description": "Email of the admin who sent the invite"
+    }
+  },
+  "required": [
+    "email",
+    "role"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
