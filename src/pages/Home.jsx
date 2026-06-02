@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, MapPin, Calendar, Upload, LayoutGrid, List } from 'lucide-react';
+import { Plus, MapPin, Calendar, Upload, LayoutGrid, List, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import CreateSiteDialog from '../components/sites/CreateSiteDialog';
@@ -17,6 +18,7 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('namn');
   const [viewMode, setViewMode] = useState('grid');
   const [filterManager, setFilterManager] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
   const { data: allSites = [], isLoading } = useQuery({
@@ -53,6 +55,13 @@ export default function Home() {
     if (filterManager !== 'all') {
       filtered = filtered.filter((s) => s.site_manager === filterManager);
     }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter((s) =>
+        (s.name || '').toLowerCase().includes(q) ||
+        (s.location || '').toLowerCase().includes(q)
+      );
+    }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
       if (sortBy === 'datum' || sortBy === 'senast') return new Date(b.updated_date) - new Date(a.updated_date);
@@ -81,7 +90,7 @@ export default function Home() {
   return (
     <div className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Områden</h1>
             <p className="text-gray-600 mt-2">Hantera dina platser och inspektioner</p>
@@ -129,6 +138,16 @@ export default function Home() {
               <span className="sm:hidden">Ny plats</span>
             </Button>
           </div>
+        </div>
+
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Input
+            placeholder="Sök område eller adress..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
 
         {isLoading ?

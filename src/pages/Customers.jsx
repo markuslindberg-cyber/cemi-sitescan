@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Building2, MapPin, Upload, LayoutGrid, List, Trash2, CheckSquare } from 'lucide-react';
+import { Plus, Building2, MapPin, Upload, LayoutGrid, List, Trash2, CheckSquare, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import UserSelect from '../components/shared/UserSelect';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -29,6 +30,7 @@ export default function Customers() {
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [bulkCategory, setBulkCategory] = useState('');
   const [bulkManager, setBulkManager] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { data: allCustomers = [], isLoading: customersLoading } = useQuery({
     queryKey: ['customers'],
@@ -68,6 +70,14 @@ export default function Customers() {
     let filtered = [...allCustomers];
     if (filterManager !== 'all') {
       filtered = filtered.filter((c) => c.account_manager === filterManager);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter((c) =>
+        (c.name || '').toLowerCase().includes(q) ||
+        (c.contact_person || '').toLowerCase().includes(q) ||
+        (c.email || '').toLowerCase().includes(q)
+      );
     }
     filtered.sort((a, b) => {
       if (sortBy === 'namn') return (a.name || '').localeCompare(b.name || '', 'sv');
@@ -154,7 +164,7 @@ export default function Customers() {
   return (
     <div className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Kunder</h1>
             <p className="text-gray-600 mt-2">Hantera dina kunder och deras platser</p>
@@ -204,6 +214,16 @@ export default function Customers() {
               <span className="sm:hidden">Ny kund</span>
             </Button>
           </div>
+        </div>
+
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Input
+            placeholder="Sök kund, kontaktperson eller e-post..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
 
         {selectedIds.size > 0 && (
