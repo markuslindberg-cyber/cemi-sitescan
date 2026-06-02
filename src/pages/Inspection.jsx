@@ -251,6 +251,7 @@ export default function Inspection() {
         inspectionId={inspectionId}
         position={pendingPosition}
         existingPoint={selectedPoint}
+        reasonCategory={inspection.reason_category}
       />
 
       <Sheet open={showNotesSheet} onOpenChange={setShowNotesSheet}>

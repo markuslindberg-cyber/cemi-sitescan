@@ -27,7 +27,13 @@ const severityLevels = [
   { value: 'critical', label: 'Kritisk', color: 'text-red-600' }
 ];
 
-export default function InspectionPointDialog({ open, onOpenChange, inspectionId, position, existingPoint }) {
+const getDefaultIssueType = (reasonCategory) => {
+  if (reasonCategory === 'fore_bilder') return 'deviation';
+  if (reasonCategory === 'efterbilder') return 'general';
+  return 'general';
+};
+
+export default function InspectionPointDialog({ open, onOpenChange, inspectionId, position, existingPoint, reasonCategory }) {
   const [formData, setFormData] = useState({
     issue_type: 'general',
     severity: 'low',
@@ -53,7 +59,7 @@ export default function InspectionPointDialog({ open, onOpenChange, inspectionId
       });
     } else {
       setFormData({
-        issue_type: 'general',
+        issue_type: getDefaultIssueType(reasonCategory),
         severity: 'low',
         notes: '',
         photo_details: [],

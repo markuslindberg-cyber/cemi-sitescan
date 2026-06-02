@@ -40,6 +40,8 @@
         "ny_kundbesiktning",
         "anbud_kalkylering",
         "egenkontroll",
+        "fore_bilder",
+        "efterbilder",
         "other"
       ],
       "description": "Category/reason for the inspection"
