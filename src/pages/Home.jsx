@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, MapPin, Calendar, Upload, LayoutGrid, List, Search } from 'lucide-react';
+import { Plus, MapPin, Calendar, Upload, LayoutGrid, List, Search, Star } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -19,7 +19,14 @@ export default function Home() {
   const [viewMode, setViewMode] = useState('grid');
   const [filterManager, setFilterManager] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentUserId, setCurrentUserId] = useState(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      if (user?.id) setCurrentUserId(user.id);
+    });
+  }, []);
 
   const { data: allSites = [], isLoading } = useQuery({
     queryKey: ['sites'],
@@ -76,6 +83,28 @@ export default function Home() {
     queryKey: ['all-inspections'],
     queryFn: () => base44.entities.Inspection.list('-inspection_date')
   });
+
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['favorites', currentUserId],
+    queryFn: () => base44.entities.UserFavoriteSite.filter({ user_id: currentUserId }),
+    enabled: !!currentUserId
+  });
+
+  const isFavorite = (siteId) => favorites.some(f => f.site_id === siteId);
+
+  const toggleFavorite = async (e, site) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!currentUserId) return;
+    const existing = favorites.find(f => f.site_id === site.id);
+    if (existing) {
+      await base44.entities.UserFavoriteSite.delete(existing.id);
+    } else {
+      await base44.entities.UserFavoriteSite.create({ user_id: currentUserId, site_id: site.id });
+    }
+    queryClient.invalidateQueries({ queryKey: ['favorites', currentUserId] });
+    queryClient.invalidateQueries({ queryKey: ['favorites'] });
+  };
 
   const getInspectionCount = (siteId) => {
     return inspections.filter((i) => i.site_id === siteId).length;
@@ -196,7 +225,15 @@ export default function Home() {
                     </div>
                   )}
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{site.name}</h3>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-xl font-semibold text-gray-900">{site.name}</h3>
+                      <button
+                        onClick={(e) => toggleFavorite(e, site)}
+                        className="p-1 rounded hover:bg-gray-100 transition-colors flex-shrink-0 ml-2"
+                      >
+                        <Star className={`w-5 h-5 ${isFavorite(site.id) ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}`} />
+                      </button>
+                    </div>
                     {site.location &&
                 <p className="text-sm text-gray-600 mb-3 flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
@@ -241,6 +278,9 @@ export default function Home() {
                             {new Date(getLastInspectionDate(site.id)).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                           </span>
                     }
+                        <button onClick={(e) => toggleFavorite(e, site)} className="p-1 rounded hover:bg-gray-100 transition-colors">
+                          <Star className={`w-4 h-4 ${isFavorite(site.id) ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}`} />
+                        </button>
                       </div>
                     </div>
                   </CardContent>

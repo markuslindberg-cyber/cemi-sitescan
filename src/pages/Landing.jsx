@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Building2, Users, FileText, ClipboardList, UserCog } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
+import FavoriteSitesList from '../components/sites/FavoriteSitesList';
 
 const navItems = [
   {
@@ -49,12 +51,26 @@ const navItems = [
 
 export default function Landing() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(user => {
       if (user?.role === 'admin') setIsAdmin(true);
+      if (user?.id) setCurrentUserId(user.id);
     });
   }, []);
+
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['favorites', currentUserId],
+    queryFn: () => base44.entities.UserFavoriteSite.filter({ user_id: currentUserId }),
+    enabled: !!currentUserId
+  });
+
+  const { data: sites = [] } = useQuery({
+    queryKey: ['sites-landing'],
+    queryFn: () => base44.entities.Site.list(),
+    enabled: !!currentUserId
+  });
 
   const visibleItems = navItems.filter(item => item.path !== 'Users' || isAdmin);
 
@@ -100,6 +116,8 @@ export default function Landing() {
             );
           })}
         </div>
+
+        <FavoriteSitesList favorites={favorites} sites={sites} />
       </div>
     </div>
   );
