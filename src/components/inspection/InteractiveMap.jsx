@@ -12,6 +12,7 @@ const severityColors = {
 export default function InteractiveMap({ imageUrl, points, onMapClick, onPointClick }) {
   const containerRef = useRef(null);
   const imageRef = useRef(null);
+  const imgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [zoom, setZoom] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
@@ -74,9 +75,8 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
 
   const handleClick = (e) => {
     if (isPanning) return;
-    
-    if (e.target.tagName === 'IMG' || e.target === imageRef.current) {
-      const rect = imageRef.current.getBoundingClientRect();
+    if (e.target.tagName === 'IMG') {
+      const rect = e.target.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
       onMapClick(x, y);
@@ -127,7 +127,7 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
       >
         <div
           ref={imageRef}
-          className="relative w-full h-full flex items-center justify-center"
+          className="relative w-full h-full"
           style={{
             transform: `scale(${zoom}) translate(${panOffset.x / zoom}px, ${panOffset.y / zoom}px)`,
             transformOrigin: 'center',
@@ -136,9 +136,10 @@ export default function InteractiveMap({ imageUrl, points, onMapClick, onPointCl
           onClick={handleClick}
         >
           <img
+            ref={imgRef}
             src={imageUrl}
             alt="Site map"
-            className="max-w-full max-h-full object-contain"
+            className="w-full h-full object-contain"
             draggable={false}
           />
           
