@@ -221,9 +221,9 @@ export default function UsersPage() {
             <p className="text-gray-600 mt-1">Hantera användare och deras roller</p>
           </div>
 
-          <div className="flex gap-2 flex-wrap items-center">
+          <div className="flex gap-2 flex-wrap items-center w-full md:w-auto">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-36">
                 <SelectValue placeholder="Sortera" />
               </SelectTrigger>
               <SelectContent>
@@ -236,10 +236,11 @@ export default function UsersPage() {
             <Button
               onClick={() => setShowQRCode(true)}
               variant="outline"
+              size="icon"
               className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+              title="QR Code"
             >
-              <QrCode className="w-4 h-4 mr-2" />
-              QR Code
+              <QrCode className="w-4 h-4" />
             </Button>
 
           <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
@@ -338,44 +339,32 @@ export default function UsersPage() {
             }).map((user) => (
               <Card key={user.id}>
                 <CardContent className="py-4">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-                        <User className="w-6 h-6 text-emerald-600" />
+                  <div className="flex flex-col gap-3">
+                    {/* Top row: avatar + info + badge */}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-emerald-600" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.full_name || 'Inget namn'}</h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                          <Mail className="w-3 h-3" />
-                          {user.email}
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Gick med {new Date(user.created_date).toLocaleDateString('sv-SE')}
-                        </p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 truncate">{user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.full_name || 'Inget namn'}</h3>
+                        <p className="text-sm text-gray-600 truncate">{user.email}</p>
+                        <p className="text-xs text-gray-400">Gick med {new Date(user.created_date).toLocaleDateString('sv-SE')}</p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap justify-end">
                       <Badge 
-                        className={user.blocked ? 'bg-red-100 text-red-700' : user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}
+                        className={`flex-shrink-0 ${user.blocked ? 'bg-red-100 text-red-700' : user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}
                       >
                         <Shield className="w-3 h-3 mr-1" />
                         {user.blocked ? 'Blockerad' : user.role}
                       </Badge>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEditUser(user)}
-                        disabled={user.id === currentUserId}
-                        title="Redigera"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
+                    </div>
+                    {/* Bottom row: actions */}
+                    <div className="flex items-center gap-2 justify-end flex-wrap">
                       <Select 
                         value={user.role} 
                         onValueChange={(newRole) => handleRoleChange(user.id, newRole)}
                         disabled={updateRoleMutation.isPending || user.id === currentUserId}
                       >
-                        <SelectTrigger className="w-32">
+                        <SelectTrigger className="w-28 h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -383,13 +372,23 @@ export default function UsersPage() {
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditUser(user)}
+                        disabled={user.id === currentUserId}
+                        title="Redigera"
+                        className="h-8 w-8"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
                       {user.id !== currentUserId && (
                         <>
                           <Button
                             variant="ghost"
                             size="icon"
                             title={user.blocked ? 'Avblockera' : 'Blockera'}
-                            className={user.blocked ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'}
+                            className={`h-8 w-8 ${user.blocked ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'}`}
                             onClick={() => blockUserMutation.mutate({ userId: user.id, blocked: !user.blocked })}
                             disabled={blockUserMutation.isPending}
                           >
@@ -399,7 +398,7 @@ export default function UsersPage() {
                             variant="ghost"
                             size="icon"
                             title="Ta bort användare"
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
                             onClick={() => setConfirmDelete(user)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -430,23 +429,21 @@ export default function UsersPage() {
             {pendingInvitations.map((inv) => (
               <Card key={inv.id} className="border-amber-200 bg-amber-50">
                 <CardContent className="py-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                        <Mail className="w-5 h-5 text-amber-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-800">{inv.email}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-500 mt-0.5">
-                          <Badge className="bg-amber-100 text-amber-700 text-xs">
-                            {inv.role === 'admin' ? 'Admin' : 'Användare'}
-                          </Badge>
-                          <span>Inbjuden {new Date(inv.created_date).toLocaleDateString('sv-SE')}</span>
-                          {inv.invited_by && <span>av {inv.invited_by}</span>}
-                        </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
+                      <Mail className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-800 truncate">{inv.email}</p>
+                      <div className="flex flex-wrap items-center gap-1 text-xs text-gray-500 mt-0.5">
+                        <Badge className="bg-amber-100 text-amber-700 text-xs">
+                          {inv.role === 'admin' ? 'Admin' : 'Användare'}
+                        </Badge>
+                        <span>Inbjuden {new Date(inv.created_date).toLocaleDateString('sv-SE')}</span>
+                        {inv.invited_by && <span className="truncate">av {inv.invited_by}</span>}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"
