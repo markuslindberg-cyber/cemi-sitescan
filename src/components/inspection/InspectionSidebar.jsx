@@ -14,6 +14,8 @@ const reasonCategories = [
   { value: 'ny_kundbesiktning', label: 'Ny Kundbesiktning' },
   { value: 'anbud_kalkylering', label: 'Anbud/kalkylering' },
   { value: 'egenkontroll', label: 'Egenkontroll' },
+  { value: 'fore_bilder', label: 'Före bilder' },
+  { value: 'efterbilder', label: 'Efterbilder' },
   { value: 'other', label: 'Annan (ange nedan)' },
 ];
 
