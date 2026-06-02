@@ -50,7 +50,10 @@ export default function UsersPage() {
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['users'],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getUsers', {});
+      return res.data.users || [];
+    },
     initialData: []
   });
 
