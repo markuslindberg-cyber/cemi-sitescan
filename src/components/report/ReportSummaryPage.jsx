@@ -12,21 +12,23 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
     return summary;
   };
 
-  const getCategorySummary = () => {
-    const categories = {
-      improvement_suggestions: points.filter(p => p.issue_type === 'improvement_suggestions').length,
-      issue_damage: points.filter(p => p.issue_type === 'issue_damage').length,
-      plant_health: points.filter(p => p.issue_type === 'plant_health').length,
-      maintenance: points.filter(p => p.issue_type === 'maintenance').length,
-      safety_concern: points.filter(p => p.issue_type === 'safety_concern').length,
-      deviation: points.filter(p => p.issue_type === 'deviation').length
-    };
-    return categories;
-  };
+  const allCategoryDefs = [
+    { key: 'improvement_suggestions', label: 'Förbättringsförslag', bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-600' },
+    { key: 'issue_damage',            label: 'Skada',               bg: 'bg-red-50',    border: 'border-red-200',    text: 'text-red-600' },
+    { key: 'plant_health',            label: 'Växthälsa',           bg: 'bg-green-50',  border: 'border-green-200',  text: 'text-green-600' },
+    { key: 'maintenance',             label: 'Underhåll',           bg: 'bg-blue-50',   border: 'border-blue-200',   text: 'text-blue-600' },
+    { key: 'safety_concern',          label: 'Säkerhetsrisk',       bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-600' },
+    { key: 'deviation',               label: 'Avvikelse',           bg: 'bg-gray-50',   border: 'border-gray-200',   text: 'text-gray-600' },
+    { key: 'general',                 label: 'Allmänt',             bg: 'bg-teal-50',   border: 'border-teal-200',   text: 'text-teal-600' },
+  ];
 
   const summary = getSummary();
-  const categories = getCategorySummary();
   const total = points.length;
+
+  const usedCategories = allCategoryDefs
+    .map(def => ({ ...def, count: points.filter(p => p.issue_type === def.key).length }))
+    .filter(c => c.count > 0)
+    .slice(0, 4);
 
   return (
     <div className="flex flex-col bg-white p-4 md:p-8 print:p-0">
@@ -106,57 +108,26 @@ export default function ReportSummaryPage({ inspection, site, customer, points }
         </Card>
 
         {/* Category Distribution */}
-        <Card className="print:shadow-none">
-          <CardHeader className="print:p-3 print:pb-2">
-            <CardTitle className="print:text-base">Ärendekategorier</CardTitle>
-          </CardHeader>
-          <CardContent className="print:p-3 print:pt-0">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 print:gap-2">
-              <div className="p-3 print:p-2 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="text-2xl print:text-xl font-bold text-purple-600">{categories.improvement_suggestions}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Förbättringsförslag</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.improvement_suggestions / total) * 100) : 0}%
-                </div>
+        {usedCategories.length > 0 && (
+          <Card className="print:shadow-none">
+            <CardHeader className="print:p-3 print:pb-2">
+              <CardTitle className="print:text-base">Ärendekategorier</CardTitle>
+            </CardHeader>
+            <CardContent className="print:p-3 print:pt-0">
+              <div className="grid grid-cols-2 gap-3 print:gap-2">
+                {usedCategories.map(cat => (
+                  <div key={cat.key} className={`p-3 print:p-2 ${cat.bg} rounded-lg border ${cat.border}`}>
+                    <div className={`text-2xl print:text-xl font-bold ${cat.text}`}>{cat.count}</div>
+                    <div className="text-xs print:text-[10px] text-gray-600 mt-1">{cat.label}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {total > 0 ? Math.round((cat.count / total) * 100) : 0}%
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="p-3 print:p-2 bg-red-50 rounded-lg border border-red-200">
-                <div className="text-2xl print:text-xl font-bold text-red-600">{categories.issue_damage}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Skada</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.issue_damage / total) * 100) : 0}%
-                </div>
-              </div>
-              <div className="p-3 print:p-2 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-2xl print:text-xl font-bold text-green-600">{categories.plant_health}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Växthälsa</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.plant_health / total) * 100) : 0}%
-                </div>
-              </div>
-              <div className="p-3 print:p-2 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="text-2xl print:text-xl font-bold text-blue-600">{categories.maintenance}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Underhåll</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.maintenance / total) * 100) : 0}%
-                </div>
-              </div>
-              <div className="p-3 print:p-2 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl print:text-xl font-bold text-orange-600">{categories.safety_concern}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Säkerhetsrisk</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.safety_concern / total) * 100) : 0}%
-                </div>
-              </div>
-              <div className="p-3 print:p-2 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="text-2xl print:text-xl font-bold text-gray-600">{categories.deviation}</div>
-                <div className="text-xs print:text-[10px] text-gray-600 mt-1">Avvikelse</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {total > 0 ? Math.round((categories.deviation / total) * 100) : 0}%
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Key Findings */}
         <Card className="print:shadow-none">
