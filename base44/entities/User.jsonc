@@ -1,0 +1,32 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "F\u00f6rnamn"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Efternamn"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user",
+      "description": "Anv\u00e4ndarroll"
+    },
+    "blocked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Om anv\u00e4ndaren \u00e4r blockerad"
+    }
+  },
+  "required": [
+    "first_name",
+    "last_name"
+  ]
+}

@@ -11,9 +11,9 @@ import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import UserSelect from '@/components/shared/UserSelect';
 
-export default function CreateSiteDialog({ open, onOpenChange }) {
+export default function CreateSiteDialog({ open, onOpenChange, defaultCustomerId }) {
   const [formData, setFormData] = useState({
-    customer_id: '',
+    customer_id: defaultCustomerId || '',
     name: '',
     project_number: '',
     location: '',
@@ -56,12 +56,13 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Site.create(data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['sites'] });
       queryClient.invalidateQueries({ queryKey: ['all-sites'] });
-      toast.success('Site created successfully');
+      queryClient.invalidateQueries({ queryKey: ['customer-sites', variables.customer_id] });
+      toast.success('Plats skapad');
       onOpenChange(false);
-      setFormData({ customer_id: '', name: '', location: '', description: '', map_image_url: '' });
+      setFormData({ customer_id: defaultCustomerId || '', name: '', location: '', description: '', map_image_url: '' });
     }
   });
 
@@ -189,56 +190,58 @@ export default function CreateSiteDialog({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Create New Site</DialogTitle>
+          <DialogTitle>Skapa ny plats</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="customer_id">Customer</Label>
-            <div className="flex gap-2 mb-2">
-              <Button
-                type="button"
-                variant={!isNewCustomer ? "default" : "outline"}
-                size="sm"
-                onClick={() => setIsNewCustomer(false)}
-                className="flex-1"
-              >
-                Select Existing
-              </Button>
-              <Button
-                type="button"
-                variant={isNewCustomer ? "default" : "outline"}
-                size="sm"
-                onClick={() => setIsNewCustomer(true)}
-                className="flex-1"
-              >
-                Create New
-              </Button>
+          {!defaultCustomerId && (
+            <div>
+              <Label htmlFor="customer_id">Kund</Label>
+              <div className="flex gap-2 mb-2">
+                <Button
+                  type="button"
+                  variant={!isNewCustomer ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsNewCustomer(false)}
+                  className="flex-1"
+                >
+                  Välj befintlig
+                </Button>
+                <Button
+                  type="button"
+                  variant={isNewCustomer ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsNewCustomer(true)}
+                  className="flex-1"
+                >
+                  Skapa ny
+                </Button>
+              </div>
+              {isNewCustomer ? (
+                <Input
+                  placeholder="Ange kundnamn"
+                  value={newCustomerName}
+                  onChange={(e) => setNewCustomerName(e.target.value)}
+                />
+              ) : (
+                <Select
+                  value={formData.customer_id}
+                  onValueChange={handleCustomerChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj en kund (valfritt)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={null}>Ingen kund</SelectItem>
+                    {customers.map(customer => (
+                      <SelectItem key={customer.id} value={customer.id}>
+                        {customer.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
-            {isNewCustomer ? (
-              <Input
-                placeholder="Enter new customer name"
-                value={newCustomerName}
-                onChange={(e) => setNewCustomerName(e.target.value)}
-              />
-            ) : (
-              <Select
-                value={formData.customer_id}
-                onValueChange={handleCustomerChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a customer (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={null}>No customer</SelectItem>
-                  {customers.map(customer => (
-                    <SelectItem key={customer.id} value={customer.id}>
-                      {customer.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+          )}
 
           <div>
             <Label htmlFor="name">Site Name *</Label>
