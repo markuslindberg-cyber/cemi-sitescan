@@ -11,7 +11,8 @@
       "enum": [
         "BRF",
         "Samf\u00e4lligheter",
-        "Kommersiella"
+        "Kommersiella",
+        "Lokalv\u00e5rd"
       ],
       "description": "Category of the customer"
     },
