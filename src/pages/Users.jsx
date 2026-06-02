@@ -69,16 +69,10 @@ export default function UsersPage() {
   );
 
   const inviteMutation = useMutation({
-    mutationFn: async ({ email, role, first_name, last_name }) => {
+    mutationFn: async ({ email, role }) => {
       await base44.users.inviteUser(email, role);
       const me = await base44.auth.me();
       await base44.entities.Invitation.create({ email, role, invited_by: me.email });
-      // Sätt först och efternamn för den nya användaren
-      await base44.entities.User.filter({ email }).then(users => {
-        if (users.length > 0) {
-          return base44.entities.User.update(users[0].id, { first_name, last_name });
-        }
-      });
     },
     onSuccess: () => {
       toast.success('Användaren har bjudits in');
@@ -178,9 +172,7 @@ export default function UsersPage() {
     }
     inviteMutation.mutate({ 
       email: inviteEmail, 
-      role: inviteRole,
-      first_name: inviteFirstName.trim(),
-      last_name: inviteLastName.trim()
+      role: inviteRole
     });
   };
 
