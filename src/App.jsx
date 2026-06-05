@@ -6,6 +6,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import TrashPage from './pages/Trash.jsx';
+import KnowledgeGraph from './pages/KnowledgeGraph.jsx';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { AnimatePresence } from 'framer-motion';
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
           />
         ))}
         <Route path="/Trash" element={<LayoutWrapper currentPageName="Trash"><TrashPage /></LayoutWrapper>} />
+        <Route path="/KnowledgeGraph" element={<LayoutWrapper currentPageName="KnowledgeGraph"><KnowledgeGraph /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AnimatePresence>

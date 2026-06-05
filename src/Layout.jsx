@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { Building2, Users, FileText, Menu, X, Home, Trash2 } from 'lucide-react';
+import { Building2, Users, FileText, Menu, X, Home, Trash2, Network } from 'lucide-react';
 import BottomTabNav from './components/mobile/BottomTabNav';
 
 export default function Layout({ children, currentPageName }) {
@@ -15,7 +15,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Kunder', path: 'Customers', icon: Users },
     { name: 'Inspektioner', path: 'Inspections', icon: FileText },
     { name: 'Användare', path: 'Users', icon: Users },
-    { name: 'Papperskorg', path: 'Trash', icon: Trash2, adminOnly: true }
+    { name: 'Papperskorg', path: 'Trash', icon: Trash2, adminOnly: true },
+    { name: 'Knowledge Graph', path: 'KnowledgeGraph', icon: Network, adminOnly: true }
   ];
 
   return (
