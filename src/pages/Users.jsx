@@ -42,9 +42,19 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
 
   const { user: currentUser, isLoadingAuth } = useAuth();
+  const [freshUser, setFreshUser] = useState(null);
+  const [isFetchingUser, setIsFetchingUser] = useState(true);
 
-  const isAdmin = currentUser?.role === 'admin';
-  const currentUserId = currentUser?.id;
+  useEffect(() => {
+    base44.auth.me()
+      .then(u => setFreshUser(u))
+      .catch(() => setFreshUser(currentUser))
+      .finally(() => setIsFetchingUser(false));
+  }, []);
+
+  const resolvedUser = freshUser || currentUser;
+  const isAdmin = resolvedUser?.role === 'admin';
+  const currentUserId = resolvedUser?.id;
 
   const { data: users = [], isLoading, isError, error } = useQuery({
     queryKey: ['users'],
@@ -205,11 +215,12 @@ export default function UsersPage() {
     });
   };
 
-  if (isLoadingAuth || !currentUser) return (
+  if (isLoadingAuth || isFetchingUser || !resolvedUser) return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
     </div>
   );
+
   if (!isAdmin) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
