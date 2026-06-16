@@ -45,7 +45,16 @@ export const AuthProvider = ({ children }) => {
 
         if (appError.status === 403 && appError.data?.extra_data?.reason) {
           const reason = appError.data.extra_data.reason;
-          setAuthError({ type: reason, message: appError.message });
+          if (reason === 'auth_required') {
+            // App is private — user might still be authenticated via SDK, try auth check
+            setIsLoadingPublicSettings(false);
+            await checkUserAuth();
+            return;
+          } else if (reason === 'user_not_registered') {
+            setAuthError({ type: 'user_not_registered', message: appError.message });
+          } else {
+            setAuthError({ type: reason, message: appError.message });
+          }
         } else {
           setAuthError({ type: 'unknown', message: appError.message || 'Failed to load app' });
         }
