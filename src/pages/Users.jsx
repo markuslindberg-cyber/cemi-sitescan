@@ -23,8 +23,7 @@ import { toast } from 'sonner';
 import { QRCodeCanvas } from 'qrcode.react';
 
 export default function UsersPage() {
-  const [isAdmin, setIsAdmin] = useState(null);
-  const [currentUserId, setCurrentUserId] = useState(null);
+
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -41,12 +40,13 @@ export default function UsersPage() {
   const qrRef = useRef(null);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    base44.auth.me().then(user => {
-      setIsAdmin(user?.role === 'admin');
-      setCurrentUserId(user?.id);
-    });
-  }, []);
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  const isAdmin = currentUser?.role === 'admin';
+  const currentUserId = currentUser?.id;
 
   const { data: users = [], isLoading, isError, error } = useQuery({
     queryKey: ['users'],
@@ -54,7 +54,7 @@ export default function UsersPage() {
       const res = await base44.functions.invoke('getUsers', {});
       return res?.data?.users || [];
     },
-    enabled: isAdmin === true,
+    enabled: !!currentUser,
     retry: 1
   });
 
@@ -205,7 +205,7 @@ export default function UsersPage() {
     });
   };
 
-  if (isAdmin === null) return null;
+  if (!currentUser) return null;
   if (!isAdmin) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
