@@ -39,13 +39,22 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         if (error.status === 403 && error.data?.extra_data?.reason === 'user_not_registered') {
           setAuthError({ type: 'user_not_registered', message: 'User not registered' });
-        } else if (error.status === 401 || error.status === 403) {
+        } else {
+          // Any other error (network, unknown) — redirect to login
           setAuthError({ type: 'auth_required', message: 'Authentication required' });
         }
       }
     };
 
-    await tryFetch(3, 500);
+    // Hard timeout — if everything hangs for 8s, force redirect to login
+    const timeout = setTimeout(() => {
+      setIsLoadingAuth(false);
+      setIsAuthenticated(false);
+      setAuthError({ type: 'auth_required', message: 'Authentication required' });
+    }, 8000);
+
+    await tryFetch(2, 400);
+    clearTimeout(timeout);
   };
 
   const logout = (shouldRedirect = true) => {
