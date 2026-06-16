@@ -48,12 +48,13 @@ export default function UsersPage() {
     });
   }, []);
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, isError, error } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const res = await base44.functions.invoke('getUsers', {});
-      return res.data.users || [];
-    }
+      return res?.data?.users || [];
+    },
+    retry: 1
   });
 
   const { data: invitations } = useQuery({
@@ -316,6 +317,13 @@ export default function UsersPage() {
           <div className="text-center py-12">
             <p className="text-gray-500">Laddar användare...</p>
           </div>
+        ) : isError ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <p className="text-red-500 mb-2">Kunde inte ladda användare</p>
+              <p className="text-xs text-gray-400">{error?.message}</p>
+            </CardContent>
+          </Card>
         ) : users.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
