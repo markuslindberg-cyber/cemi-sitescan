@@ -224,13 +224,13 @@ export default function UsersPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Användarhantering</h1>
-            <p className="text-gray-600 mt-1">Hantera användare och deras roller</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Användarhantering</h1>
+            <p className="text-gray-600 mt-1 text-sm md:text-base">Hantera användare och deras roller</p>
           </div>
 
-          <div className="flex gap-2 flex-wrap items-center w-full md:w-auto">
+          <div className="flex gap-2 items-center w-full md:w-auto">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-36">
+              <SelectTrigger className="flex-1 md:w-36">
                 <SelectValue placeholder="Sortera" />
               </SelectTrigger>
               <SelectContent>
@@ -244,7 +244,7 @@ export default function UsersPage() {
               onClick={() => setShowQRCode(true)}
               variant="outline"
               size="icon"
-              className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+              className="flex-shrink-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
               title="QR Code"
             >
               <QrCode className="w-4 h-4" />
@@ -252,9 +252,9 @@ export default function UsersPage() {
 
           <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-emerald-600 hover:bg-emerald-700">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Bjud in användare
+              <Button className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-700">
+                <UserPlus className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Bjud in användare</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -372,13 +372,13 @@ export default function UsersPage() {
                       </Badge>
                     </div>
                     {/* Bottom row: actions */}
-                    <div className="flex items-center gap-2 justify-end flex-wrap">
+                    <div className="flex items-center gap-2 justify-between border-t pt-3 mt-1">
                       <Select 
                         value={user.role} 
                         onValueChange={(newRole) => handleRoleChange(user.id, newRole)}
                         disabled={updateRoleMutation.isPending || user.id === currentUserId}
                       >
-                        <SelectTrigger className="w-28 h-8 text-xs">
+                        <SelectTrigger className="w-32 h-9 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -386,39 +386,41 @@ export default function UsersPage() {
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEditUser(user)}
-                        disabled={user.id === currentUserId}
-                        title="Redigera"
-                        className="h-8 w-8"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      {user.id !== currentUserId && (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            title={user.blocked ? 'Avblockera' : 'Blockera'}
-                            className={`h-8 w-8 ${user.blocked ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'}`}
-                            onClick={() => blockUserMutation.mutate({ userId: user.id, blocked: !user.blocked })}
-                            disabled={blockUserMutation.isPending}
-                          >
-                            {user.blocked ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            title="Ta bort användare"
-                            className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
-                            onClick={() => setConfirmDelete(user)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </>
-                      )}
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditUser(user)}
+                          disabled={user.id === currentUserId}
+                          title="Redigera"
+                          className="h-9 w-9"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        {user.id !== currentUserId && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title={user.blocked ? 'Avblockera' : 'Blockera'}
+                              className={`h-9 w-9 ${user.blocked ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'}`}
+                              onClick={() => blockUserMutation.mutate({ userId: user.id, blocked: !user.blocked })}
+                              disabled={blockUserMutation.isPending}
+                            >
+                              {user.blocked ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Ta bort användare"
+                              className="h-9 w-9 text-red-500 hover:text-red-700 hover:bg-red-50"
+                              onClick={() => setConfirmDelete(user)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
