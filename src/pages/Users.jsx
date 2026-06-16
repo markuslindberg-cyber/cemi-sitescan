@@ -53,7 +53,8 @@ export default function UsersPage() {
       return res?.data?.users || [];
     },
     enabled: !isLoadingAuth && !!currentUser,
-    retry: 1,
+    retry: 3,
+    retryDelay: 1000,
     staleTime: 0,
     gcTime: 0
   });
