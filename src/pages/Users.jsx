@@ -54,6 +54,7 @@ export default function UsersPage() {
       const res = await base44.functions.invoke('getUsers', {});
       return res?.data?.users || [];
     },
+    enabled: isAdmin === true,
     retry: 1
   });
 
