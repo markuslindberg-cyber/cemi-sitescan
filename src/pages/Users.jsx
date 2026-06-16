@@ -41,7 +41,7 @@ export default function UsersPage() {
   const qrRef = useRef(null);
   const queryClient = useQueryClient();
 
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isLoadingAuth } = useAuth();
 
   const isAdmin = currentUser?.role === 'admin';
   const currentUserId = currentUser?.id;
@@ -53,7 +53,9 @@ export default function UsersPage() {
       return res?.data?.users || [];
     },
     enabled: !!currentUser,
-    retry: 1
+    retry: 1,
+    staleTime: 0,
+    gcTime: 0
   });
 
   const { data: invitations } = useQuery({
@@ -203,7 +205,11 @@ export default function UsersPage() {
     });
   };
 
-  if (!currentUser) return null;
+  if (isLoadingAuth) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+    </div>
+  );
   if (!isAdmin) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
