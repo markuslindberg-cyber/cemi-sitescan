@@ -51,10 +51,11 @@ export const AuthProvider = ({ children }) => {
         if (appError.status === 403 && appError.data?.extra_data?.reason) {
           const reason = appError.data.extra_data.reason;
           if (reason === 'auth_required') {
-            setAuthError({
-              type: 'auth_required',
-              message: 'Authentication required'
-            });
+            // Try to fetch user anyway — token might be valid but public-settings blocked in Safari
+            const fetchedUser = await checkUserAuth();
+            if (!fetchedUser) {
+              setAuthError({ type: 'auth_required', message: 'Authentication required' });
+            }
           } else if (reason === 'user_not_registered') {
             setAuthError({
               type: 'user_not_registered',
@@ -92,12 +93,11 @@ export const AuthProvider = ({ children }) => {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
+      return currentUser;
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsAuthenticated(false);
-      if (error.status === 401 || error.status === 403) {
-        setAuthError({ type: 'auth_required', message: 'Authentication required' });
-      }
+      return null;
     } finally {
       setIsLoadingAuth(false);
     }
