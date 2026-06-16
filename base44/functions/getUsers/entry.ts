@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
   try {
@@ -19,6 +19,9 @@ Deno.serve(async (req) => {
       last_name: u.last_name,
       email: u.email,
       role: u.role,
+      blocked: u.blocked || false,
+      created_date: u.created_date,
+      updated_date: u.updated_date,
     }));
 
     return Response.json({ users: safeUsers });
