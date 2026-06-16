@@ -3,17 +3,11 @@ import { appParams } from '@/lib/app-params';
 
 const { appId, functionsVersion, appBaseUrl } = appParams;
 
-// Re-read token at client creation time to ensure we catch tokens
-// set from URL params (e.g. after Google OAuth redirect on mobile/Safari)
+// appParams already handles reading token from URL (with removeFromUrl) and persisting to localStorage.
+// We re-read from localStorage here to ensure we get the token even if appParams ran before
+// the token was fully persisted (can happen on mobile after Google OAuth redirect).
 const getToken = () => {
-  const storageKey = 'base44_access_token';
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlToken = urlParams.get('access_token');
-  if (urlToken) {
-    localStorage.setItem(storageKey, urlToken);
-    return urlToken;
-  }
-  return localStorage.getItem(storageKey) || appParams.token;
+  return appParams.token || localStorage.getItem('base44_access_token');
 };
 
 export const base44 = createClient({

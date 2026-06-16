@@ -41,7 +41,7 @@ export default function UsersPage() {
   const qrRef = useRef(null);
   const queryClient = useQueryClient();
 
-  const { user: currentUser, isLoadingAuth } = useAuth();
+  const { user: currentUser, isLoadingAuth, authError } = useAuth();
 
   const isAdmin = currentUser?.role === 'admin';
   const currentUserId = currentUser?.id;
@@ -206,13 +206,13 @@ export default function UsersPage() {
     });
   };
 
-  if (isLoadingAuth) return (
+  if (isLoadingAuth || (!currentUser && !authError)) return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
     </div>
   );
 
-  if (!isAdmin) return (
+  if (currentUser && !isAdmin) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-gray-500">Du har inte behörighet att se denna sida.</p>
     </div>
