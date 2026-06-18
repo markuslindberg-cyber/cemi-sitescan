@@ -107,13 +107,13 @@ export default function Site() {
   });
 
   const createInspectionMutation = useMutation({
-    mutationFn: async ({ reason_category, notes }) => {
+    mutationFn: async ({ reason_category, notes, map_image_url }) => {
       const user = await base44.auth.me();
       const allInspections = await base44.entities.Inspection.list('-created_date');
       const nextNumber = allInspections.length + 1;
       const inspectionNumber = `INS-${String(nextNumber).padStart(4, '0')}`;
       
-      return base44.entities.Inspection.create({
+      const payload = {
         site_id: siteId,
         inspection_number: inspectionNumber,
         inspection_date: new Date().toISOString().split('T')[0],
@@ -121,7 +121,9 @@ export default function Site() {
         status: 'in_progress',
         reason_category,
         notes
-      });
+      };
+      if (map_image_url) payload.map_image_url = map_image_url;
+      return base44.entities.Inspection.create(payload);
     },
     onSuccess: (newInspection) => {
       queryClient.invalidateQueries({ queryKey: ['inspections', siteId] });
@@ -433,6 +435,8 @@ export default function Site() {
           onOpenChange={setShowCreateInspectionDialog}
           onConfirm={(data) => createInspectionMutation.mutate(data)}
           isLoading={createInspectionMutation.isPending}
+          site={site}
+          previousMapUrl={inspections.find(i => i.map_image_url)?.map_image_url || null}
         />
       </div>
     </div>

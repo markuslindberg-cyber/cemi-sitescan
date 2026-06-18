@@ -213,9 +213,9 @@ export default function Inspection() {
               onMapClick={handleMapClick}
               onPointClick={handlePointClick}
             />
-          ) : site.map_image_url ? (
+          ) : (inspection.map_image_url || site.map_image_url) ? (
             <InteractiveMap
-              imageUrl={site.map_image_url}
+              imageUrl={inspection.map_image_url || site.map_image_url}
               points={points}
               onMapClick={handleMapClick}
               onPointClick={handlePointClick}

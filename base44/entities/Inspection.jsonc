@@ -57,6 +57,10 @@
     "map_screenshot_url": {
       "type": "string",
       "description": "Screenshot of the map with inspection points"
+    },
+    "map_image_url": {
+      "type": "string",
+      "description": "Custom map image URL for this specific inspection (overrides site map)"
     }
   },
   "required": [
