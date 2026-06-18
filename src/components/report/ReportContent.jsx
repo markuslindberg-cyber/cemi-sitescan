@@ -154,8 +154,8 @@ return (
                     crossOrigin="anonymous"
                     loading="eager"
                   />
-                ) : site.map_image_url ? (
-                    <MapWithMarkers imageUrl={site.map_image_url} points={points} />
+                ) : (inspection.map_image_url || site.map_image_url) ? (
+                    <MapWithMarkers imageUrl={inspection.map_image_url || site.map_image_url} points={points} />
                   ) : site.map_type === 'google_maps' && site.google_maps_center ? (
                     <div className="p-6 bg-gray-50 border border-gray-300 rounded-lg">
                       <div className="space-y-3">
